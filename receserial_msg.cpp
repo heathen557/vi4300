@@ -120,17 +120,22 @@ void receSerial_msg::readDataSlot()
 
                QString returnCmdStr = single_Data.mid(2,2);   //命令标识
                ////////////////////////////////////////////////////////单个命令处理代码块//////////////////////////////////////////////////////////////////////////////////////////
-               // 5A 86 01 00 01 xx  开始升级成功
-               // 5A 86 01 00 00 XX  开始升级失败
+               // 5A 86 01 00 01 xx  MCU开始升级成功
+               // 5A 86 01 00 81 XX  MCU开始升级失败
+               // 5A 86 01 00 00 xx  MCU开始升级成功
+               // 5A 86 01 00 88 XX  MCU开始升级失败
                if("86" == returnCmdStr)
                 {
-                   QString cmdAck = single_Data.mid(8,2);
-                   emit AckCmdUpgrade_signal(returnCmdStr,cmdAck);
-
+                   QString secCmd = single_Data.mid(4,2);
+                   if("01" == secCmd);
+                   {
+                       QString cmdAck = single_Data.mid(8,2);
+                       emit AckCmdUpgrade_signal(returnCmdStr,cmdAck);
+                   }
                 }
 
-               // 5A 87 84 00 AA AA AA AA DD...DD XX    升级过程中的命令
-               else if("87" == returnCmdStr)
+               // 5A 87 84 00 AA AA AA AA DD...DD XX    MCU升级过程中的命令
+               if("87" == returnCmdStr)
                {
                    int singleLen = single_Data.size();
                    QString dataStr = single_Data.right(singleLen - 4*2 );  //减去前面的4个字节为数据区内容
@@ -138,11 +143,56 @@ void receSerial_msg::readDataSlot()
                    emit AckCmdUpgrade_signal(returnCmdStr,dataStr);
                }
 
+               //写寄存器的应答命令 5A 81 NN NN 01 DD..DD XX
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("01" == secCmd)
+                   {
+                       QString cmdAck = "00";  //没有意义
+                       emit AckCmdRegister_signal(returnCmdStr,cmdAck);
+                   }
+               }
+
+               //读寄存器应答命令 5A 80 NN nn 01 DD...DD XX
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("01" == secCmd)
+                   {
+                       QString cmdAck = single_Data.mid(10,dataLen);
+                       emit AckCmdRegister_signal(returnCmdStr,cmdAck);
+                   }
+               }
+
+               //写入出厂设置 应答命令 5A 81 22 00 02 DD.DD XX   接收到说明配置成功
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("02" == secCmd)
+                   {
+                       QString firstCmd = "8102";
+                       QString dataStr= "00";//没有意义
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
+
+               //读取出厂设置 应答命令 5A 80 22 00 02 DD.DD  XX
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("02" == secCmd)
+                   {
+                       QString firstCmd = "8002";
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
 
 
 
-                ////////////////////////////////////////////////////////单个命令处理代码块//////////////////////////////////////////////////////////////////////////////////////////
 
+               ////////////////////////////////////////////////////////单个命令处理代码块//////////////////////////////////////////////////////////////////////////////////////////
                m_buffer = m_buffer.right(totallen - len);                                                  //一帧处理完毕 减去该帧的长度
                totallen = m_buffer.size();
     //         qDebug()<<"total ="<<totallen<<endl;

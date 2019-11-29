@@ -64,7 +64,8 @@ void MainWindow::SerialSetting_Enable_false()
     ui->groupBox_8->setEnabled(false);
     ui->actionMCU->setEnabled(false);
     ui->Register_action->setEnabled(false);
-    ui->outFactory_pushButton->setEnabled(false);
+    ui->send_outFactory_pushButton->setEnabled(false);
+    ui->read_outFactory_pushButton->setEnabled(false);
     ui->calibration_pushButton->setEnabled(false);
     ui->outSetting_pushButton->setEnabled(false);
     ui->singleMeasure_pushButton->setEnabled(false);
@@ -80,7 +81,8 @@ void MainWindow::SerialSetting_Enable_true()
     ui->groupBox_8->setEnabled(true);
     ui->actionMCU->setEnabled(true);
     ui->Register_action->setEnabled(true);
-    ui->outFactory_pushButton->setEnabled(true);
+    ui->send_outFactory_pushButton->setEnabled(true);
+    ui->read_outFactory_pushButton->setEnabled(true);
     ui->calibration_pushButton->setEnabled(true);
     ui->outSetting_pushButton->setEnabled(true);
     ui->singleMeasure_pushButton->setEnabled(true);
@@ -90,11 +92,11 @@ void MainWindow::SerialSetting_Enable_true()
 
 void MainWindow::initUINum()
 {
-    ui->botelv_comboBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
-    ui->botelv_comboBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
-    ui->botelv_comboBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
-    ui->botelv_comboBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
-    ui->botelv_comboBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
+//    ui->botelv_comboBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
+//    ui->botelv_comboBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
+//    ui->botelv_comboBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
+//    ui->botelv_comboBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
+//    ui->botelv_comboBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
 }
 
 
@@ -125,14 +127,19 @@ void MainWindow::initConnect()
     connect(&oneSecondTimer,SIGNAL(timeout()),this,SLOT(oneSecondTimer_slot()));
     connect(&plotShowTimer,SIGNAL(timeout()),this,SLOT(plotShowTimer_slot()));
 
-    //串口发送数据相关
+    //主界面串口发送数据相关
     connect(this,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
-    connect(&registerDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
     connect(&keepSendMeasureTimer,SIGNAL(timeout()),this,SLOT(keepSendMeasureSlot()));   //持续发送命令的槽函数
+    connect(receSerial_Obj,SIGNAL(AckCmdMain_signal(QString,QString)),this,SLOT(AckCmdMain_slot(QString,QString)));
 
     //MCU 升级相关
     connect(&McuUpgradeDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
     connect(receSerial_Obj,SIGNAL(AckCmdUpgrade_signal(QString,QString)),&McuUpgradeDia,SLOT(AckCmdUpgrade_signal(QString,QString)));
+
+    //寄存器读写相关
+    connect(&registerDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
+    connect(receSerial_Obj,SIGNAL(AckCmdRegister_signal(QString,QString)),&registerDia,SLOT(AckCmdRegister_slot(QString,QString)));
+
 
 }
 
@@ -902,23 +909,101 @@ void MainWindow::on_stopMeasure_pushButton_clicked()
 }
 
 
+//!
+//! \brief MainWindow::on_read_outFactory_pushButton_clicked
+//! 读取出厂设置 槽函数  5A 00 02 22 00 DDD..D XX
+void MainWindow::on_read_outFactory_pushButton_clicked()
+{
+
+    //命令组帧 0X22 34
+    QString data = QString("%1").arg(0,68,16,QLatin1Char('0'));
+
+    QString cmdStr = "5A 00 02 22 00 ";
+    cmdStr.append(data);
+    emit sendSerialSignal(cmdStr);
+}
 
 
 //!
 //! \brief MainWindow::on_outFactory_pushButton_clicked
-//!  出厂设置 点击发送的槽函数  （SN 、 波特率）
-void MainWindow::on_outFactory_pushButton_clicked()
+//!  出厂设置 点击发送的槽函数  （SN 、 波特率）  5A 01 02 25 00 DD..DD XX
+//! SN :      4
+//! UUID :    12
+//! BAUDRATE: 4
+//! CAIJI:    1
+//! YULIU:    16
+//! 界面上输入十六进制数据
+void MainWindow::on_send_outFactory_pushButton_clicked()
 {
+
     QString SN_number = ui->SN_lineEdit->text();
-    QString baudRate = ui->botelv_comboBox->currentText();
-    qDebug()<<"SN_number ="<<SN_number<<"  baudRate = "<<baudRate;
+    QString SN_numberStr = SN_number.replace(" ","");
+    if(SN_numberStr.length() > 8)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("SN号过长，请重新输入！"));
+        return;
+    }
+    QString str = "00000000" + SN_numberStr;
+    SN_numberStr = str.right(8);
+    qDebug()<<" SN_numberStr = "<<SN_numberStr   <<" len="<<SN_numberStr.length();
+
+
+    QString UUID_num = ui->UUID_lineEdit->text();
+    QString UUID_str = UUID_num.replace(" ","");
+    if(UUID_str.length()>24)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("UUID号过长，请重新输入！"));
+        return;
+    }
+    str = "000000000000000000000000" + UUID_str;
+    UUID_str = str.right(24);
+    qDebug()<<" UUID_str = "<<UUID_str<<" len="<<UUID_str.size();
+
+//    //波特率
+
+    QString banuRateStr = QString("%1").arg(ui->botelv_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+    qDebug()<<" baudRateStr = "<<banuRateStr<<" len="<<banuRateStr.size();
+
+    //采集频率
+    QString caiji_str = QString("%1").arg(ui->CAIJI_frequency_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+    qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
+
+    //设备类型
+    QString deviceType = QString("%1").arg(ui->ui->deviceType_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+    qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
+
+
+    //预留数据
+    QString YuLiu_num = ui->YULIU_lineEdit->text();
+    QString YuLiu_str = YuLiu_num.replace(" ","");
+    if(YuLiu_str.length()>30)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("预留数据过长，请重新输入！"));
+        return;
+    }
+    str = "00000000000000000000000000000000" + YuLiu_str;
+    YuLiu_str = str.right(30);
+    qDebug()<<" YuLiu_str = "<<YuLiu_str<<" len="<<YuLiu_str.length();
+
 
     //命令组帧
-    QString cmdStr = "5A";
+    QString cmdStr = "5A 01 02 22 00 ";
+    cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(YuLiu_str);
+
     emit sendSerialSignal(cmdStr);
-
-
 }
+
+//!
+//! \brief MainWindow::on_reStoreFactory_pushButton_clicked
+//! 恢复出厂设置 5A 01 01 00 03 00
+void MainWindow::on_reStoreFactory_pushButton_clicked()
+{
+    //命令组帧
+    QString cmdStr = "5A 01 01 00 03 00 ";
+    emit sendSerialSignal(cmdStr);
+}
+
+
 
 
 //!
@@ -947,3 +1032,43 @@ void MainWindow::on_outSetting_pushButton_clicked()
     emit sendSerialSignal(cmdStr);
 
 }
+
+
+//!
+//! \brief AckCmdMain_signal
+//!主界面配置的相关信息返回信号    参数1：“8102”：写入出厂设置成功，参数2暂无
+//!                             参数1：“8002”：读取出厂设置 ，参数2 数据
+//!                             参数1：“8103”：恢复出厂设置成功 参数2暂无
+void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
+{
+    if("8102" ==returnCmdStr )
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("出厂设置成功！"));
+        return;
+    }
+    else if("8002" == returnCmdStr)
+    {
+        QString SN_str = cmdAck.mid(0,8);
+        QString UUID_str = cmdAck.mid(8,24);
+        int baudRateIndex = cmdAck.mid(32,2).toInt(NULL,16);
+        int caijiIndex = cmdAck.mid(34,2).toInt(NULL,16);
+        int deviceTypeIndex = cmdAck.mid(36,2).toInt(NULL,16);
+        QString YuLiuStr = cmdAck.mid(38,30);
+
+        ui->SN_lineEdit->setText(SN_str);
+        ui->UUID_lineEdit->setText(UUID_str);
+        ui->botelv_comboBox->setCurrentIndex(baudRateIndex);
+        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
+        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);
+        ui->YULIU_lineEdit->setText(YuLiuStr);
+        return;
+    }
+    else if("8103" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("恢复出厂设置成功！"));
+        return;
+    }
+}
+
+
+

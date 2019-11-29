@@ -235,7 +235,6 @@ void McuUpgradeDialog::on_upgrade_pushButton_clicked()
 {
 
     qDebug()<<QStringLiteral("开始升级槽函数");
-
     QString startCmd = "5A 06 01 00 01 ";
     emit sendSerialSignal(startCmd);
 }

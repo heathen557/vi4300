@@ -41,13 +41,13 @@ public:
 
     vector<int> tofPeak_vector;
 
-
     bool isTranslateFlag;     //解析数据 还是直接显示16进制的 切换标识 true：则对数据进行解析
 
-    vector<double> PlotData_vector;            //plot相关 画图
-    vector<double> StatisticData_vector;      //统计相关  均值方差
+    vector<double> StatisticData_vector;     //统计相关  均值方差
+
     QStringList   DistanceStr;               //显示tof peak相关
 
+    vector<double> PlotData_vector;          //plot相关 画图
 
 signals:
     void dealedData_signal(QString,vector<double>,vector<double>);     //当前的tof值 ; plotData ; statisticData
@@ -62,9 +62,19 @@ signals:
     //!                                                            “00” ：失败
     //!                                                            其他：命令有误
     //!                              “87”：升级过程中的命令应答 参数2： 应答的数据
-    //!
-
     void AckCmdUpgrade_signal(QString,QString);
+
+
+    //!
+    //! \brief AckCmdRegister_signal
+    //!寄存器返回命令的相关信号   参数1：“81”：写寄存器应答  参数2 暂无
+    //!                              “80”：读寄存器应答  参数2 寄存器的数据区
+    void AckCmdRegister_signal(QString,QString);
+
+    //!
+    //! \brief AckCmdMain_signal
+    //!主界面配置的相关信号    参数1：“8102”：写入出厂设置，参数2暂无
+    void AckCmdMain_signal(QString,QString);
 
 
 public slots:

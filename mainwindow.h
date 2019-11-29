@@ -161,13 +161,23 @@ private slots:
 
     void on_stopMeasure_pushButton_clicked();
 
-    void on_outFactory_pushButton_clicked();
-
     void on_calibration_pushButton_clicked();
 
     void on_outSetting_pushButton_clicked();
 
     void keepSendMeasureSlot();
+
+    void on_read_outFactory_pushButton_clicked();
+
+    void on_send_outFactory_pushButton_clicked();
+
+
+    //!
+    //! \brief AckCmdMain_signal
+    //!主界面配置的相关信息返回信号    参数1：“8102”：写入出厂设置成功，参数2暂无
+    void AckCmdMain_slot(QString returnCmdStr,QString cmdAck);
+
+    void on_reStoreFactory_pushButton_clicked();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close

@@ -39,6 +39,12 @@ private slots:
 
     void on_toolButton_clicked();
 
+    //!
+    //! \brief AckCmdRegister_signal
+    //!寄存器返回命令的相关信号   参数1：“81”：写寄存器应答  参数2 暂无
+    //!                              “80”：读寄存器应答  参数2 寄存器的数据区
+    void AckCmdRegister_slot(QString,QString);
+
 signals:
     void sendSerialSignal(QString);             //串口发送信号
 

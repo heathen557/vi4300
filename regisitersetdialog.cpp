@@ -166,15 +166,14 @@ void RegisiterSetDialog::on_saveLocal_pushButton_clicked()
 
     QString str = QStringLiteral("文件保存成功，路径：") + filePath;
     QMessageBox::information(NULL,QStringLiteral("提示"),str);
-
 }
 
-//发送 寄存器配置
+//发送 寄存器配置   5A 01  NN 01  DD...DD XX
 void RegisiterSetDialog::on_send_pushButton_clicked()
 {
     //获取当前控件上的内容,组装成 字符串
     int index = 0;
-    QString textString;
+    QStringList textString;
     QString addrStr,valStr;
     while(1)
     {
@@ -184,22 +183,61 @@ void RegisiterSetDialog::on_send_pushButton_clicked()
         {
             break;
         }
-        textString.append(addrStr).append(" ").append(valStr).append("\n");
+//        textString.append(addrStr).append(valStr);
+        textString.append(addrStr);
+        textString.append(valStr);
         index++;
     }
 
-    //命令组帧
-    QString cmdStr = "5A 03 04 00 0A 00 88 13 ";
+    //命令组帧   5A 01 NN DD...DD XX
+    QString cmdStr = "5A 01 ";
+    int dataLen = textString.length();
+    QString lenStrTmp = QString("%1").arg(dataLen,4,16,QLatin1Char('0'));  //长度2个字节
+    QString lenStr  = lenStrTmp.mid(2,2) + lenStrTmp.mid(0,2);             //转换成小端
+    cmdStr.append(lenStr);
+    cmdStr.append("01");                //寄存器地址
+    foreach (QString str, textString) {
+        cmdStr.append(str);
+    }
     emit sendSerialSignal(cmdStr);
 }
 
-//读取 设备寄存器配置
+//读取 设备寄存器配置  5A 00 01 00 01 00
 void RegisiterSetDialog::on_read_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 03 04 00 14 00 88 13 ";
+    QString cmdStr = "5A 00 01 00 01 00 ";
     emit sendSerialSignal(cmdStr);
 }
+
+
+
+
+//!
+//! \brief AckCmdRegister_signal
+//!寄存器返回命令的相关信号   参数1：“81”：写寄存器应答  参数2 暂无
+//!                              “80”：读寄存器应答  参数2 寄存器的数据区
+void RegisiterSetDialog::AckCmdRegister_slot(QString returnCmdStr,QString cmdAck)
+{
+    if("81" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("写入寄存器成功！"));
+        return;
+    }else if("80" == returnCmdStr)
+    {
+        clearItem();
+        int index = 0;
+        for(int i=0; i<cmdAck.length();i+=4)    //4个为一组 前两个字符为地址 后两个地址为值
+        {
+            addressItem[index].setText(cmdAck.mid(i,2));
+            valueItem[index].setText(cmdAck.mid(i+2,2));
+            index++;
+        }
+    }
+}
+
+
+
 
 //窗口关闭
 void RegisiterSetDialog::closeEvent(QCloseEvent *event)
