@@ -16,6 +16,7 @@
 #include<calhistogram_obj.h>
 #include<regisitersetdialog.h>
 #include<mcuupgradedialog.h>
+#include<highreact_dialog.h>
 
 
 namespace Ui {
@@ -99,9 +100,13 @@ public:
 
     RegisiterSetDialog registerDia;
 
-    QTimer keepSendMeasureTimer;
-
     McuUpgradeDialog  McuUpgradeDia;
+
+
+    QVector<double> HistorgramTicks;
+    QVector<QString> HistorgramLabels;
+
+    HighReact_Dialog highReactDia;
 
 private slots:
     void on_save_pushButton_clicked();
@@ -145,7 +150,7 @@ private slots:
 
     void returnLinkInfo_slot(QString, bool);
 
-    void toShowHistogram_slot(QVector<double>,QVector<double>,QVector<QString>,int ,int );   //显示统计直方图
+    void toShowHistogram_slot(QVector<double>,int);   //显示统计直方图
 
 
 
@@ -163,10 +168,6 @@ private slots:
 
     void on_calibration_pushButton_clicked();
 
-    void on_outSetting_pushButton_clicked();
-
-    void keepSendMeasureSlot();
-
     void on_read_outFactory_pushButton_clicked();
 
     void on_send_outFactory_pushButton_clicked();
@@ -178,6 +179,14 @@ private slots:
     void AckCmdMain_slot(QString returnCmdStr,QString cmdAck);
 
     void on_reStoreFactory_pushButton_clicked();
+
+    void on_realDis_out_radioButton_clicked();
+
+    void on_LSB_out_radioButton_clicked();
+
+    void on_rowData_pushButton_clicked();
+
+    void on_gaofan_pushButton_clicked();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close

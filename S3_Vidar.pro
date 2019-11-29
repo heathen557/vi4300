@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     calhistogram_obj.cpp \
     regisitersetdialog.cpp \
     mcuupgradedialog.cpp \
-    hex.cpp
+    hex.cpp \
+    highreact_dialog.cpp
 
 HEADERS  += mainwindow.h \
     receserial_msg.h \
@@ -38,11 +39,13 @@ HEADERS  += mainwindow.h \
     calhistogram_obj.h \
     regisitersetdialog.h \
     mcuupgradedialog.h \
-    hex.h
+    hex.h \
+    highreact_dialog.h
 
 FORMS    += mainwindow.ui \
     regisitersetdialog.ui \
-    mcuupgradedialog.ui
+    mcuupgradedialog.ui \
+    highreact_dialog.ui
 
 RESOURCES += \
     img.qrc

@@ -67,7 +67,8 @@ void MainWindow::SerialSetting_Enable_false()
     ui->send_outFactory_pushButton->setEnabled(false);
     ui->read_outFactory_pushButton->setEnabled(false);
     ui->calibration_pushButton->setEnabled(false);
-    ui->outSetting_pushButton->setEnabled(false);
+    ui->gaofan_pushButton->setEnabled(false);
+    ui->groupBox_10->setEnabled(false);
     ui->singleMeasure_pushButton->setEnabled(false);
     ui->delayMeasure_pushButton->setEnabled(false);
     ui->stopMeasure_pushButton->setEnabled(false);
@@ -84,7 +85,8 @@ void MainWindow::SerialSetting_Enable_true()
     ui->send_outFactory_pushButton->setEnabled(true);
     ui->read_outFactory_pushButton->setEnabled(true);
     ui->calibration_pushButton->setEnabled(true);
-    ui->outSetting_pushButton->setEnabled(true);
+    ui->gaofan_pushButton->setEnabled(true);
+    ui->groupBox_10->setEnabled(true);
     ui->singleMeasure_pushButton->setEnabled(true);
     ui->delayMeasure_pushButton->setEnabled(true);
     ui->stopMeasure_pushButton->setEnabled(true);
@@ -97,6 +99,20 @@ void MainWindow::initUINum()
 //    ui->botelv_comboBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
 //    ui->botelv_comboBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
 //    ui->botelv_comboBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
+
+    HistorgramTicks.resize(2048);
+    HistorgramLabels.resize(2048);
+
+    for(int i=0; i<2048; i++)
+    {
+        HistorgramTicks[i] = i;
+        HistorgramLabels[i] = "";
+        if(0 == i%100)
+        {
+            HistorgramLabels[i] = QString::number(i);
+        }
+    }
+
 }
 
 
@@ -120,7 +136,7 @@ void MainWindow::initConnect()
 
     // calculate histogram connect
     connect(this,SIGNAL(calHistogram_signal(vector<double>)),calHis_obg,SLOT(calHistogram_slot(vector<double>)));
-    connect(calHis_obg,SIGNAL(toShowHistogram_signal(QVector<double>,QVector<double>,QVector<QString>,int ,int )),this,SLOT(toShowHistogram_slot(QVector<double>,QVector<double>,QVector<QString>,int ,int )));
+
 
     //刷新定时器 信号与槽的连接
     connect(&showTimer,SIGNAL(timeout()),this,SLOT(showTimerSlot()));
@@ -129,7 +145,6 @@ void MainWindow::initConnect()
 
     //主界面串口发送数据相关
     connect(this,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
-    connect(&keepSendMeasureTimer,SIGNAL(timeout()),this,SLOT(keepSendMeasureSlot()));   //持续发送命令的槽函数
     connect(receSerial_Obj,SIGNAL(AckCmdMain_signal(QString,QString)),this,SLOT(AckCmdMain_slot(QString,QString)));
 
     //MCU 升级相关
@@ -140,6 +155,11 @@ void MainWindow::initConnect()
     connect(&registerDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
     connect(receSerial_Obj,SIGNAL(AckCmdRegister_signal(QString,QString)),&registerDia,SLOT(AckCmdRegister_slot(QString,QString)));
 
+    //画统计直方图
+    connect(receSerial_Obj,SIGNAL(toShowHistogram_signal(QVector<double>,int)),this,SLOT(toShowHistogram_slot(QVector<double>,int)));
+
+    //高反设置的串口数据
+    connect(&highReactDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
 
 }
 
@@ -467,18 +487,10 @@ void MainWindow::returnLinkInfo_slot(QString str, bool flag)
 
 
 
-
-
-
-
-
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
-
 
 
 //是否进行进制转换的槽函数
@@ -713,6 +725,18 @@ void MainWindow::on_Histogram_radioButton_clicked()
 }
 
 
+//!
+//! \brief MainWindow::on_rowData_pushButton_clicked
+//!  请求RowData的数据 5A 00 00 10 0A DD..DD
+void MainWindow::on_rowData_pushButton_clicked()
+{
+    QString strData = QString("%1").arg(2,4096*2,16,QLatin1Char('0'));
+    QString cmdStr = "5A 00 00 10 0A ";
+    cmdStr.append(strData);
+    emit sendSerialSignal(cmdStr);
+}
+
+
 //show plot
 void MainWindow::on_plotSet_on_radioButton_clicked()
 {
@@ -742,7 +766,7 @@ void MainWindow::plotShowTimer_slot()
     float valueMin = 100000;
     if(plot_Mode)   //用户选中了显示统计信息的模式
     {
-        if(0 == plot_type)          //显示tof的统计信息
+        if(0 == plot_type)          //显示tof的统计信息      暂时不考虑之
         {
             int len = PlotData_vector.size();
             if(len<1)
@@ -763,31 +787,37 @@ void MainWindow::plotShowTimer_slot()
             ui->TOF_widget->replot();
 
 
-        }else if(1 == plot_type)    //显示直方图的信息
-        {
-            emit calHistogram_signal(PlotData_vector);
+        }
 
+        //  5A 00 00 08 09 DD..DDDDD  XX
+        else if(1 == plot_type)    //显示直方图的信息      将这里改成发送请求 直方图的数据
+        {
+            QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
+            QString cmdStr = "5A 00 00 08 09 ";
+            cmdStr.append(strData);
+            emit sendSerialSignal(cmdStr);
         }
     }
 }
 
 
 //显示统计直方图放的槽函数
-void MainWindow::toShowHistogram_slot(QVector<double> xTicks,QVector<double> numData,QVector<QString> xLabels,int xMax,int yMax)
+void MainWindow::toShowHistogram_slot(QVector<double> numData,int yMax)
 {
-
 //    qDebug()<<" xTicks = "<<xTicks;
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
-//    textTicker->addTicks(ticks, labels);
-    textTicker->setTicks(xTicks, xLabels);
+    textTicker->setTicks(HistorgramTicks, HistorgramLabels);
     ui->Histogram_widget->xAxis->setTicker(textTicker);
 
-    ui->Histogram_widget->xAxis->setRange(0,xMax);
+    ui->Histogram_widget->xAxis->setRange(0,2048);
     ui->Histogram_widget->yAxis->setRange(0,yMax);
 
-    regen->setData(xTicks, numData);        //只不过第一个向量xTicks的每个元素表示“第几个柱子”，然后后面对应的values表示对应“柱子的值”
+    regen->setData(HistorgramTicks, numData);        //只不过第一个向量xTicks的每个元素表示“第几个柱子”，然后后面对应的values表示对应“柱子的值”
     ui->Histogram_widget->replot();
+
 }
+
+
 
 //保存统计图像
 void MainWindow::on_savePicture_pushButton_clicked()
@@ -869,11 +899,11 @@ void MainWindow::on_actionMCU_triggered()
 //!
 //! \brief MainWindow::on_singleMeasure_pushButton_clicked
 //!
-//!单次测量的槽函数
+//!单次测量的槽函数   5A 00 08 00 07 DD.DD XX
 void MainWindow::on_singleMeasure_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A FF";
+    QString cmdStr = "5A 00 08 00 07 00 00 00 00 00 00 00 00 ";
     emit sendSerialSignal(cmdStr);
 }
 
@@ -882,29 +912,29 @@ void MainWindow::on_singleMeasure_pushButton_clicked()
 //!
 //!连续测量的槽函数
 //! 1、开启连续测量以后 其他串口相关的操作都关闭 防止程序崩溃 ，除了停止按键以外
+//! 开启命令 5A 01 01 00 08 00
 void MainWindow::on_delayMeasure_pushButton_clicked()
 {
 
     SerialSetting_Enable_false();
     ui->stopMeasure_pushButton->setEnabled(true);
-    keepSendMeasureTimer.start(5);    //暂定5ms发一次
 
-}
-
-//!
-//! \brief MainWindow::keepSendMeasureSlot
-//!  根据定时器 持续送测试命令
-void MainWindow::keepSendMeasureSlot()
-{
-    QString cmdStr = "5A 01 05 34";
+    //命令组帧
+    QString cmdStr = "5A 01 01 00 08 00";
     emit sendSerialSignal(cmdStr);
 }
+
 
 //!
 //! \brief MainWindow::on_stopMeasure_pushButton_clicked
 //! 停止  测量的槽函数
+//! 停止命令 5A 01 01 00 08 FF
 void MainWindow::on_stopMeasure_pushButton_clicked()
 {
+    //命令组帧
+    QString cmdStr = "5A 01 01 00 08 FF";
+    emit sendSerialSignal(cmdStr);
+
     SerialSetting_Enable_true();
 }
 
@@ -931,7 +961,8 @@ void MainWindow::on_read_outFactory_pushButton_clicked()
 //! UUID :    12
 //! BAUDRATE: 4
 //! CAIJI:    1
-//! YULIU:    16
+//! DeviceId :1
+//! YULIU:    15
 //! 界面上输入十六进制数据
 void MainWindow::on_send_outFactory_pushButton_clicked()
 {
@@ -969,7 +1000,7 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
 
     //设备类型
-    QString deviceType = QString("%1").arg(ui->ui->deviceType_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+    QString deviceType = QString("%1").arg(ui->deviceType_comboBox->currentIndex(),2,16,QLatin1Char('0'));
     qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
 
 
@@ -1008,37 +1039,61 @@ void MainWindow::on_reStoreFactory_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_calibration_pushButton_clicked
-//! 出厂校准 点击发送的槽函数 （真实距离）
+//! 出厂校准 点击发送的槽函数 （真实距离） 5A 01 02 00 04 DD DD
 void MainWindow::on_calibration_pushButton_clicked()
 {
-    QString realDis = ui->realDisFactory_lineEdit->text();
+    int realDis = ui->realDisFactory_lineEdit->text().toInt();
+    QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));
+    QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
 
     //命令组帧
-    QString cmdStr = "5A 00";
+    QString cmdStr = "5A 01 02 00 04 ";
+    cmdStr.append(realDisStr);
     emit sendSerialSignal(cmdStr);
 }
 
 
 //!
-//! \brief MainWindow::on_outSetting_pushButton_clicked
-//! 输出设置 发送槽函数 真实距离 原始距离
-void MainWindow::on_outSetting_pushButton_clicked()
+//! \brief MainWindow::on_gaofan_pushButton_clicked
+//! 高反校准 的弹出窗口
+void MainWindow::on_gaofan_pushButton_clicked()
 {
-    QString realDisOut = ui->realDisOut_lineEdit->text();
-    QString orialDisOut = ui->orialDisOut_lineEdit->text();
-
-    //命令组帧
-    QString cmdStr = "5A 01";
-    emit sendSerialSignal(cmdStr);
-
+    highReactDia.setModal(true);
+    highReactDia.show();
 }
+
+
+
+//!
+//! \brief MainWindow::on_realDis_out_radioButton_clicked
+//! 输出真实距离  5A 01 01 00 06 00
+void MainWindow::on_realDis_out_radioButton_clicked()
+{
+    //命令组帧
+    QString cmdStr = "5A 01 01 00 06 00";
+    emit sendSerialSignal(cmdStr);
+}
+//!
+//! \brief MainWindow::on_LSB_out_radioButton_clicked
+//!输出设置为LSB 5A 01 01 00 06 01
+void MainWindow::on_LSB_out_radioButton_clicked()
+{
+    //命令组帧
+    QString cmdStr = "5A 01 01 00 06 01";
+    emit sendSerialSignal(cmdStr);
+}
+
+
 
 
 //!
 //! \brief AckCmdMain_signal
-//!主界面配置的相关信息返回信号    参数1：“8102”：写入出厂设置成功，参数2暂无
-//!                             参数1：“8002”：读取出厂设置 ，参数2 数据
-//!                             参数1：“8103”：恢复出厂设置成功 参数2暂无
+//!主界面配置的相关信息返回信号    参数1：“8102”：写入出厂设置成功，   参数2暂无
+//!                             参数1：“8002”：读取出厂设置 ，     参数2 数据
+//!                             参数1：“8103”：恢复出厂设置成功     参数2暂无
+//!                             参数1：“8104”：距离offset校准成功  参数2暂无
+//!                             参数1：“8105”：高反校准成功，      参数2暂无
+//!                             参数1：“8106”：输出数据设置成功     参数2 00：原始距离 01：LSB
 void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
 {
     if("8102" ==returnCmdStr )
@@ -1068,7 +1123,19 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("恢复出厂设置成功！"));
         return;
     }
+    else if("8104" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("距离offset校准设置成功！"));
+        return;
+    }else if("8105" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("高反offset校准设置成功！"));
+        return;
+    }
+    else if("8106" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("数据输出设置成功！"));
+        return;
+    }
 }
-
-
 

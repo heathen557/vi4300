@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1167</width>
-    <height>706</height>
+    <width>1180</width>
+    <height>770</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -48,7 +48,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -56,7 +56,7 @@ font: 10pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>220</width>
-          <height>553</height>
+          <height>617</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -262,20 +262,27 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
             <property name="bottomMargin">
              <number>2</number>
             </property>
-            <item row="0" column="0">
-             <widget class="QRadioButton" name="plotSet_on_radioButton">
-              <property name="text">
-               <string>开</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QRadioButton" name="plotSet_off_radioButton">
               <property name="text">
-               <string>关</string>
+               <string>OFF</string>
               </property>
               <property name="checked">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="plotSet_on_radioButton">
+              <property name="text">
+               <string>ON</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="rowData_pushButton">
+              <property name="text">
+               <string>RawData</string>
               </property>
              </widget>
             </item>
@@ -290,7 +297,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>220</width>
-          <height>553</height>
+          <height>617</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -308,7 +315,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
            <x>9</x>
            <y>10</y>
            <width>201</width>
-           <height>295</height>
+           <height>271</height>
           </rect>
          </property>
          <property name="title">
@@ -560,48 +567,58 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <property name="geometry">
           <rect>
            <x>9</x>
-           <y>320</y>
-           <width>202</width>
-           <height>91</height>
+           <y>280</y>
+           <width>191</width>
+           <height>124</height>
           </rect>
          </property>
          <property name="title">
-          <string>出厂校准：</string>
+          <string>offset校准：</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_11">
+         <layout class="QGridLayout" name="gridLayout_9">
           <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>真实距离(mm):</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="realDisFactory_lineEdit"/>
-            </item>
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>58</width>
-                <height>17</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="calibration_pushButton">
-              <property name="text">
-               <string>发送</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>真实距离(mm):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="realDisFactory_lineEdit"/>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>75</width>
+              <height>17</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="calibration_pushButton">
+            <property name="text">
+             <string>发送</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="gaofan_pushButton">
+            <property name="text">
+             <string>高反校准</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -609,64 +626,40 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <property name="geometry">
           <rect>
            <x>9</x>
-           <y>420</y>
+           <y>450</y>
            <width>202</width>
-           <height>119</height>
+           <height>71</height>
           </rect>
          </property>
          <property name="title">
           <string>输出设置：</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_14">
-          <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_13">
-              <property name="text">
-               <string>真实距离(mm)：</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="realDisOut_lineEdit"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_15">
-              <property name="text">
-               <string>原始距离(mm)：</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="orialDisOut_lineEdit">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <spacer name="horizontalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="1">
-             <widget class="QPushButton" name="outSetting_pushButton">
-              <property name="text">
-               <string>发送</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
+         <widget class="QRadioButton" name="realDis_out_radioButton">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>40</y>
+            <width>81</width>
+            <height>18</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>真实距离</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="LSB_out_radioButton">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>40</y>
+            <width>81</width>
+            <height>18</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>原始LSB</string>
+          </property>
+         </widget>
         </widget>
        </widget>
       </widget>
@@ -990,7 +983,7 @@ font: 9pt &quot;黑体&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1167</width>
+     <width>1180</width>
      <height>22</height>
     </rect>
    </property>

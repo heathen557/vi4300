@@ -8,6 +8,8 @@ receSerial_msg::receSerial_msg(QObject *parent) : QObject(parent)
     isTranslateFlag = true;
     serial = NULL;
 
+    historgramVec.resize(2048);    //2048个数据
+
 
 }
 
@@ -127,7 +129,7 @@ void receSerial_msg::readDataSlot()
                if("86" == returnCmdStr)
                 {
                    QString secCmd = single_Data.mid(4,2);
-                   if("01" == secCmd);
+                   if("01" == secCmd)
                    {
                        QString cmdAck = single_Data.mid(8,2);
                        emit AckCmdUpgrade_signal(returnCmdStr,cmdAck);
@@ -188,6 +190,162 @@ void receSerial_msg::readDataSlot()
                        emit AckCmdMain_signal(firstCmd,dataStr);
                    }
                }
+
+               //读取恢复出厂设置的应答命令 5A 81 01 00 03 00 XX
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("03" == secCmd)
+                   {
+                       QString firstCmd = "8103";
+                       QString dataStr= "00";//没有意义
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
+
+               //读取距离offset校准的应答命令 5A 81 02 00 04 DD DD XX
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("04" == secCmd)
+                   {
+                       QString firstCmd = "8104";
+                       QString dataStr= "00";//没有意义
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
+
+               //读取高反应答命令  5A 81 3C 00 05 DD..DD XX
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("05" == secCmd)
+                   {
+                       QString firstCmd = "8105";
+                       QString dataStr = "00";   //没有意义
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
+
+
+
+               //读取设置输出数据的 应答命令 5A 81 01 00 06 DD XX
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("06" == secCmd)
+                   {
+                       QString firstCmd = "8106";
+                       QString dataStr = single_Data.mid(10,2);   //00真实距离 01：LSB
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
+
+               //读取单次采集的 应答命令 5A 80 08 00 07 DD.DD XX
+               //解析数据  并将数据存入QStringList 当中，发送给主线程以供显示
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("07" == secCmd )
+                   {
+                       if(dataLen != 8*2)
+                       {
+                           qDebug()<<QStringLiteral("解析单次采集数据，长度出错 ");
+                       }
+
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       QString currentSingleData;
+
+                       for(int i=0; i<dataLen; i+=2)    //16进制数据转化为10进制 然后再转化成字符串
+                       {
+                           currentSingleData.append(QString("%1").arg(dataStr.mid(i,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                       }
+                       DistanceStr.append(currentSingleData);   //存放入链表中,供数据区显示
+                       showResultMsg_signal(DistanceStr);
+                       DistanceStr.clear();                     //发送完数据清空链表
+
+                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);
+                       QString currentTof = QString::number(tof_int);
+                       dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
+                   }
+               }
+
+               //读取 （开启/停止） 连续采集 的应答命令 5A 81 01 00 08 DD..DD XX
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("08" ==secCmd)    //这个暂时不需进行处理
+                   {
+
+                   }
+               }
+
+               //读取Historgram的 应答命令 5A 80 00 08 09 DD.DD XX
+               //直方图数据解析 横坐标：依次为1536，1024，512，0；1537，1025，513，1；  ......；2047,1535,1023,511
+               //每个字节代表一个数,需要解析到相应的vector中
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("09" == secCmd)
+                   {
+                       if(dataLen != 2048*2)
+                       {
+                           qDebug()<<QStringLiteral("解析直方图数据，长度出错 ");
+                       }
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       int index = 0;
+                       int tmpValue = 0;
+                       int maxValue = 0;
+                       for(int i=0; i<dataLen; i+=8)    //4个字节为一组
+                       {
+                           tmpValue = dataStr.mid(i,2).toInt(NULL,16);
+                           historgramVec[1536 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           tmpValue = dataStr.mid(i+2,2).toInt(NULL,16);
+                           historgramVec[1024 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           tmpValue = dataStr.mid(i+4,2).toInt(NULL,16);
+                           historgramVec[512 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           tmpValue = dataStr.mid(i+4,2).toInt(NULL,16);
+                           historgramVec[0 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           index++;
+                       }
+
+                       //发送给主线程进行显示直方图
+                       emit toShowHistogram_signal(historgramVec,maxValue);
+
+                       //发送给主线程 在数据区显示原始数据
+                       DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
+                       showResultMsg_signal(DistanceStr);
+                       DistanceStr.clear();
+                   }
+               }
+
+
+               //读取RowData的应答命令 5A 80 00 10 0A DD.DD XX
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0A" == secCmd)
+                   {
+                       if(dataLen != 4096*2)
+                       {
+                           qDebug()<<QStringLiteral("解析RowData数据，长度出错 ");
+                       }
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       //发送给主线程 在数据区显示原始数据
+                       DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
+                       showResultMsg_signal(DistanceStr);
+                       DistanceStr.clear();
+                   }
+               }
+
 
 
 

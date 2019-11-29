@@ -49,6 +49,8 @@ public:
 
     vector<double> PlotData_vector;          //plot相关 画图
 
+    QVector<double> historgramVec;
+
 signals:
     void dealedData_signal(QString,vector<double>,vector<double>);     //当前的tof值 ; plotData ; statisticData
 
@@ -76,6 +78,12 @@ signals:
     //!主界面配置的相关信号    参数1：“8102”：写入出厂设置，参数2暂无
     void AckCmdMain_signal(QString,QString);
 
+
+
+    //!
+    //! \brief toShowHistogram_signal
+    //!将脂肪乳数据解析以后发送给主界面进行直方图显示  参数1：1-2048 个数  参数2 Y轴的最大值
+    void toShowHistogram_signal(QVector<double> ,int );
 
 public slots:
     void readDataSlot();

@@ -9,6 +9,7 @@
 #include "../receserial_msg.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
+#include <QtCore/QVector>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'receserial_msg.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
@@ -21,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_receSerial_msg_t {
-    QByteArrayData data[17];
-    char stringdata0[243];
+    QByteArrayData data[19];
+    char stringdata0[282];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,20 +41,23 @@ QT_MOC_LITERAL(5, 70, 21), // "returnLinkInfo_signal"
 QT_MOC_LITERAL(6, 92, 20), // "AckCmdUpgrade_signal"
 QT_MOC_LITERAL(7, 113, 21), // "AckCmdRegister_signal"
 QT_MOC_LITERAL(8, 135, 17), // "AckCmdMain_signal"
-QT_MOC_LITERAL(9, 153, 12), // "readDataSlot"
-QT_MOC_LITERAL(10, 166, 8), // "msgCheck"
-QT_MOC_LITERAL(11, 175, 3), // "msg"
-QT_MOC_LITERAL(12, 179, 22), // "openOrCloseSerial_slot"
-QT_MOC_LITERAL(13, 202, 14), // "sendSerialSlot"
-QT_MOC_LITERAL(14, 217, 8), // "addCheck"
-QT_MOC_LITERAL(15, 226, 12), // "StringToByte"
-QT_MOC_LITERAL(16, 239, 3) // "str"
+QT_MOC_LITERAL(9, 153, 22), // "toShowHistogram_signal"
+QT_MOC_LITERAL(10, 176, 15), // "QVector<double>"
+QT_MOC_LITERAL(11, 192, 12), // "readDataSlot"
+QT_MOC_LITERAL(12, 205, 8), // "msgCheck"
+QT_MOC_LITERAL(13, 214, 3), // "msg"
+QT_MOC_LITERAL(14, 218, 22), // "openOrCloseSerial_slot"
+QT_MOC_LITERAL(15, 241, 14), // "sendSerialSlot"
+QT_MOC_LITERAL(16, 256, 8), // "addCheck"
+QT_MOC_LITERAL(17, 265, 12), // "StringToByte"
+QT_MOC_LITERAL(18, 278, 3) // "str"
 
     },
     "receSerial_msg\0dealedData_signal\0\0"
     "vector<double>\0showResultMsg_signal\0"
     "returnLinkInfo_signal\0AckCmdUpgrade_signal\0"
     "AckCmdRegister_signal\0AckCmdMain_signal\0"
+    "toShowHistogram_signal\0QVector<double>\0"
     "readDataSlot\0msgCheck\0msg\0"
     "openOrCloseSerial_slot\0sendSerialSlot\0"
     "addCheck\0StringToByte\0str"
@@ -66,28 +70,29 @@ static const uint qt_meta_data_receSerial_msg[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      12,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       6,       // signalCount
+       7,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    3,   74,    2, 0x06 /* Public */,
-       4,    1,   81,    2, 0x06 /* Public */,
-       5,    2,   84,    2, 0x06 /* Public */,
-       6,    2,   89,    2, 0x06 /* Public */,
-       7,    2,   94,    2, 0x06 /* Public */,
-       8,    2,   99,    2, 0x06 /* Public */,
+       1,    3,   79,    2, 0x06 /* Public */,
+       4,    1,   86,    2, 0x06 /* Public */,
+       5,    2,   89,    2, 0x06 /* Public */,
+       6,    2,   94,    2, 0x06 /* Public */,
+       7,    2,   99,    2, 0x06 /* Public */,
+       8,    2,  104,    2, 0x06 /* Public */,
+       9,    2,  109,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       9,    0,  104,    2, 0x0a /* Public */,
-      10,    1,  105,    2, 0x0a /* Public */,
-      12,    1,  108,    2, 0x0a /* Public */,
-      13,    1,  111,    2, 0x0a /* Public */,
-      14,    1,  114,    2, 0x0a /* Public */,
-      15,    1,  117,    2, 0x0a /* Public */,
+      11,    0,  114,    2, 0x0a /* Public */,
+      12,    1,  115,    2, 0x0a /* Public */,
+      14,    1,  118,    2, 0x0a /* Public */,
+      15,    1,  121,    2, 0x0a /* Public */,
+      16,    1,  124,    2, 0x0a /* Public */,
+      17,    1,  127,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString, 0x80000000 | 3, 0x80000000 | 3,    2,    2,    2,
@@ -96,14 +101,15 @@ static const uint qt_meta_data_receSerial_msg[] = {
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    2,    2,
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    2,    2,
     QMetaType::Void, QMetaType::QString, QMetaType::QString,    2,    2,
+    QMetaType::Void, 0x80000000 | 10, QMetaType::Int,    2,    2,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Bool, QMetaType::QString,   11,
+    QMetaType::Bool, QMetaType::QString,   13,
     QMetaType::Void, QMetaType::Bool,    2,
     QMetaType::Void, QMetaType::QString,    2,
     QMetaType::QString, QMetaType::QString,    2,
-    QMetaType::QByteArray, QMetaType::QString,   16,
+    QMetaType::QByteArray, QMetaType::QString,   18,
 
        0        // eod
 };
@@ -120,16 +126,28 @@ void receSerial_msg::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 3: _t->AckCmdUpgrade_signal((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
         case 4: _t->AckCmdRegister_signal((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
         case 5: _t->AckCmdMain_signal((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
-        case 6: _t->readDataSlot(); break;
-        case 7: { bool _r = _t->msgCheck((*reinterpret_cast< QString(*)>(_a[1])));
+        case 6: _t->toShowHistogram_signal((*reinterpret_cast< QVector<double>(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
+        case 7: _t->readDataSlot(); break;
+        case 8: { bool _r = _t->msgCheck((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 8: _t->openOrCloseSerial_slot((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 9: _t->sendSerialSlot((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 10: { QString _r = _t->addCheck((*reinterpret_cast< QString(*)>(_a[1])));
+        case 9: _t->openOrCloseSerial_slot((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 10: _t->sendSerialSlot((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 11: { QString _r = _t->addCheck((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = _r; }  break;
-        case 11: { QByteArray _r = _t->StringToByte((*reinterpret_cast< QString(*)>(_a[1])));
+        case 12: { QByteArray _r = _t->StringToByte((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< QByteArray*>(_a[0]) = _r; }  break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+        case 6:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< QVector<double> >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -176,6 +194,13 @@ void receSerial_msg::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
                 return;
             }
         }
+        {
+            typedef void (receSerial_msg::*_t)(QVector<double> , int );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&receSerial_msg::toShowHistogram_signal)) {
+                *result = 6;
+                return;
+            }
+        }
     }
 }
 
@@ -204,13 +229,13 @@ int receSerial_msg::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 12)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 12;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 12)
-            *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 12;
+        if (_id < 13)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 13;
     }
     return _id;
 }
@@ -255,6 +280,13 @@ void receSerial_msg::AckCmdMain_signal(QString _t1, QString _t2)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 5, _a);
+}
+
+// SIGNAL 6
+void receSerial_msg::toShowHistogram_signal(QVector<double> _t1, int _t2)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    QMetaObject::activate(this, &staticMetaObject, 6, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE
