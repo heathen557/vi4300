@@ -47,6 +47,8 @@ class Ui_MainWindow
 public:
     QAction *actionMCU;
     QAction *Register_action;
+    QAction *actionEnglish;
+    QAction *action_china;
     QWidget *centralWidget;
     QGridLayout *gridLayout_10;
     QSplitter *splitter;
@@ -164,6 +166,7 @@ public:
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menu_2;
+    QMenu *menu_4;
     QMenu *menu_3;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -188,6 +191,10 @@ public:
         QIcon icon2;
         icon2.addFile(QStringLiteral(":/new/image/images/ccClippingBoxMultExport.png"), QSize(), QIcon::Normal, QIcon::Off);
         Register_action->setIcon(icon2);
+        actionEnglish = new QAction(MainWindow);
+        actionEnglish->setObjectName(QStringLiteral("actionEnglish"));
+        action_china = new QAction(MainWindow);
+        action_china->setObjectName(QStringLiteral("action_china"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_10 = new QGridLayout(centralWidget);
@@ -790,6 +797,8 @@ public:
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
         menu_2->setObjectName(QStringLiteral("menu_2"));
+        menu_4 = new QMenu(menu_2);
+        menu_4->setObjectName(QStringLiteral("menu_4"));
         menu_3 = new QMenu(menuBar);
         menu_3->setObjectName(QStringLiteral("menu_3"));
         MainWindow->setMenuBar(menuBar);
@@ -808,6 +817,9 @@ public:
         menuBar->addAction(menu_2->menuAction());
         menuBar->addAction(menu_3->menuAction());
         menu_2->addAction(Register_action);
+        menu_2->addAction(menu_4->menuAction());
+        menu_4->addAction(actionEnglish);
+        menu_4->addAction(action_china);
         menu_3->addAction(actionMCU);
         mainToolBar->addAction(Register_action);
         mainToolBar->addAction(actionMCU);
@@ -826,6 +838,8 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217", Q_NULLPTR));
         actionMCU->setText(QApplication::translate("MainWindow", "MCU\345\215\207\347\272\247", Q_NULLPTR));
         Register_action->setText(QApplication::translate("MainWindow", "\345\257\204\345\255\230\345\231\250\351\205\215\347\275\256", Q_NULLPTR));
+        actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));
+        action_china->setText(QApplication::translate("MainWindow", "\344\270\255\346\226\207\347\256\200\344\275\223", Q_NULLPTR));
         groupBox_5->setTitle(QApplication::translate("MainWindow", "\346\265\213\351\207\217\357\274\232", Q_NULLPTR));
         singleMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\215\225\346\254\241\346\265\213\351\207\217", Q_NULLPTR));
         delayMeasure_pushButton->setText(QApplication::translate("MainWindow", "\350\277\236\347\273\255\346\265\213\351\207\217", Q_NULLPTR));
@@ -837,7 +851,7 @@ public:
         label_7->setText(QApplication::translate("MainWindow", "\345\201\234\346\255\242\344\275\215\357\274\232", Q_NULLPTR));
         label_9->setText(QApplication::translate("MainWindow", "\346\240\241\351\252\214\344\275\215\357\274\232", Q_NULLPTR));
         portScan_pushButton->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\346\243\200\346\265\213", Q_NULLPTR));
-        openPort_pushButton->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
+        openPort_pushButton->setText(QApplication::translate("MainWindow", "Open", Q_NULLPTR));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "\347\273\223\346\236\234\346\230\276\347\244\272:", Q_NULLPTR));
         label_12->setText(QApplication::translate("MainWindow", "\345\275\223\345\211\215\350\267\235\347\246\273:(mm)", Q_NULLPTR));
         currentDistance11_label->setText(QApplication::translate("MainWindow", "0.00", Q_NULLPTR));
@@ -921,6 +935,7 @@ public:
         savePicture_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", Q_NULLPTR));
         menu_2->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
+        menu_4->setTitle(QApplication::translate("MainWindow", "\350\257\255\350\250\200(language)", Q_NULLPTR));
         menu_3->setTitle(QApplication::translate("MainWindow", "\345\205\266\344\273\226", Q_NULLPTR));
     } // retranslateUi
 

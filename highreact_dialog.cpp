@@ -69,3 +69,16 @@ void HighReact_Dialog::on_cancel_pushButton_clicked()
     this->hide();
     clearItem();
 }
+
+
+void HighReact_Dialog::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        ui->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}

@@ -20,6 +20,8 @@ public:
     explicit McuUpgradeDialog(QWidget *parent = 0);
     ~McuUpgradeDialog();
 
+    void changeEvent(QEvent *e);
+
     void closeEvent(QCloseEvent *event);
 
     void initSendMsgSlot();

@@ -173,7 +173,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
               <item row="5" column="1">
                <widget class="QPushButton" name="openPort_pushButton">
                 <property name="text">
-                 <string>打开串口</string>
+                 <string>Open</string>
                 </property>
                </widget>
               </item>
@@ -996,7 +996,15 @@ font: 9pt &quot;黑体&quot;;</string>
     <property name="title">
      <string>设置</string>
     </property>
+    <widget class="QMenu" name="menu_4">
+     <property name="title">
+      <string>语言(language)</string>
+     </property>
+     <addaction name="actionEnglish"/>
+     <addaction name="action_china"/>
+    </widget>
     <addaction name="Register_action"/>
+    <addaction name="menu_4"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -1047,6 +1055,16 @@ font: 9pt &quot;黑体&quot;;</string>
    </property>
    <property name="text">
     <string>寄存器配置</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="action_china">
+   <property name="text">
+    <string>中文简体</string>
    </property>
   </action>
  </widget>

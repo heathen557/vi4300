@@ -22,6 +22,8 @@ public:
     QTableWidgetItem  addressItem[100];
     QTableWidgetItem  valueItem[100];
 
+    void changeEvent(QEvent *e);
+
     void closeEvent(QCloseEvent *event);
 
 private slots:

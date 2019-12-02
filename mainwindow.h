@@ -17,6 +17,8 @@
 #include<regisitersetdialog.h>
 #include<mcuupgradedialog.h>
 #include<highreact_dialog.h>
+#include<QMenu>
+#include<QAction>
 
 
 namespace Ui {
@@ -30,6 +32,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    QTranslator translator;
+
+    void changeEvent(QEvent *e);
 
     void initUILanguage();
 
@@ -107,6 +113,11 @@ public:
     QVector<QString> HistorgramLabels;
 
     HighReact_Dialog highReactDia;
+
+    QMenu *m_menu;
+    QAction *m_English;
+    QAction *m_China;
+
 
 private slots:
     void on_save_pushButton_clicked();
@@ -187,6 +198,10 @@ private slots:
     void on_rowData_pushButton_clicked();
 
     void on_gaofan_pushButton_clicked();
+
+    void on_actionEnglish_triggered();
+
+    void on_action_china_triggered();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close

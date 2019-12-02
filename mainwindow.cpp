@@ -12,6 +12,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     initUILanguage();
 
+
+    m_menu  =  new  QMenu;
+    m_English  =  new  QAction(tr("English"),this);
+    m_China  =  new  QAction(tr("中文"),this);
+    m_menu->addAction(m_China);
+    m_menu->addAction(m_English);
+//    m_pTitleBar->m_pBtnMenu->setMenu(m_menu);
+
+
+
+
 //    ui->groupBox_5->setEnabled(false);
     ui->ResultHistory_textEdit->document()->setMaximumBlockCount(7000);    //最多显示10000行，滑动存储  10w
 
@@ -339,7 +350,7 @@ void MainWindow::initSerial()
 //打开串口
 void MainWindow::on_openPort_pushButton_clicked()
 {
-    if(ui->openPort_pushButton->text() == QStringLiteral("打开串口"))
+    if(ui->openPort_pushButton->text() == "Open")
     {
         currentSettings.name = ui->serialPortInfoListBox->currentText();
 
@@ -458,7 +469,7 @@ void MainWindow::returnLinkInfo_slot(QString str, bool flag)
              ui->dataBitsBox->setEnabled(false);
              ui->parityBox->setEnabled(false);
              ui->stopBitsBox->setEnabled(false);
-             ui->openPort_pushButton->setText(QStringLiteral("关闭串口"));
+             ui->openPort_pushButton->setText("Close");
              beginTimer();
              SerialSetting_Enable_true();
         }else
@@ -471,7 +482,7 @@ void MainWindow::returnLinkInfo_slot(QString str, bool flag)
         {
             isLinked = false;
             stopTimer();
-            ui->openPort_pushButton->setText(QStringLiteral("打开串口"));
+            ui->openPort_pushButton->setText("Open");
             ui->serialPortInfoListBox->setEnabled(true);
             ui->baudRateBox->setEnabled(true);
             ui->dataBitsBox->setEnabled(true);
@@ -1139,3 +1150,52 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
     }
 }
 
+
+
+//!
+//! \brief MainWindow::on_actionEnglish_triggered
+//! 语言切换：英文
+void MainWindow::on_actionEnglish_triggered()
+{
+//    if(translator.load("translate/myApp_EN.qm"))
+//    {
+//        qApp->installTranslator(&translator);
+//        qDebug()<<"translator  load success";
+//    }
+
+
+    if(translator.load(":/language/translate/myApp_EN.qm"))
+    {
+        qApp->installTranslator(&translator);
+        qDebug()<<"translator  load success";
+    }else
+    {
+        qDebug()<<"translate load error";
+    }
+
+}
+
+//!
+//! \brief MainWindow::on_action_china_triggered
+//!语言切换：中文
+void MainWindow::on_action_china_triggered()
+{
+    if(translator.load("resources/tr_zh_nouse.qm"))
+    qApp->installTranslator(&translator);
+}
+
+//!
+//! \brief MainWindow::changeEvent
+//! \param e
+//!语言切换以后 界面刷新的槽函数
+void MainWindow::changeEvent(QEvent *e)
+{
+    QWidget::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        ui->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}

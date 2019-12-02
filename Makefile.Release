@@ -184,6 +184,7 @@ compiler_rcc_clean:
 	-$(DEL_FILE) release\qrc_img.cpp
 release\qrc_img.cpp: img.qrc \
 		..\..\programInstall\QT580\5.8\msvc2015_64\bin\rcc.exe \
+		translate\myApp_EN.qm \
 		images\ccExit.png \
 		images\typeZCoordinate.png \
 		images\dbOctreeSymbol.png \
@@ -848,6 +849,8 @@ release\moc_mainwindow.cpp: ..\..\programInstall\QT580\5.8\msvc2015_64\include\Q
 		hex.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtCore\QByteArray \
 		highreact_dialog.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QMenu \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QAction \
 		mainwindow.h \
 		release\moc_predefs.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\bin\moc.exe
@@ -2928,6 +2931,8 @@ release\main.obj: main.cpp mainwindow.h \
 		hex.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtCore\QByteArray \
 		highreact_dialog.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QMenu \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QAction \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QApplication \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtCore\QTextCodec
 
@@ -3445,8 +3450,9 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		hex.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtCore\QByteArray \
 		highreact_dialog.h \
-		ui_mainwindow.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QMenu \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QAction \
+		ui_mainwindow.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QApplication \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QButtonGroup \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QCheckBox \
@@ -3459,7 +3465,6 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QHeaderView \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QLabel \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QLineEdit \
-		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QMenu \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QMenuBar \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QPlainTextEdit \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QPushButton \

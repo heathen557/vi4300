@@ -299,3 +299,17 @@ void McuUpgradeDialog::AckCmdUpgrade_signal(QString returnCmdStr,QString cmdAck)
         sendCmdMsg_slot();  //连续发送升级内容
     }
 }
+
+
+
+ void McuUpgradeDialog::changeEvent(QEvent *e)
+ {
+     QWidget::changeEvent(e);
+     switch (e->type()) {
+     case QEvent::LanguageChange:
+         ui->retranslateUi(this);
+         break;
+     default:
+         break;
+     }
+ }

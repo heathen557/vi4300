@@ -16,6 +16,8 @@ public:
     explicit HighReact_Dialog(QWidget *parent = 0);
     ~HighReact_Dialog();
 
+    void changeEvent(QEvent *e);
+
     void clearItem();
 
     void closeEvent(QCloseEvent *event);
