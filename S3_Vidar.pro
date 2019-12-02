@@ -49,3 +49,5 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     img.qrc
+
+TRANSLATIONS = translate/myApp_EN.ts

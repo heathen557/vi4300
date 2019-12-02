@@ -127,20 +127,20 @@ void receSerial_msg::readDataSlot()
                // 5A 86 01 00 00 xx  MCU开始升级成功
                // 5A 86 01 00 88 XX  MCU开始升级失败
                if("86" == returnCmdStr)
-                {
+               {
                    QString secCmd = single_Data.mid(4,2);
                    if("01" == secCmd)
                    {
                        QString cmdAck = single_Data.mid(8,2);
                        emit AckCmdUpgrade_signal(returnCmdStr,cmdAck);
                    }
-                }
+               }
 
                // 5A 87 84 00 AA AA AA AA DD...DD XX    MCU升级过程中的命令
                if("87" == returnCmdStr)
                {
                    int singleLen = single_Data.size();
-                   QString dataStr = single_Data.right(singleLen - 4*2 );  //减去前面的4个字节为数据区内容
+                   QString dataStr = single_Data.right(singleLen - 4*2 );  //减去前面的4个字节之后 为数据区内容
                    //发送到界面进行显示
                    emit AckCmdUpgrade_signal(returnCmdStr,dataStr);
                }
@@ -250,7 +250,7 @@ void receSerial_msg::readDataSlot()
                    {
                        if(dataLen != 8*2)
                        {
-                           qDebug()<<QStringLiteral("解析单次采集数据，长度出错 ");
+                           qDebug()<<QStringLiteral("解析单次采集数据，长度出错, dataLen = ")<<dataLen;
                        }
 
                        QString dataStr = single_Data.mid(10,dataLen);
@@ -260,15 +260,16 @@ void receSerial_msg::readDataSlot()
                        {
                            currentSingleData.append(QString("%1").arg(dataStr.mid(i,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
                        }
-                       DistanceStr.append(currentSingleData);   //存放入链表中,供数据区显示
+                       DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示
                        showResultMsg_signal(DistanceStr);
-                       DistanceStr.clear();                     //发送完数据清空链表
+                       DistanceStr.clear();                            //发送完数据清空链表
 
-                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);
+                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值
                        QString currentTof = QString::number(tof_int);
                        dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
                    }
                }
+
 
                //读取 （开启/停止） 连续采集 的应答命令 5A 81 01 00 08 DD..DD XX
                if("81" == returnCmdStr)
@@ -276,7 +277,7 @@ void receSerial_msg::readDataSlot()
                    QString secCmd = single_Data.mid(8,2);
                    if("08" ==secCmd)    //这个暂时不需进行处理
                    {
-
+                       qDebug()<<QStringLiteral("已经接收到连续采集开始/停止返回命令！");
                    }
                }
 
@@ -288,9 +289,9 @@ void receSerial_msg::readDataSlot()
                    QString secCmd = single_Data.mid(8,2);
                    if("09" == secCmd)
                    {
-                       if(dataLen != 2048*2)
+                       if(dataLen != 2048*2)     //  0800 = 2048
                        {
-                           qDebug()<<QStringLiteral("解析直方图数据，长度出错 ");
+                           qDebug()<<QStringLiteral("解析直方图数据，长度出错,  dataLen = ")<<dataLen;
                        }
                        QString dataStr = single_Data.mid(10,dataLen);
                        int index = 0;
@@ -336,7 +337,7 @@ void receSerial_msg::readDataSlot()
                    {
                        if(dataLen != 4096*2)
                        {
-                           qDebug()<<QStringLiteral("解析RowData数据，长度出错 ");
+                           qDebug()<<QStringLiteral("解析RowData数据，长度出错, dataLen = ")<<dataLen;
                        }
                        QString dataStr = single_Data.mid(10,dataLen);
                        //发送给主线程 在数据区显示原始数据

@@ -24,9 +24,9 @@ RegisiterSetDialog::RegisiterSetDialog(QWidget *parent) :
         addressItem[i].setTextAlignment(Qt::AlignCenter);
         valueItem[i].setTextAlignment(Qt::AlignCenter);
     }
-
-
 }
+
+
 
 RegisiterSetDialog::~RegisiterSetDialog()
 {
@@ -43,16 +43,6 @@ void RegisiterSetDialog::clearItem()
     }
 }
 
-//显示控件内容
-void RegisiterSetDialog::showItem()
-{
-
-}
-//选择本地路径
-void RegisiterSetDialog::on_toolButton_clicked()
-{
-
-}
 
 //加载本地
 void RegisiterSetDialog::on_loadLocal_pushButton_clicked()
@@ -108,13 +98,9 @@ void RegisiterSetDialog::on_loadLocal_pushButton_clicked()
         }
         file.close();
     }
-
-
-
-
-
-
 }
+
+
 
 //保存本地   具体格式为 ：XX XX   16进制数据
 void RegisiterSetDialog::on_saveLocal_pushButton_clicked()
@@ -225,7 +211,7 @@ void RegisiterSetDialog::AckCmdRegister_slot(QString returnCmdStr,QString cmdAck
         return;
     }else if("80" == returnCmdStr)
     {
-        clearItem();
+        clearItem();                            //首先清空控件上已有的内容
         int index = 0;
         for(int i=0; i<cmdAck.length();i+=4)    //4个为一组 前两个字符为地址 后两个地址为值
         {

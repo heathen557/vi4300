@@ -941,14 +941,14 @@ void MainWindow::on_stopMeasure_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_read_outFactory_pushButton_clicked
-//! 读取出厂设置 槽函数  5A 00 02 22 00 DDD..D XX
+//! 读取出厂设置 槽函数  5A 00 22 00 02 DDD..D XX
 void MainWindow::on_read_outFactory_pushButton_clicked()
 {
 
     //命令组帧 0X22 34
     QString data = QString("%1").arg(0,68,16,QLatin1Char('0'));
 
-    QString cmdStr = "5A 00 02 22 00 ";
+    QString cmdStr = "5A 00 22 00 02 ";
     cmdStr.append(data);
     emit sendSerialSignal(cmdStr);
 }
@@ -956,7 +956,7 @@ void MainWindow::on_read_outFactory_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_outFactory_pushButton_clicked
-//!  出厂设置 点击发送的槽函数  （SN 、 波特率）  5A 01 02 25 00 DD..DD XX
+//!  出厂设置 点击发送的槽函数  （SN 、 波特率）  5A 01 22 00 02 DD..DD XX
 //! SN :      4
 //! UUID :    12
 //! BAUDRATE: 4
@@ -1018,7 +1018,7 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
 
 
     //命令组帧
-    QString cmdStr = "5A 01 02 22 00 ";
+    QString cmdStr = "5A 01 22 00 02 ";
     cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(YuLiu_str);
 
     emit sendSerialSignal(cmdStr);

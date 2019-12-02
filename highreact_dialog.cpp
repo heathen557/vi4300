@@ -45,11 +45,13 @@ void HighReact_Dialog::on_send_pushButton_clicked()
 {
     QString cmdStr = "5A 01 3C 00 05 ";
     int value;
+    QString tmpStr ;
     QString singleStr;
     for(int i=0 ;i<30; i++)
     {
         value = valueItem[i].text().toInt();
-        singleStr = QString("%1").arg(value,2,16,QLatin1Char('0'));
+        tmpStr = QString("%1").arg(value,4,16,QLatin1Char('0'));
+        singleStr = tmpStr.mid(2,2) + tmpStr.mid(0,2);
         cmdStr.append(singleStr);
     }
     emit sendSerialSignal(cmdStr);
@@ -64,5 +66,6 @@ void HighReact_Dialog::closeEvent(QCloseEvent *event)
 
 void HighReact_Dialog::on_cancel_pushButton_clicked()
 {
+    this->hide();
     clearItem();
 }

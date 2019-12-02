@@ -35,10 +35,6 @@ private slots:
 
     void clearItem();
 
-    void showItem();
-
-    void on_toolButton_clicked();
-
     //!
     //! \brief AckCmdRegister_signal
     //!寄存器返回命令的相关信号   参数1：“81”：写寄存器应答  参数2 暂无
