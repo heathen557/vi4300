@@ -91,6 +91,7 @@ public:
     QRadioButton *plotSet_on_radioButton;
     QPushButton *rowData_pushButton;
     QWidget *page_4;
+    QGridLayout *gridLayout_14;
     QGroupBox *groupBox_7;
     QGridLayout *gridLayout_3;
     QFormLayout *formLayout_2;
@@ -120,8 +121,10 @@ public:
     QFrame *line;
     QPushButton *gaofan_pushButton;
     QGroupBox *groupBox_10;
+    QGridLayout *gridLayout_11;
     QRadioButton *realDis_out_radioButton;
     QRadioButton *LSB_out_radioButton;
+    QSpacerItem *verticalSpacer;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QHBoxLayout *horizontalLayout;
@@ -411,9 +414,12 @@ public:
         page_4->setObjectName(QStringLiteral("page_4"));
         page_4->setGeometry(QRect(0, 0, 220, 617));
         page_4->setMaximumSize(QSize(16777215, 16777215));
+        gridLayout_14 = new QGridLayout(page_4);
+        gridLayout_14->setSpacing(6);
+        gridLayout_14->setContentsMargins(11, 11, 11, 11);
+        gridLayout_14->setObjectName(QStringLiteral("gridLayout_14"));
         groupBox_7 = new QGroupBox(page_4);
         groupBox_7->setObjectName(QStringLiteral("groupBox_7"));
-        groupBox_7->setGeometry(QRect(9, 10, 201, 271));
         gridLayout_3 = new QGridLayout(groupBox_7);
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -507,9 +513,11 @@ public:
 
         gridLayout_3->addLayout(formLayout_2, 0, 0, 1, 1);
 
+
+        gridLayout_14->addWidget(groupBox_7, 0, 0, 1, 1);
+
         groupBox_9 = new QGroupBox(page_4);
         groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
-        groupBox_9->setGeometry(QRect(9, 280, 191, 124));
         gridLayout_9 = new QGridLayout(groupBox_9);
         gridLayout_9->setSpacing(6);
         gridLayout_9->setContentsMargins(11, 11, 11, 11);
@@ -545,15 +553,32 @@ public:
 
         gridLayout_9->addWidget(gaofan_pushButton, 3, 0, 1, 2);
 
+
+        gridLayout_14->addWidget(groupBox_9, 1, 0, 1, 1);
+
         groupBox_10 = new QGroupBox(page_4);
         groupBox_10->setObjectName(QStringLiteral("groupBox_10"));
-        groupBox_10->setGeometry(QRect(9, 450, 202, 71));
+        gridLayout_11 = new QGridLayout(groupBox_10);
+        gridLayout_11->setSpacing(6);
+        gridLayout_11->setContentsMargins(11, 11, 11, 11);
+        gridLayout_11->setObjectName(QStringLiteral("gridLayout_11"));
         realDis_out_radioButton = new QRadioButton(groupBox_10);
         realDis_out_radioButton->setObjectName(QStringLiteral("realDis_out_radioButton"));
-        realDis_out_radioButton->setGeometry(QRect(10, 40, 81, 18));
+
+        gridLayout_11->addWidget(realDis_out_radioButton, 0, 0, 1, 1);
+
         LSB_out_radioButton = new QRadioButton(groupBox_10);
         LSB_out_radioButton->setObjectName(QStringLiteral("LSB_out_radioButton"));
-        LSB_out_radioButton->setGeometry(QRect(100, 40, 81, 18));
+
+        gridLayout_11->addWidget(LSB_out_radioButton, 0, 1, 1, 1);
+
+
+        gridLayout_14->addWidget(groupBox_10, 2, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 100, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_14->addItem(verticalSpacer, 3, 0, 1, 1);
+
         toolBox->addItem(page_4, QString::fromUtf8("            \350\256\276\345\244\207\351\205\215\347\275\256"));
         splitter->addWidget(toolBox);
         groupBox = new QGroupBox(splitter);
@@ -826,7 +851,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(0);
+        toolBox->setCurrentIndex(1);
         stackedWidget->setCurrentIndex(0);
 
 

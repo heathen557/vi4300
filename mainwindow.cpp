@@ -83,6 +83,7 @@ void MainWindow::SerialSetting_Enable_false()
     ui->singleMeasure_pushButton->setEnabled(false);
     ui->delayMeasure_pushButton->setEnabled(false);
     ui->stopMeasure_pushButton->setEnabled(false);
+    ui->reStoreFactory_pushButton->setEnabled(false);
 
 }
 
@@ -101,6 +102,7 @@ void MainWindow::SerialSetting_Enable_true()
     ui->singleMeasure_pushButton->setEnabled(true);
     ui->delayMeasure_pushButton->setEnabled(true);
     ui->stopMeasure_pushButton->setEnabled(true);
+    ui->reStoreFactory_pushButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
