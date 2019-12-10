@@ -154,7 +154,7 @@ void RegisiterSetDialog::on_saveLocal_pushButton_clicked()
     QMessageBox::information(NULL,QStringLiteral("提示"),str);
 }
 
-//发送 寄存器配置   5A 01  NN 01  DD...DD XX
+//发送 寄存器配置   5A 01 LL LL  01  DD...DD XX
 void RegisiterSetDialog::on_send_pushButton_clicked()
 {
     //获取当前控件上的内容,组装成 字符串
@@ -178,7 +178,7 @@ void RegisiterSetDialog::on_send_pushButton_clicked()
     //命令组帧   5A 01 NN DD...DD XX
     QString cmdStr = "5A 01 ";
     int dataLen = textString.length();
-    QString lenStrTmp = QString("%1").arg(dataLen,4,16,QLatin1Char('0'));  //长度2个字节
+    QString lenStrTmp = QString("%1").arg(dataLen + 1 ,4,16,QLatin1Char('0'));  //长度2个字节
     QString lenStr  = lenStrTmp.mid(2,2) + lenStrTmp.mid(0,2);             //转换成小端
     cmdStr.append(lenStr);
     cmdStr.append("01");                //寄存器地址
@@ -188,11 +188,11 @@ void RegisiterSetDialog::on_send_pushButton_clicked()
     emit sendSerialSignal(cmdStr);
 }
 
-//读取 设备寄存器配置  5A 00 01 00 01 00
+//读取 设备寄存器配置  5A 00 02 00 01 00
 void RegisiterSetDialog::on_read_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 00 01 00 01 00 ";
+    QString cmdStr = "5A 00 02 00 01 00 ";
     emit sendSerialSignal(cmdStr);
 }
 

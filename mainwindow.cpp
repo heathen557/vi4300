@@ -65,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent) :
     initUINum();
     SerialSetting_Enable_false();
 
+    ui->toolBox->setCurrentIndex(0);
+
 }
 
 //关闭所有串口相关的按键
@@ -740,11 +742,11 @@ void MainWindow::on_Histogram_radioButton_clicked()
 
 //!
 //! \brief MainWindow::on_rowData_pushButton_clicked
-//!  请求RowData的数据 5A 00 00 10 0A DD..DD
+//!  请求RowData的数据 5A 00 01 10 0A DD..DD
 void MainWindow::on_rowData_pushButton_clicked()
 {
     QString strData = QString("%1").arg(2,4096*2,16,QLatin1Char('0'));
-    QString cmdStr = "5A 00 00 10 0A ";
+    QString cmdStr = "5A 00 01 10 0A ";
     cmdStr.append(strData);
     emit sendSerialSignal(cmdStr);
 }
@@ -802,11 +804,11 @@ void MainWindow::plotShowTimer_slot()
 
         }
 
-        //  5A 00 00 08 09 DD..DDDDD  XX
+        //  5A 00 01 08 09 DD..DDDDD  XX
         else if(1 == plot_type)    //显示直方图的信息      将这里改成发送请求 直方图的数据
         {
             QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
-            QString cmdStr = "5A 00 00 08 09 ";
+            QString cmdStr = "5A 00 01 08 09 ";
             cmdStr.append(strData);
             emit sendSerialSignal(cmdStr);
         }
@@ -912,11 +914,11 @@ void MainWindow::on_actionMCU_triggered()
 //!
 //! \brief MainWindow::on_singleMeasure_pushButton_clicked
 //!
-//!单次测量的槽函数   5A 00 08 00 07 DD.DD XX
+//!单次测量的槽函数   5A 00 09 00 07 DD.DD XX
 void MainWindow::on_singleMeasure_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 00 08 00 07 00 00 00 00 00 00 00 00 ";
+    QString cmdStr = "5A 00 09 00 07 00 00 00 00 00 00 00 00 ";
     emit sendSerialSignal(cmdStr);
 }
 
@@ -925,7 +927,7 @@ void MainWindow::on_singleMeasure_pushButton_clicked()
 //!
 //!连续测量的槽函数
 //! 1、开启连续测量以后 其他串口相关的操作都关闭 防止程序崩溃 ，除了停止按键以外
-//! 开启命令 5A 01 01 00 08 00
+//! 开启命令 5A 01 02 00 08 00
 void MainWindow::on_delayMeasure_pushButton_clicked()
 {
 
@@ -933,7 +935,7 @@ void MainWindow::on_delayMeasure_pushButton_clicked()
     ui->stopMeasure_pushButton->setEnabled(true);
 
     //命令组帧
-    QString cmdStr = "5A 01 01 00 08 00";
+    QString cmdStr = "5A 01 02 00 08 00";
     emit sendSerialSignal(cmdStr);
 }
 
@@ -954,14 +956,14 @@ void MainWindow::on_stopMeasure_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_read_outFactory_pushButton_clicked
-//! 读取出厂设置 槽函数  5A 00 22 00 02 DDD..D XX
+//! 读取出厂设置 槽函数  5A 00 23 00 02 DDD..D XX
 void MainWindow::on_read_outFactory_pushButton_clicked()
 {
 
     //命令组帧 0X22 34
     QString data = QString("%1").arg(0,68,16,QLatin1Char('0'));
 
-    QString cmdStr = "5A 00 22 00 02 ";
+    QString cmdStr = "5A 00 23 00 02 ";
     cmdStr.append(data);
     emit sendSerialSignal(cmdStr);
 }
@@ -969,7 +971,7 @@ void MainWindow::on_read_outFactory_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_outFactory_pushButton_clicked
-//!  出厂设置 点击发送的槽函数  （SN 、 波特率）  5A 01 22 00 02 DD..DD XX
+//!  出厂设置 点击发送的槽函数  （SN 、 波特率）  5A 01 23 00 02 DD..DD XX
 //! SN :      4
 //! UUID :    12
 //! BAUDRATE: 4
@@ -1031,7 +1033,7 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
 
 
     //命令组帧
-    QString cmdStr = "5A 01 22 00 02 ";
+    QString cmdStr = "5A 01 23 00 02 ";
     cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(YuLiu_str);
 
     emit sendSerialSignal(cmdStr);
@@ -1039,11 +1041,11 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_reStoreFactory_pushButton_clicked
-//! 恢复出厂设置 5A 01 01 00 03 00
+//! 恢复出厂设置 5A 01 02 00 03 00
 void MainWindow::on_reStoreFactory_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 01 01 00 03 00 ";
+    QString cmdStr = "5A 01 02 00 03 00 ";
     emit sendSerialSignal(cmdStr);
 }
 
@@ -1060,7 +1062,7 @@ void MainWindow::on_calibration_pushButton_clicked()
     QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
 
     //命令组帧
-    QString cmdStr = "5A 01 02 00 04 ";
+    QString cmdStr = "5A 01 03 00 04 ";
     cmdStr.append(realDisStr);
     emit sendSerialSignal(cmdStr);
 }
@@ -1079,20 +1081,20 @@ void MainWindow::on_gaofan_pushButton_clicked()
 
 //!
 //! \brief MainWindow::on_realDis_out_radioButton_clicked
-//! 输出真实距离  5A 01 01 00 06 00
+//! 输出真实距离  5A 01 02 00 06 00
 void MainWindow::on_realDis_out_radioButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 01 01 00 06 00";
+    QString cmdStr = "5A 01 02 00 06 00";
     emit sendSerialSignal(cmdStr);
 }
 //!
 //! \brief MainWindow::on_LSB_out_radioButton_clicked
-//!输出设置为LSB 5A 01 01 00 06 01
+//!输出设置为LSB 5A 01 02 00 06 01
 void MainWindow::on_LSB_out_radioButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 01 01 00 06 01";
+    QString cmdStr = "5A 01 02 00 06 01";
     emit sendSerialSignal(cmdStr);
 }
 

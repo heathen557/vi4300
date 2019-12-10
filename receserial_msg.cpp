@@ -108,11 +108,13 @@ void receSerial_msg::readDataSlot()
 
                //以下数据为5A打头数据
                //首先根据长度字段 来提取出整条数据，数据长度不足的话返回
-               QString lenStr= m_buffer.mid(6,2) + m_buffer.mid(4,2) ;
-               int dataLen = lenStr.toInt(NULL,16) * 2;       //数据区的长度
-               int len = dataLen + 5 * 2;                     //5A 03 04 00  + 检验位共5个字节   这个len是单个包的总长度
+               QString lenStr= m_buffer.mid(6,2) + m_buffer.mid(4,2);
+               int dataLen = lenStr.toInt(NULL,16) * 2;       //数据区的长度  这个长度包含一个字节的 地址
+               int len = dataLen + 5 * 2;                     //5A 03（命令） 04 00（长度）  + 检验位共5个字节   这个len是单个包的总长度
                if(totallen < len)                            //本次接收不够一个包,返回 等待下次接收
                    return;
+
+               dataLen = dataLen - 2;                         //减去一个字节的 地址   2019-12-10
 
                //进行和校验
                QString single_Data = m_buffer.left(len);       //single_Data就是单个命令
@@ -128,7 +130,7 @@ void receSerial_msg::readDataSlot()
                // 5A 86 01 00 88 XX  MCU开始升级失败
                if("86" == returnCmdStr)
                {
-                   QString secCmd = single_Data.mid(4,2);
+                   QString secCmd = single_Data.mid(4,2);     //这个实际是长度
                    if("01" == secCmd)
                    {
                        QString cmdAck = single_Data.mid(8,2);
@@ -256,10 +258,6 @@ void receSerial_msg::readDataSlot()
                        QString dataStr = single_Data.mid(10,dataLen);
                        QString currentSingleData;
 
-//                       for(int i=0; i<dataLen; i+=2)    //16进制数据转化为10进制 然后再转化成字符串
-//                       {
-//                           currentSingleData.append(QString("%1").arg(dataStr.mid(i,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-//                       }
 
                        //16进制数据转化为10进制 然后再转化成字符串
                        currentSingleData.append(QString("%1").arg(dataStr.mid(0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
@@ -274,7 +272,7 @@ void receSerial_msg::readDataSlot()
 
                        int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
                        QString currentTof = QString::number(tof_int);
-                       dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
+                       emit dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
                    }
                }
 
@@ -286,12 +284,7 @@ void receSerial_msg::readDataSlot()
                    if("08" ==secCmd)    //这个暂时不需进行处理
                    {
                        qDebug()<<QStringLiteral("已经接收到连续采集开始/停止返回命令！");
-                       QString currentSingleData;
 
-                       for(int i=0; i<dataLen; i+=8)
-                       {
-
-                       }
                    }
                }
 
@@ -303,15 +296,103 @@ void receSerial_msg::readDataSlot()
                    if("0B" == secCmd)
                    {
                        QString dataStr = single_Data.mid(10,dataLen);
+                       QString currentSingleData;
+
+                       for(int i=0; i<dataLen; i+=8)
+                       {
+                           //16进制数据转化为10进制 然后再转化成字符串
+                           currentSingleData = QString("%1").arg(dataStr.mid(i+0,2).toInt(NULL,16),5,10,QLatin1Char(' '));
+                           currentSingleData.append("   ");
+//                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+2,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+4,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+6,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                           DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示，一行数据存储在一个QStringList文件当中，方便主界面的显示
+
+
+                           //StatisticData_vector 对1000帧tof数据进行循环存储
+                           int tmpTof_1 = dataStr.mid(i+0,2).toInt(NULL,16);
+                           int tmpTof_2 = dataStr.mid(i+4,2).toInt(NULL,16);
+
+                           int statistic_offset = StatisticData_vector.size() -1000;
+                           if(statistic_offset >= 0)
+                           {
+                               StatisticData_vector.erase(StatisticData_vector.begin(),StatisticData_vector.begin() + statistic_offset + 1);
+                           }
+                           StatisticData_vector.push_back(tmpTof_1);
+                           StatisticData_vector.push_back(tmpTof_2);
+
+
+                           //PlotData_vector 对20000帧tof数据进行循环存储
+                           int Plot_offset = PlotData_vector.size() - 20000;
+                           if(Plot_offset >= 0)
+                           {
+                               PlotData_vector.erase(PlotData_vector.begin(),PlotData_vector.begin()+Plot_offset + 1);
+                           }
+                           PlotData_vector.push_back(tmpTof_1);
+                           PlotData_vector.push_back(tmpTof_2);
+
+                       }
+                       showResultMsg_signal(DistanceStr);
+                       DistanceStr.clear();                            //发送完数据清空链表
+
+
+                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
+                       QString currentTof = QString::number(tof_int);
+                       emit dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
 
                    }
                }
 
+               //读取连续采集时 模组主动上传的数据 （单峰数据）  5A 03 LL LL 0C DD...DD XX
+               if("03" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0C" == secCmd)
+                   {
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       QString currentSingleData;
+
+                       for(int i=0; i<dataLen; i+=4)
+                       {
+                           //16进制数据转化为10进制 然后再转化成字符串
+                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+2,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                           DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示，一行数据存储在一个QStringList文件当中，方便主界面的显示
 
 
 
+                           //StatisticData_vector 对1000帧tof数据进行循环存储
+                           int tmpTof = dataStr.mid(i+0,2).toInt(NULL,16);
+
+                           int statistic_offset = StatisticData_vector.size() -1000;
+                           if(statistic_offset >= 0)
+                           {
+                               StatisticData_vector.erase(StatisticData_vector.begin(),StatisticData_vector.begin() + statistic_offset + 1);
+                           }
+                           StatisticData_vector.push_back(tmpTof);
 
 
+                           //PlotData_vector 对20000帧tof数据进行循环存储
+                           int Plot_offset = PlotData_vector.size() - 20000;
+                           if(Plot_offset >= 0)
+                           {
+                               PlotData_vector.erase(PlotData_vector.begin(),PlotData_vector.begin()+Plot_offset + 1);
+                           }
+                           PlotData_vector.push_back(tmpTof);
+
+
+                       }
+                       showResultMsg_signal(DistanceStr);
+                       DistanceStr.clear();                            //发送完数据清空链表
+
+                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
+                       QString currentTof = QString::number(tof_int);
+                       emit dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
+                   }
+               }
 
 
 

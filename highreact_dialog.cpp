@@ -40,10 +40,10 @@ void HighReact_Dialog::clearItem()
 
 //!
 //! \brief HighReact_Dialog::on_send_pushButton_clicked
-//! 发送校正 5A 01 3C 00 05 DD.DD
+//! 发送校正 5A 01 3D 00 05 DD.DD
 void HighReact_Dialog::on_send_pushButton_clicked()
 {
-    QString cmdStr = "5A 01 3C 00 05 ";
+    QString cmdStr = "5A 01 3D 00 05 ";
     int value;
     QString tmpStr ;
     QString singleStr;
