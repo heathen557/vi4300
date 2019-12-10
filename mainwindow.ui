@@ -622,6 +622,9 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
               <property name="text">
                <string>真实距离</string>
               </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item row="0" column="1">

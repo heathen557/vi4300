@@ -564,6 +564,7 @@ public:
         gridLayout_11->setObjectName(QStringLiteral("gridLayout_11"));
         realDis_out_radioButton = new QRadioButton(groupBox_10);
         realDis_out_radioButton->setObjectName(QStringLiteral("realDis_out_radioButton"));
+        realDis_out_radioButton->setChecked(true);
 
         gridLayout_11->addWidget(realDis_out_radioButton, 0, 0, 1, 1);
 

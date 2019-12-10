@@ -256,15 +256,23 @@ void receSerial_msg::readDataSlot()
                        QString dataStr = single_Data.mid(10,dataLen);
                        QString currentSingleData;
 
-                       for(int i=0; i<dataLen; i+=2)    //16进制数据转化为10进制 然后再转化成字符串
-                       {
-                           currentSingleData.append(QString("%1").arg(dataStr.mid(i,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                       }
+//                       for(int i=0; i<dataLen; i+=2)    //16进制数据转化为10进制 然后再转化成字符串
+//                       {
+//                           currentSingleData.append(QString("%1").arg(dataStr.mid(i,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+//                       }
+
+                       //16进制数据转化为10进制 然后再转化成字符串
+                       currentSingleData.append(QString("%1").arg(dataStr.mid(0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                       currentSingleData.append(QString("%1").arg(dataStr.mid(2,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                       currentSingleData.append(QString("%1").arg(dataStr.mid(4,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                       currentSingleData.append(QString("%1").arg(dataStr.mid(6,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+
                        DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示
                        showResultMsg_signal(DistanceStr);
                        DistanceStr.clear();                            //发送完数据清空链表
 
-                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值
+                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
                        QString currentTof = QString::number(tof_int);
                        dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
                    }
@@ -278,8 +286,34 @@ void receSerial_msg::readDataSlot()
                    if("08" ==secCmd)    //这个暂时不需进行处理
                    {
                        qDebug()<<QStringLiteral("已经接收到连续采集开始/停止返回命令！");
+                       QString currentSingleData;
+
+                       for(int i=0; i<dataLen; i+=8)
+                       {
+
+                       }
                    }
                }
+
+
+               //读取连续采集时 模组主动上传的数据 （双峰数据）  5A 03 LL LL 0B DD...DD XX
+               if("03" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0B" == secCmd)
+                   {
+                       QString dataStr = single_Data.mid(10,dataLen);
+
+                   }
+               }
+
+
+
+
+
+
+
+
 
                //读取Historgram的 应答命令 5A 80 00 08 09 DD.DD XX
                //直方图数据解析 横坐标：依次为1536，1024，512，0；1537，1025，513，1；  ......；2047,1535,1023,511
