@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->splitter->setStretchFactor(0,1);
     ui->splitter->setStretchFactor(1,2);
     ui->splitter->setStretchFactor(2,5);
-    ui->groupBox_2->setVisible(false);
+    ui->groupBox_2->setVisible(true);
 
 
     ui->savePath_lineEdit->setReadOnly(true);
@@ -66,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent) :
     SerialSetting_Enable_false();
 
     ui->toolBox->setCurrentIndex(0);
+
+    saveHist_index = 1;
+    isSaveHistData_flag = false;
 
 }
 
@@ -122,7 +125,7 @@ void MainWindow::initUINum()
     {
         HistorgramTicks[i] = i;
         HistorgramLabels[i] = "";
-        if(0 == i%100)
+        if(0 == i%100)         //相隔100个数据打一个标签
         {
             HistorgramLabels[i] = QString::number(i);
         }
@@ -628,6 +631,20 @@ void MainWindow::showResultMsg_slot(QStringList DisStr)
 
     DistanceStr.append(DisStr);
 
+    //判断是否需要保存直方图数据,每条直方图数据保存成一个文本文件
+    if(isSaveHistData_flag)
+    {
+        QString sFilePath = saveHistDataFilePath + QString::number(saveHist_index)+".txt";
+        QFile file(sFilePath);
+        file.open(QIODevice::WriteOnly|QIODevice::Text);
+        QTextStream out(&file);
+        QString text = DisStr[0];
+        out<<text.toLocal8Bit()<<endl;
+        file.close();
+        saveHist_index++;
+    }
+
+
 }
 
 //每秒钟刷新的槽函数
@@ -728,12 +745,13 @@ void MainWindow::on_TOF_radioButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-//显示统计直方图   由于耗时严重，由专门的线程进行处理 直方图定时器为300ms
+//显示统计直方图   由于耗时严重，由专门的线程进行处理 直方图定时器为100ms
 void MainWindow::on_Histogram_radioButton_clicked()
 {
+    plot_Mode = true;
     if(plotShowTimer.isActive())
         plotShowTimer.stop();
-    plotShowTimer.start(370);      //定时器改为300ms进行一次刷新
+    plotShowTimer.start(100);      //定时器改为100ms进行一次刷新
 
     plot_type = 1;
     ui->stackedWidget->setCurrentIndex(1);
@@ -943,11 +961,11 @@ void MainWindow::on_delayMeasure_pushButton_clicked()
 //!
 //! \brief MainWindow::on_stopMeasure_pushButton_clicked
 //! 停止  测量的槽函数
-//! 停止命令 5A 01 01 00 08 FF
+//! 停止命令 5A 01 02 00 08 FF
 void MainWindow::on_stopMeasure_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 01 01 00 08 FF";
+    QString cmdStr = "5A 01 02 00 08 FF";
     emit sendSerialSignal(cmdStr);
 
     SerialSetting_Enable_true();
@@ -1202,4 +1220,44 @@ void MainWindow::changeEvent(QEvent *e)
     default:
         break;
     }
+}
+
+
+
+//!
+//! \brief MainWindow::on_HistogramData_pushButton_clicked
+//!//选择是否保存 直方图数据
+//! 文件标识：saveHist_index;
+//! 是否保存文件标识: isSaveHistData_flag
+void MainWindow::on_HistogramData_pushButton_clicked()
+{
+    if("HistData_save" == ui->HistogramData_pushButton->text())
+    {
+        QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
+        if(file_path.isEmpty())
+        {
+           qDebug()<<QStringLiteral("没有选择路径")<<endl;
+           QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
+            return;
+        }
+        else
+        {
+            file_path.append("/");
+            qDebug() << file_path << endl;
+            saveHistDataFilePath = file_path;
+
+            saveHist_index = 1;  //文件标号
+            isSaveHistData_flag = true;//开始保存
+            ui->HistogramData_pushButton->setText("Stop");
+        }
+
+
+    }else
+    {
+        isSaveHistData_flag = false;
+        ui->HistogramData_pushButton->setText("HistData_save");
+    }
+
+
+
 }

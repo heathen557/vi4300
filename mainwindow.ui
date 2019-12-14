@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1180</width>
-    <height>770</height>
+    <height>714</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -48,7 +48,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -56,7 +56,7 @@ font: 10pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>220</width>
-          <height>617</height>
+          <height>565</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -297,7 +297,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>220</width>
-          <height>617</height>
+          <height>565</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -935,11 +935,22 @@ font: 9pt &quot;黑体&quot;;</string>
          </widget>
         </item>
         <item row="2" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,8">
+         <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,0,8">
           <item>
            <widget class="QPushButton" name="savePicture_pushButton">
             <property name="text">
              <string>图片保存</string>
+            </property>
+            <property name="icon">
+             <iconset resource="img.qrc">
+              <normaloff>:/new/image/images/ccSave.png</normaloff>:/new/image/images/ccSave.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="HistogramData_pushButton">
+            <property name="text">
+             <string>HistData_save</string>
             </property>
             <property name="icon">
              <iconset resource="img.qrc">
@@ -974,7 +985,7 @@ font: 9pt &quot;黑体&quot;;</string>
      <x>0</x>
      <y>0</y>
      <width>1180</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

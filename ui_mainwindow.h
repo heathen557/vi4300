@@ -165,6 +165,7 @@ public:
     QCustomPlot *Histogram_widget;
     QHBoxLayout *horizontalLayout_5;
     QPushButton *savePicture_pushButton;
+    QPushButton *HistogramData_pushButton;
     QSpacerItem *horizontalSpacer_7;
     QMenuBar *menuBar;
     QMenu *menu;
@@ -178,7 +179,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1180, 770);
+        MainWindow->resize(1180, 714);
         MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
         QIcon icon;
         icon.addFile(QStringLiteral(":/new/image/images/icon_1.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -215,7 +216,7 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 220, 617));
+        page->setGeometry(QRect(0, 0, 220, 565));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_7 = new QGridLayout(page);
@@ -412,7 +413,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("            \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 220, 617));
+        page_4->setGeometry(QRect(0, 0, 220, 565));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_14 = new QGridLayout(page_4);
         gridLayout_14->setSpacing(6);
@@ -802,12 +803,18 @@ public:
 
         horizontalLayout_5->addWidget(savePicture_pushButton);
 
+        HistogramData_pushButton = new QPushButton(groupBox_2);
+        HistogramData_pushButton->setObjectName(QStringLiteral("HistogramData_pushButton"));
+        HistogramData_pushButton->setIcon(icon3);
+
+        horizontalLayout_5->addWidget(HistogramData_pushButton);
+
         horizontalSpacer_7 = new QSpacerItem(338, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_5->addItem(horizontalSpacer_7);
 
         horizontalLayout_5->setStretch(0, 1);
-        horizontalLayout_5->setStretch(1, 8);
+        horizontalLayout_5->setStretch(2, 8);
 
         gridLayout_12->addLayout(horizontalLayout_5, 2, 0, 1, 1);
 
@@ -818,7 +825,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1180, 22));
+        menuBar->setGeometry(QRect(0, 0, 1180, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
@@ -852,7 +859,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(1);
+        toolBox->setCurrentIndex(0);
         stackedWidget->setCurrentIndex(0);
 
 
@@ -959,6 +966,7 @@ public:
         TOF_radioButton->setText(QApplication::translate("MainWindow", "TOF\345\233\276", Q_NULLPTR));
         Histogram_radioButton->setText(QApplication::translate("MainWindow", "\347\233\264\346\226\271\345\233\276", Q_NULLPTR));
         savePicture_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
+        HistogramData_pushButton->setText(QApplication::translate("MainWindow", "HistData_save", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", Q_NULLPTR));
         menu_2->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
         menu_4->setTitle(QApplication::translate("MainWindow", "\350\257\255\350\250\200(language)", Q_NULLPTR));

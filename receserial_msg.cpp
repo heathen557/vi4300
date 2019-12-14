@@ -90,7 +90,7 @@ void receSerial_msg::readDataSlot()
         {
             while(totallen)
             {
-                if(totallen <12)   //单个命令最少要有6个字节 所以长度为12       5A0300013AXX
+                if(totallen <12)   //单个命令最少要有6个字节 所以长度为12       5A 03 00 01 3A XX
                     return;
 
                int indexOf5A = m_buffer.indexOf("5A",0);
@@ -120,7 +120,8 @@ void receSerial_msg::readDataSlot()
                QString single_Data = m_buffer.left(len);       //single_Data就是单个命令
                if(!msgCheck(single_Data))
                     return;
-//             qDebug()<<" single_Data = "<<single_Data;
+
+//             qDebug()<<" receive single_Data = "<<single_Data;
 
                QString returnCmdStr = single_Data.mid(2,2);   //命令标识
                ////////////////////////////////////////////////////////单个命令处理代码块//////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +319,7 @@ void receSerial_msg::readDataSlot()
                            int statistic_offset = StatisticData_vector.size() -1000;
                            if(statistic_offset >= 0)
                            {
-                               StatisticData_vector.erase(StatisticData_vector.begin(),StatisticData_vector.begin() + statistic_offset + 1);
+                               StatisticData_vector.erase(StatisticData_vector.begin(),StatisticData_vector.begin() + statistic_offset + 2);
                            }
                            StatisticData_vector.push_back(tmpTof_1);
                            StatisticData_vector.push_back(tmpTof_2);
@@ -328,7 +329,7 @@ void receSerial_msg::readDataSlot()
                            int Plot_offset = PlotData_vector.size() - 20000;
                            if(Plot_offset >= 0)
                            {
-                               PlotData_vector.erase(PlotData_vector.begin(),PlotData_vector.begin()+Plot_offset + 1);
+                               PlotData_vector.erase(PlotData_vector.begin(),PlotData_vector.begin()+Plot_offset + 2);
                            }
                            PlotData_vector.push_back(tmpTof_1);
                            PlotData_vector.push_back(tmpTof_2);
@@ -396,7 +397,7 @@ void receSerial_msg::readDataSlot()
 
 
 
-               //读取Historgram的 应答命令 5A 80 00 08 09 DD.DD XX
+               //读取Historgram的 应答命令 5A 80 01 08 09 DD.DD XX
                //直方图数据解析 横坐标：依次为1536，1024，512，0；1537，1025，513，1；  ......；2047,1535,1023,511
                //每个字节代表一个数,需要解析到相应的vector中
                if("80" == returnCmdStr)
@@ -426,7 +427,7 @@ void receSerial_msg::readDataSlot()
                            historgramVec[512 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
-                           tmpValue = dataStr.mid(i+4,2).toInt(NULL,16);
+                           tmpValue = dataStr.mid(i+6,2).toInt(NULL,16);
                            historgramVec[0 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
@@ -596,7 +597,7 @@ QByteArray receSerial_msg::StringToByte(QString str)
         }
     }
     strHex = strHex.toUpper();
-    qDebug()<<QStringLiteral("发送的原始数据为：")<<strHex<<endl;
+    qDebug()<<QStringLiteral("发送的原始数据为：")<<strHex<<"   len="<< strHex.length()/3<<endl;
     return byte_arr;
 }
 

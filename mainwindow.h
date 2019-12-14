@@ -119,6 +119,11 @@ public:
     QAction *m_China;
 
 
+    //保存直方图数据
+    int saveHist_index;
+    bool isSaveHistData_flag;
+    QString saveHistDataFilePath;
+
 private slots:
     void on_save_pushButton_clicked();
 
@@ -202,6 +207,8 @@ private slots:
     void on_actionEnglish_triggered();
 
     void on_action_china_triggered();
+
+    void on_HistogramData_pushButton_clicked();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close
