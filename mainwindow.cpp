@@ -82,13 +82,18 @@ void MainWindow::SerialSetting_Enable_false()
     ui->Register_action->setEnabled(false);
     ui->send_outFactory_pushButton->setEnabled(false);
     ui->read_outFactory_pushButton->setEnabled(false);
+    ui->calibration_read_pushButton->setEnabled(false);
     ui->calibration_pushButton->setEnabled(false);
+    ui->calibration_read2_pushButton->setEnabled(false);
+    ui->calibration_set2_pushButton->setEnabled(false);
     ui->gaofan_pushButton->setEnabled(false);
     ui->groupBox_10->setEnabled(false);
     ui->singleMeasure_pushButton->setEnabled(false);
     ui->delayMeasure_pushButton->setEnabled(false);
     ui->stopMeasure_pushButton->setEnabled(false);
     ui->reStoreFactory_pushButton->setEnabled(false);
+    ui->Histogram_radioButton->setEnabled(false);
+    ui->TOF_radioButton->setEnabled(false);
 
 }
 
@@ -102,12 +107,17 @@ void MainWindow::SerialSetting_Enable_true()
     ui->send_outFactory_pushButton->setEnabled(true);
     ui->read_outFactory_pushButton->setEnabled(true);
     ui->calibration_pushButton->setEnabled(true);
+    ui->calibration_read_pushButton->setEnabled(true);
+    ui->calibration_read2_pushButton->setEnabled(true);
+    ui->calibration_set2_pushButton->setEnabled(true);
     ui->gaofan_pushButton->setEnabled(true);
     ui->groupBox_10->setEnabled(true);
     ui->singleMeasure_pushButton->setEnabled(true);
     ui->delayMeasure_pushButton->setEnabled(true);
     ui->stopMeasure_pushButton->setEnabled(true);
     ui->reStoreFactory_pushButton->setEnabled(true);
+    ui->Histogram_radioButton->setEnabled(true);
+    ui->TOF_radioButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
@@ -1077,22 +1087,96 @@ void MainWindow::on_reStoreFactory_pushButton_clicked()
     emit sendSerialSignal(cmdStr);
 }
 
+QByteArray MainWindow::StringToByte(QString str)
+{
+    QByteArray byte_arr;
+    bool ok;
+    str = str.replace(" ","");    //去掉空格键
+    int len=str.size();
+    for(int i=0;i<len;i+=2){
+         byte_arr.append(char(str.mid(i,2).toUShort(&ok,16)));
+    }
 
+    return byte_arr;
+}
+
+
+//QString中存储的16进制数据，解析为float型的数据   现在已经是小端模式了
+float MainWindow::QStringToFloat(QString str)
+{
+    QByteArray betaArray =StringToByte(str);
+    unsigned char* hexStr1 =  (unsigned char*)betaArray.data();
+    float x;
+    unsigned char c[4];
+    c[0] = hexStr1[0];
+    c[1] = hexStr1[1];
+    c[2] = hexStr1[2];
+    c[3] = hexStr1[3];
+    memcpy(&x,c,4);
+    qDebug()<<"x = "<<x;
+    return x;
+}
+
+
+//将float数据 转换为16进制数据 并存储在QString 当中  现在已经是小端模式了
+QString MainWindow::floatToQString(float fVal)
+{
+    float x_pid_p = fVal;
+    unsigned char * bValue = (unsigned char *)& x_pid_p;
+    printf("%x\t%x\t%x\t%x\n", bValue[0], bValue[1], bValue[2], bValue[3]);
+
+    char *str1 = (char *)bValue;
+    QByteArray betaArray1 = QByteArray(str1,4);
+    QDataStream out(&betaArray1,QIODevice::ReadWrite);
+    QString strHex;
+    while (!out.atEnd())
+    {
+        qint8 outChar=0;
+        out>>outChar;
+        QString str=QString("%1").arg(outChar&0xFF,2,16,QLatin1Char('0'));
+
+        if (str.length()>1)
+        {
+            strHex+=str+" ";
+        }
+        else
+        {
+            strHex+="0"+str+" ";
+        }
+    }
+    strHex = strHex.toUpper();
+    qDebug()<<QStringLiteral("把float型数据解析为QString 为：")<<strHex<<"   len="<< strHex.length()/3<<endl;
+    return strHex;
+}
+
+//!
+//! \brief MainWindow::on_calibration_read_pushButton_clicked
+//!  出厂校准1 读取 点击槽函数  （真实距离）  5A 00 07 00 04 DD DD DD DD DD DD
+void MainWindow::on_calibration_read_pushButton_clicked()
+{
+
+}
 
 
 //!
 //! \brief MainWindow::on_calibration_pushButton_clicked
-//! 出厂校准 点击发送的槽函数 （真实距离） 5A 01 02 00 04 DD DD
+//! 出厂校准1 点击设置的槽函数 （真实距离）  5A 01 07 00 04 DD DD DD DD DD DD
 void MainWindow::on_calibration_pushButton_clicked()
 {
     int realDis = ui->realDisFactory_lineEdit->text().toInt();
+    float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
+    qDebug()<<"K1 = "<<K1;
+    QString K1Str = floatToQString(K1);
+
     QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));
     QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
 
     //命令组帧
-    QString cmdStr = "5A 01 03 00 04 ";
+    QString cmdStr = "5A 01 07 00 04 ";
     cmdStr.append(realDisStr);
+    cmdStr.append(K1Str);
     emit sendSerialSignal(cmdStr);
+
 }
 
 
@@ -1271,3 +1355,5 @@ void MainWindow::on_HistogramData_pushButton_clicked()
 
 
 }
+
+

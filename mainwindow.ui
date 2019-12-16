@@ -48,7 +48,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -56,7 +56,7 @@ font: 10pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>220</width>
-          <height>561</height>
+          <height>532</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -73,6 +73,12 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
             <string>测量：</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
             <item row="0" column="0">
              <layout class="QFormLayout" name="formLayout_5">
               <item row="0" column="0">
@@ -111,6 +117,12 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
             <string>串口设置：</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
             <item row="0" column="0">
              <layout class="QFormLayout" name="formLayout">
               <item row="0" column="0">
@@ -192,6 +204,12 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
             <string>结果显示:</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
             <item row="0" column="0">
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
@@ -300,7 +318,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>220</width>
-          <height>561</height>
+          <height>532</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -312,247 +330,344 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
         <attribute name="label">
          <string>            设备配置</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_14">
+        <layout class="QGridLayout" name="gridLayout_15">
          <item row="0" column="0">
-          <widget class="QGroupBox" name="groupBox_7">
-           <property name="title">
-            <string>出厂设置</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <layout class="QFormLayout" name="formLayout_2">
+          <layout class="QGridLayout" name="gridLayout_14">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="groupBox_7">
+             <property name="title">
+              <string>出厂设置</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
+               <layout class="QFormLayout" name="formLayout_2">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>SN 号：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="SN_lineEdit"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>波特率：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="botelv_comboBox">
+                  <item>
+                   <property name="text">
+                    <string>256000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>115200</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>57600</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>56000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>43000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>38400</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>19200</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>9600</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>4800</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1200</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_18">
+                  <property name="text">
+                   <string>采集频率：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QComboBox" name="CAIJI_frequency_comboBox">
+                  <item>
+                   <property name="text">
+                    <string>4500</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>4000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>3600</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>3000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>2000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1800</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>500</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>200</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>100</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>50</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>20</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>10</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_20">
+                  <property name="text">
+                   <string>设备类型：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QComboBox" name="deviceType_comboBox">
+                  <item>
+                   <property name="text">
+                    <string>VI4300</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_17">
+                  <property name="text">
+                   <string>UUID:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>105</width>
+                    <height>13</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="5" column="0" colspan="2">
+                 <widget class="QLineEdit" name="UUID_lineEdit"/>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="label_19">
+                  <property name="text">
+                   <string>预留数据：</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="1">
+                 <spacer name="horizontalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>105</width>
+                    <height>13</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="7" column="0" colspan="2">
+                 <widget class="QLineEdit" name="YULIU_lineEdit"/>
+                </item>
+                <item row="8" column="0">
+                 <widget class="QPushButton" name="read_outFactory_pushButton">
+                  <property name="text">
+                   <string>读取</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="8" column="1">
+                 <widget class="QPushButton" name="send_outFactory_pushButton">
+                  <property name="text">
+                   <string>设置</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="9" column="0" colspan="2">
+                 <widget class="QPushButton" name="reStoreFactory_pushButton">
+                  <property name="text">
+                   <string>恢复出厂设置</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="groupBox_10">
+             <property name="title">
+              <string>输出设置：</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="realDis_out_radioButton">
                 <property name="text">
-                 <string>SN 号：</string>
+                 <string>真实距离</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="SN_lineEdit"/>
+               <widget class="QRadioButton" name="LSB_out_radioButton">
+                <property name="text">
+                 <string>原始LSB</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>108</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_5">
+        <attribute name="label">
+         <string>            设备校准</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_17">
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_9">
+           <property name="title">
+            <string>offset校准1：</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="0" column="0">
+             <layout class="QFormLayout" name="formLayout_3">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>距离(mm):</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="realDisFactory_lineEdit"/>
               </item>
               <item row="1" column="0">
-               <widget class="QLabel" name="label_2">
+               <widget class="QLabel" name="label_13">
                 <property name="text">
-                 <string>波特率：</string>
+                 <string>系数K(float):</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="botelv_comboBox">
-                <item>
-                 <property name="text">
-                  <string>256000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>115200</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>57600</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>56000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>43000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>38400</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>19200</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>9600</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>4800</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1200</string>
-                 </property>
-                </item>
-               </widget>
+               <widget class="QLineEdit" name="K1_lineEdit"/>
               </item>
               <item row="2" column="0">
-               <widget class="QLabel" name="label_18">
-                <property name="text">
-                 <string>采集频率：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="CAIJI_frequency_comboBox">
-                <item>
-                 <property name="text">
-                  <string>4500</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>4000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>3600</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>3000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>2000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1800</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>500</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>200</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>100</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>50</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>20</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>10</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_20">
-                <property name="text">
-                 <string>设备类型：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="deviceType_comboBox">
-                <item>
-                 <property name="text">
-                  <string>VI4300</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_17">
-                <property name="text">
-                 <string>UUID:</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <spacer name="horizontalSpacer_8">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>105</width>
-                  <height>13</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="5" column="0" colspan="2">
-               <widget class="QLineEdit" name="UUID_lineEdit"/>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_19">
-                <property name="text">
-                 <string>预留数据：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <spacer name="horizontalSpacer_11">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>105</width>
-                  <height>13</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="7" column="0" colspan="2">
-               <widget class="QLineEdit" name="YULIU_lineEdit"/>
-              </item>
-              <item row="8" column="0">
-               <widget class="QPushButton" name="read_outFactory_pushButton">
+               <widget class="QPushButton" name="calibration_read_pushButton">
                 <property name="text">
                  <string>读取</string>
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
-               <widget class="QPushButton" name="send_outFactory_pushButton">
+              <item row="2" column="1">
+               <widget class="QPushButton" name="calibration_pushButton">
                 <property name="text">
-                 <string>发送</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="0" colspan="2">
-               <widget class="QPushButton" name="reStoreFactory_pushButton">
-                <property name="text">
-                 <string>恢复出厂设置</string>
+                 <string>设置</string>
                 </property>
                </widget>
               </item>
@@ -562,93 +677,96 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QGroupBox" name="groupBox_9">
+          <widget class="QGroupBox" name="groupBox_11">
            <property name="title">
-            <string>offset校准：</string>
+            <string>offset校准2：</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout_9">
+           <layout class="QGridLayout" name="gridLayout_16">
             <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>真实距离(mm):</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="realDisFactory_lineEdit"/>
-            </item>
-            <item row="1" column="0">
-             <spacer name="horizontalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>75</width>
-                <height>17</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="1" column="1">
-             <widget class="QPushButton" name="calibration_pushButton">
-              <property name="text">
-               <string>发送</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" colspan="2">
-             <widget class="Line" name="line">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0" colspan="2">
-             <widget class="QPushButton" name="gaofan_pushButton">
-              <property name="text">
-               <string>高反校准</string>
-              </property>
-             </widget>
+             <layout class="QFormLayout" name="formLayout_4">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>真实距离(mm):</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="realDisFactory_lineEdit_3"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>校准时温度(C):</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="temperature_lineEdit">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>Offset值：</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="offset_jiaozhun_lineEdit">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>系数K(float):</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="K2_lineEdit"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QPushButton" name="calibration_read2_pushButton">
+                <property name="text">
+                 <string>读取</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QPushButton" name="calibration_set2_pushButton">
+                <property name="text">
+                 <string>设置</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QGroupBox" name="groupBox_10">
-           <property name="title">
-            <string>输出设置：</string>
+          <widget class="QPushButton" name="gaofan_pushButton">
+           <property name="text">
+            <string>高反校准</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout_11">
-            <item row="0" column="0">
-             <widget class="QRadioButton" name="realDis_out_radioButton">
-              <property name="text">
-               <string>真实距离</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QRadioButton" name="LSB_out_radioButton">
-              <property name="text">
-               <string>原始LSB</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
          <item row="3" column="0">
-          <spacer name="verticalSpacer">
+          <spacer name="verticalSpacer_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>100</height>
+             <height>179</height>
             </size>
            </property>
           </spacer>

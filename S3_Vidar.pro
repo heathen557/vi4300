@@ -51,3 +51,7 @@ RESOURCES += \
     img.qrc
 
 TRANSLATIONS = translate/myApp_EN.ts
+
+
+OTHER_FILES += myapp.rc
+RC_FILE += myapp.rc

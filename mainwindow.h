@@ -210,6 +210,17 @@ private slots:
 
     void on_HistogramData_pushButton_clicked();
 
+    void on_calibration_read_pushButton_clicked();
+
+
+    //将float数据 转换为16进制数据 并存储在QString 当中
+    QString floatToQString(float);
+
+    //QString中存储的16进制数据，解析为float型的数据
+    float QStringToFloat(QString );
+
+    QByteArray StringToByte(QString str);
+
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close
 

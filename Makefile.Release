@@ -17,13 +17,13 @@ CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:strictStrings -Zc:throwingNew -O2 -M
 INCPATH       = -I. -I..\..\programInstall\QT580\5.8\msvc2015_64\include -I..\..\programInstall\QT580\5.8\msvc2015_64\include\QtPrintSupport -I..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets -I..\..\programInstall\QT580\5.8\msvc2015_64\include\QtGui -I..\..\programInstall\QT580\5.8\msvc2015_64\include\QtANGLE -I..\..\programInstall\QT580\5.8\msvc2015_64\include\QtSerialPort -I..\..\programInstall\QT580\5.8\msvc2015_64\include\QtCore -Irelease -I. -I..\..\programInstall\QT580\5.8\msvc2015_64\mkspecs\win32-msvc2015 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /INCREMENTAL:NO /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = /LIBPATH:D:\programInstall\QT580\5.8\msvc2015_64\lib D:\programInstall\QT580\5.8\msvc2015_64\lib\qtmain.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib shell32.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5PrintSupport.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Widgets.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Gui.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5SerialPort.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Core.lib 
+LIBS          = /LIBPATH:D:\programInstall\QT580\5.8\msvc2015_64\lib D:\programInstall\QT580\5.8\msvc2015_64\lib\qtmain.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib shell32.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5PrintSupport.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Widgets.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Gui.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5SerialPort.lib D:\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Core.lib release\myapp.res 
 QMAKE         = D:\programInstall\QT580\5.8\msvc2015_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl
 ZIP           = zip -r -9
 DEF_FILE      = 
-RES_FILE      = 
+RES_FILE      = release\myapp.res
 COPY          = copy /y
 SED           = $(QMAKE) -install sed
 COPY_FILE     = copy /y
@@ -147,10 +147,13 @@ DESTDIR_TARGET = release\VI4300.exe
 first: all
 all: Makefile.Release  $(DESTDIR_TARGET)
 
-$(DESTDIR_TARGET): ui_mainwindow.h ui_regisitersetdialog.h ui_mcuupgradedialog.h ui_highreact_dialog.h $(OBJECTS) 
+$(DESTDIR_TARGET): ui_mainwindow.h ui_regisitersetdialog.h ui_mcuupgradedialog.h ui_highreact_dialog.h $(OBJECTS) release\myapp.res
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
 $(OBJECTS) $(LIBS)
 <<
+
+release\myapp.res: myapp.rc
+	rc $(DEFINES) -fo release\myapp.res myapp.rc
 
 qmake: FORCE
 	@$(QMAKE) -o Makefile.Release S3_Vidar.pro -spec win32-msvc2015
@@ -163,6 +166,7 @@ dist:
 clean: compiler_clean 
 	-$(DEL_FILE) release\main.obj release\mainwindow.obj release\receserial_msg.obj release\qcustomplot.obj release\calhistogram_obj.obj release\regisitersetdialog.obj release\mcuupgradedialog.obj release\hex.obj release\highreact_dialog.obj release\qrc_img.obj release\moc_mainwindow.obj release\moc_receserial_msg.obj release\moc_qcustomplot.obj release\moc_calhistogram_obj.obj release\moc_regisitersetdialog.obj release\moc_mcuupgradedialog.obj release\moc_highreact_dialog.obj
 	-$(DEL_FILE) release\VI4300.exp
+	-$(DEL_FILE) release\myapp.res
 
 distclean: clean 
 	-$(DEL_FILE) release\VI4300.lib
@@ -3458,7 +3462,6 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QCheckBox \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QComboBox \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QFormLayout \
-		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QFrame \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QGridLayout \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QGroupBox \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QHBoxLayout \
