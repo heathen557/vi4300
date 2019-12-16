@@ -118,8 +118,8 @@ void receSerial_msg::readDataSlot()
 
                //进行和校验
                QString single_Data = m_buffer.left(len);       //single_Data就是单个命令
-               if(!msgCheck(single_Data))
-                    return;
+//               if(!msgCheck(single_Data))
+//                    return;
 
 //             qDebug()<<" receive single_Data = "<<single_Data;
 

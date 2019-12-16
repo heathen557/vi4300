@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     initUILanguage();
-
+    allCountNum = 0;
 
     m_menu  =  new  QMenu;
     m_English  =  new  QAction(tr("English"),this);
@@ -542,6 +542,16 @@ void MainWindow::dealedData_slot(QString currTof,vector<double> plotData, vector
 //50ms定时器的槽函数
 void MainWindow::showTimerSlot()
 {
+    //text_BOX上面的数据显示   分为显示解析后的TOF数据 或者16进制的数据  ;看是否需要判断 isTranslateFlag
+    for(int i=0 ;i<DistanceStr.length();i++ )
+    {
+        ui->ResultHistory_textEdit->appendPlainText(DistanceStr[i]);
+    }
+    DistanceStr.clear();    //清空暂存的变量
+    ui->HistoryData_label->setText(QString::number(allCountNum));   //显示记录条数
+
+
+
     //显示当前的距离
     ui->currentDistance11_label->setText(DistanceStrCurrent);
 //    ui->currentDistance11_label->setText("12.369");
@@ -562,13 +572,7 @@ void MainWindow::showTimerSlot()
     ui->std_label->setText(QString::number(DistanceStd));
 
 
-    //text_BOX上面的数据显示   分为显示解析后的TOF数据 或者16进制的数据  ;看是否需要判断 isTranslateFlag
-    for(int i=0 ;i<DistanceStr.length();i++ )
-    {
-        ui->ResultHistory_textEdit->appendPlainText(DistanceStr[i]);
-    }
-    DistanceStr.clear();    //清空暂存的变量
-    ui->HistoryData_label->setText(QString::number(allCountNum));   //显示记录条数
+
 
 }
 
@@ -638,7 +642,13 @@ void MainWindow::showResultMsg_slot(QStringList DisStr)
         QFile file(sFilePath);
         file.open(QIODevice::WriteOnly|QIODevice::Text);
         QTextStream out(&file);
-        QString text = DisStr[0];
+        QString text ;
+
+        for(int i=0; i<DisStr[0].length();i+=2)
+        {
+            text.append(DisStr[0].mid(i,2)).append(" ");
+        }
+
         out<<text.toLocal8Bit()<<endl;
         file.close();
         saveHist_index++;
@@ -745,13 +755,13 @@ void MainWindow::on_TOF_radioButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-//显示统计直方图   由于耗时严重，由专门的线程进行处理 直方图定时器为100ms
+//显示统计直方图   由于耗时严重，由专门的线程进行处理 直方图定时器为500ms
 void MainWindow::on_Histogram_radioButton_clicked()
 {
     plot_Mode = true;
     if(plotShowTimer.isActive())
         plotShowTimer.stop();
-    plotShowTimer.start(100);      //定时器改为100ms进行一次刷新
+    plotShowTimer.start(500);      //定时器改为100ms进行一次刷新
 
     plot_type = 1;
     ui->stackedWidget->setCurrentIndex(1);
@@ -825,9 +835,9 @@ void MainWindow::plotShowTimer_slot()
         //  5A 00 01 08 09 DD..DDDDD  XX
         else if(1 == plot_type)    //显示直方图的信息      将这里改成发送请求 直方图的数据
         {
-            QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
-            QString cmdStr = "5A 00 01 08 09 ";
-            cmdStr.append(strData);
+//            QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
+            QString cmdStr = "5A 00 02 00 09 00";
+//            cmdStr.append(strData);
             emit sendSerialSignal(cmdStr);
         }
     }

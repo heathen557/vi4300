@@ -216,7 +216,7 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 220, 565));
+        page->setGeometry(QRect(0, 0, 220, 561));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_7 = new QGridLayout(page);
@@ -389,12 +389,13 @@ public:
         gridLayout_8->setContentsMargins(-1, 2, -1, 2);
         plotSet_off_radioButton = new QRadioButton(groupBox_8);
         plotSet_off_radioButton->setObjectName(QStringLiteral("plotSet_off_radioButton"));
-        plotSet_off_radioButton->setChecked(true);
+        plotSet_off_radioButton->setChecked(false);
 
         gridLayout_8->addWidget(plotSet_off_radioButton, 0, 1, 1, 1);
 
         plotSet_on_radioButton = new QRadioButton(groupBox_8);
         plotSet_on_radioButton->setObjectName(QStringLiteral("plotSet_on_radioButton"));
+        plotSet_on_radioButton->setChecked(true);
 
         gridLayout_8->addWidget(plotSet_on_radioButton, 0, 0, 1, 1);
 
@@ -413,7 +414,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("            \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 220, 565));
+        page_4->setGeometry(QRect(0, 0, 220, 561));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_14 = new QGridLayout(page_4);
         gridLayout_14->setSpacing(6);
@@ -825,7 +826,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1180, 23));
+        menuBar->setGeometry(QRect(0, 0, 1180, 22));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
