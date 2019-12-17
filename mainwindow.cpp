@@ -1145,7 +1145,7 @@ QString MainWindow::floatToQString(float fVal)
         }
     }
     strHex = strHex.toUpper();
-    qDebug()<<QStringLiteral("把float型数据解析为QString 为：")<<strHex<<"   len="<< strHex.length()/3<<endl;
+//    qDebug()<<QStringLiteral("把float型数据解析为QString 为：")<<strHex<<"   len="<< strHex.length()/3<<endl;
     return strHex;
 }
 
@@ -1154,7 +1154,9 @@ QString MainWindow::floatToQString(float fVal)
 //!  出厂校准1 读取 点击槽函数  （真实距离）  5A 00 07 00 04 DD DD DD DD DD DD
 void MainWindow::on_calibration_read_pushButton_clicked()
 {
-
+    //命令组帧
+    QString cmdStr = "5A 00 07 00 04 00 00 00 00 00 00 ";
+    emit sendSerialSignal(cmdStr);
 }
 
 
@@ -1218,9 +1220,10 @@ void MainWindow::on_LSB_out_radioButton_clicked()
 //!主界面配置的相关信息返回信号    参数1：“8102”：写入出厂设置成功，   参数2暂无
 //!                             参数1：“8002”：读取出厂设置 ，     参数2 数据
 //!                             参数1：“8103”：恢复出厂设置成功     参数2暂无
-//!                             参数1：“8104”：距离offset校准成功  参数2暂无
+//!                             参数1：“8104”：设置 距离offset校准成功  参数2 "04":第一种校准  “0B”：第二种校准
 //!                             参数1：“8105”：高反校准成功，      参数2暂无
 //!                             参数1：“8106”：输出数据设置成功     参数2 00：原始距离 01：LSB
+//!                             参数1：“8004”：读取 距离offset校准信息  参数2 6个字节第一种校准，10个字节第二种校准
 void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
 {
     if("8102" ==returnCmdStr )
@@ -1252,7 +1255,14 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
     }
     else if("8104" == returnCmdStr)
     {
-        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("距离offset校准设置成功！"));
+        if("07" == cmdAck)
+        {
+            QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("距离offset_1校准设置成功！"));
+        }else if("0B" == cmdAck)
+        {
+            QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("距离offset_2校准设置成功！"));
+        }
+
         return;
     }else if("8105" == returnCmdStr)
     {
@@ -1263,6 +1273,38 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
     {
         QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("数据输出设置成功！"));
         return;
+    }
+    else if("8004" == returnCmdStr)
+    {
+        int ackCmdLen = cmdAck.length();  //  D1 D1 D2 D2 D2 D2
+        if(12 == ackCmdLen)   //第一次校准  读取返回指令 信息
+        {
+            QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
+            int disTance = strDis.toInt(NULL,16);
+            QString k1_str = cmdAck.mid(4,8) ;
+            float K1 = QStringToFloat(k1_str);
+
+            ui->realDisFactory_lineEdit->setText(QString::number(disTance));
+            ui->K1_lineEdit->setText(QString::number(K1));
+
+        }else if(20 == ackCmdLen)    //第二次校准  读取返回指令 信息
+        {
+            //  D1 D1 D2 D2 D3 D3 D4 D4 D4 D4
+            QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
+            int disTance = strDis.toInt(NULL,16);
+            QString temptureStr = cmdAck.mid(6,2) + cmdAck.mid(4,2);
+            int tempture = temptureStr.toInt(NULL,16);
+            QString offsetStr = cmdAck.mid(10,2) + cmdAck.mid(8,2);
+            int offset = offsetStr.toInt(NULL,16);
+            QString k2_str = cmdAck.mid(12,8) ;
+            float K2 = QStringToFloat(k2_str);
+
+            ui->realDisFactory_2_lineEdit->setText(QString::number(disTance));
+            ui->temperature_lineEdit->setText(QString::number(tempture));
+            ui->offset_jiaozhun_lineEdit->setText(QString::number(offset));
+            ui->K2_lineEdit->setText(QString::number(K2));
+
+        }
     }
 }
 

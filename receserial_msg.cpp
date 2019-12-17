@@ -194,6 +194,32 @@ void receSerial_msg::readDataSlot()
                    }
                }
 
+               //读取  距离offset 1 校准应答命令 5A 80 07 00 04 DD DD DD DD DD DD XX
+               //读取  距离offset 2 校准应答命令 5A 80 0B 00 04 DD DD DD DD DD DD XX
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("04" == secCmd)
+                   {
+                       QString thirdCmd = single_Data.mid(4,2);   //根据长度判断是哪一种校准
+                       if("07" == thirdCmd)
+                       {
+                           QString firstCmd = "8004";
+                           QString dataStr = single_Data.mid(10,dataLen);
+                           emit AckCmdMain_signal(firstCmd,dataStr);
+
+                       }else if("0B" == thirdCmd )
+                       {
+                           QString firstCmd = "8004";
+                           QString dataStr = single_Data.mid(10,dataLen);
+                           emit AckCmdMain_signal(firstCmd,dataStr);
+                       }
+
+                   }
+               }
+
+
+
                //读取恢复出厂设置的应答命令 5A 81 01 00 03 00 XX
                if("81" == returnCmdStr)
                {
@@ -206,15 +232,26 @@ void receSerial_msg::readDataSlot()
                    }
                }
 
-               //读取距离offset校准的应答命令 5A 81 02 00 04 DD DD XX
+               //读取距离offset校准 1 的应答命令 5A 81 07 00 04 DD DD DD DD DD DD XX
+               //读取距离offset校准 2 的应答命令 5A 81 0B 00 04 DD DD DD DD DD DD XX
                if("81" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
                    if("04" == secCmd)
                    {
-                       QString firstCmd = "8104";
-                       QString dataStr= "00";//没有意义
-                       emit AckCmdMain_signal(firstCmd,dataStr);
+                       QString thirdCmd = single_Data.mid(4,2);
+                       if("07" == thirdCmd)   //根据长度来判断是第一次校准的返回命令
+                       {
+                           QString firstCmd = "8104";
+                           QString dataStr= "07";
+                           emit AckCmdMain_signal(firstCmd,dataStr);
+                       }else if("0B" == thirdCmd)
+                       {
+                           QString firstCmd = "8104";
+                           QString dataStr= "0B";
+                           emit AckCmdMain_signal(firstCmd,dataStr);
+                       }
+
                    }
                }
 

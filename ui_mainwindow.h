@@ -132,7 +132,7 @@ public:
     QGridLayout *gridLayout_16;
     QFormLayout *formLayout_4;
     QLabel *label_15;
-    QLineEdit *realDisFactory_lineEdit_3;
+    QLineEdit *realDisFactory_2_lineEdit;
     QLabel *label_22;
     QLineEdit *temperature_lineEdit;
     QLabel *label_23;
@@ -225,16 +225,21 @@ public:
         gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
         splitter = new QSplitter(centralWidget);
         splitter->setObjectName(QStringLiteral("splitter"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(splitter->sizePolicy().hasHeightForWidth());
+        splitter->setSizePolicy(sizePolicy);
         splitter->setOrientation(Qt::Horizontal);
         toolBox = new QToolBox(splitter);
         toolBox->setObjectName(QStringLiteral("toolBox"));
-        toolBox->setMinimumSize(QSize(220, 0));
-        toolBox->setMaximumSize(QSize(220, 16777215));
+        toolBox->setMinimumSize(QSize(240, 0));
+        toolBox->setMaximumSize(QSize(16777215, 16777215));
         toolBox->setStyleSheet(QLatin1String(".QToolBox{\n"
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 220, 532));
+        page->setGeometry(QRect(0, 0, 240, 535));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_7 = new QGridLayout(page);
@@ -432,10 +437,10 @@ public:
         gridLayout_7->setRowStretch(1, 2);
         gridLayout_7->setRowStretch(2, 5);
         gridLayout_7->setRowStretch(3, 2);
-        toolBox->addItem(page, QString::fromUtf8("            \345\237\272\346\234\254\350\256\276\347\275\256"));
+        toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 220, 532));
+        page_4->setGeometry(QRect(0, 0, 240, 535));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -569,9 +574,10 @@ public:
 
         gridLayout_15->addLayout(gridLayout_14, 0, 0, 1, 1);
 
-        toolBox->addItem(page_4, QString::fromUtf8("            \350\256\276\345\244\207\351\205\215\347\275\256"));
+        toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
+        page_5->setGeometry(QRect(0, 0, 240, 535));
         gridLayout_17 = new QGridLayout(page_5);
         gridLayout_17->setSpacing(6);
         gridLayout_17->setContentsMargins(11, 11, 11, 11);
@@ -635,10 +641,10 @@ public:
 
         formLayout_4->setWidget(0, QFormLayout::LabelRole, label_15);
 
-        realDisFactory_lineEdit_3 = new QLineEdit(groupBox_11);
-        realDisFactory_lineEdit_3->setObjectName(QStringLiteral("realDisFactory_lineEdit_3"));
+        realDisFactory_2_lineEdit = new QLineEdit(groupBox_11);
+        realDisFactory_2_lineEdit->setObjectName(QStringLiteral("realDisFactory_2_lineEdit"));
 
-        formLayout_4->setWidget(0, QFormLayout::FieldRole, realDisFactory_lineEdit_3);
+        formLayout_4->setWidget(0, QFormLayout::FieldRole, realDisFactory_2_lineEdit);
 
         label_22 = new QLabel(groupBox_11);
         label_22->setObjectName(QStringLiteral("label_22"));
@@ -695,7 +701,7 @@ public:
 
         gridLayout_17->addItem(verticalSpacer_2, 3, 0, 1, 1);
 
-        toolBox->addItem(page_5, QString::fromUtf8("            \350\256\276\345\244\207\346\240\241\345\207\206"));
+        toolBox->addItem(page_5, QString::fromUtf8("              \350\256\276\345\244\207\346\240\241\345\207\206"));
         splitter->addWidget(toolBox);
         groupBox = new QGroupBox(splitter);
         groupBox->setObjectName(QStringLiteral("groupBox"));
@@ -1010,7 +1016,7 @@ public:
         plotSet_off_radioButton->setText(QApplication::translate("MainWindow", "OFF", Q_NULLPTR));
         plotSet_on_radioButton->setText(QApplication::translate("MainWindow", "ON", Q_NULLPTR));
         rowData_pushButton->setText(QApplication::translate("MainWindow", "RawData", Q_NULLPTR));
-        toolBox->setItemText(toolBox->indexOf(page), QApplication::translate("MainWindow", "            \345\237\272\346\234\254\350\256\276\347\275\256", Q_NULLPTR));
+        toolBox->setItemText(toolBox->indexOf(page), QApplication::translate("MainWindow", "              \345\237\272\346\234\254\350\256\276\347\275\256", Q_NULLPTR));
         groupBox_7->setTitle(QApplication::translate("MainWindow", "\345\207\272\345\216\202\350\256\276\347\275\256", Q_NULLPTR));
         label_4->setText(QApplication::translate("MainWindow", "SN \345\217\267\357\274\232", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207\357\274\232", Q_NULLPTR));
@@ -1058,7 +1064,7 @@ public:
         groupBox_10->setTitle(QApplication::translate("MainWindow", "\350\276\223\345\207\272\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
         realDis_out_radioButton->setText(QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273", Q_NULLPTR));
         LSB_out_radioButton->setText(QApplication::translate("MainWindow", "\345\216\237\345\247\213LSB", Q_NULLPTR));
-        toolBox->setItemText(toolBox->indexOf(page_4), QApplication::translate("MainWindow", "            \350\256\276\345\244\207\351\205\215\347\275\256", Q_NULLPTR));
+        toolBox->setItemText(toolBox->indexOf(page_4), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\351\205\215\347\275\256", Q_NULLPTR));
         groupBox_9->setTitle(QApplication::translate("MainWindow", "offset\346\240\241\345\207\2061\357\274\232", Q_NULLPTR));
         label_6->setText(QApplication::translate("MainWindow", "\350\267\235\347\246\273(mm):", Q_NULLPTR));
         label_13->setText(QApplication::translate("MainWindow", "\347\263\273\346\225\260K(float):", Q_NULLPTR));
@@ -1074,7 +1080,7 @@ public:
         calibration_read2_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
         calibration_set2_pushButton->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
         gaofan_pushButton->setText(QApplication::translate("MainWindow", "\351\253\230\345\217\215\346\240\241\345\207\206", Q_NULLPTR));
-        toolBox->setItemText(toolBox->indexOf(page_5), QApplication::translate("MainWindow", "            \350\256\276\345\244\207\346\240\241\345\207\206", Q_NULLPTR));
+        toolBox->setItemText(toolBox->indexOf(page_5), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\346\240\241\345\207\206", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("MainWindow", "\347\273\223\346\236\234\350\256\260\345\275\225", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\345\267\262\350\256\260\345\275\225\346\225\260\346\215\256:", Q_NULLPTR));
         HistoryData_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
