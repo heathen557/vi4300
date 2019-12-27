@@ -298,10 +298,17 @@ void receSerial_msg::readDataSlot()
 
 
                        //16进制数据转化为10进制 然后再转化成字符串
-                       currentSingleData.append(QString("%1").arg(dataStr.mid(0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                       currentSingleData.append(QString("%1").arg(dataStr.mid(2,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                       currentSingleData.append(QString("%1").arg(dataStr.mid(4,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                       currentSingleData.append(QString("%1").arg(dataStr.mid(6,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                       QString strTmp = dataStr.mid(2,2) + dataStr.mid(0,2);
+                       currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                       strTmp = dataStr.mid(6,2) + dataStr.mid(4,2);
+                       currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                       strTmp = dataStr.mid(10,2) + dataStr.mid(8,2);
+                       currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                       strTmp = dataStr.mid(14,2) + dataStr.mid(12,2);
+                       currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
 
 
                        DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示
@@ -335,23 +342,32 @@ void receSerial_msg::readDataSlot()
                    {
                        QString dataStr = single_Data.mid(10,dataLen);
                        QString currentSingleData;
+                       int tmpTof_1,tmpTof_2;
 
-                       for(int i=0; i<dataLen; i+=8)
+                       for(int i=0; i<dataLen; i+=16)
                        {
                            //16进制数据转化为10进制 然后再转化成字符串
-                           currentSingleData = QString("%1").arg(dataStr.mid(i+0,2).toInt(NULL,16),5,10,QLatin1Char(' '));
+                           QString strTmp = dataStr.mid(i+2,2) + dataStr.mid(i+0,2);
+                           tmpTof_1 = strTmp.toInt(NULL,16);
+                           currentSingleData = QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '));
                            currentSingleData.append("   ");
-//                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+2,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+4,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+6,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                           strTmp = dataStr.mid(i+6,2) + dataStr.mid(i+4,2);
+                           currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                           strTmp = dataStr.mid(i+10,2) + dataStr.mid(i+8,2);
+                           tmpTof_2 = strTmp.toInt(NULL,16);
+                           currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                           strTmp = dataStr.mid(i+14,2) + dataStr.mid(i+12,2);
+                           currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
 
                            DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示，一行数据存储在一个QStringList文件当中，方便主界面的显示
 
 
                            //StatisticData_vector 对1000帧tof数据进行循环存储
-                           int tmpTof_1 = dataStr.mid(i+0,2).toInt(NULL,16);
-                           int tmpTof_2 = dataStr.mid(i+4,2).toInt(NULL,16);
+//                           int tmpTof_1 = dataStr.mid(i+0,2).toInt(NULL,16);
+//                           int tmpTof_2 = dataStr.mid(i+4,2).toInt(NULL,16);
 
                            int statistic_offset = StatisticData_vector.size() -1000;
                            if(statistic_offset >= 0)
@@ -376,7 +392,7 @@ void receSerial_msg::readDataSlot()
                        DistanceStr.clear();                            //发送完数据清空链表
 
 
-                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
+                       int tof_int = tmpTof_1;  //转换为10进制显示 实时TOF的值   显示的第一个峰
                        QString currentTof = QString::number(tof_int);
                        emit dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
 
@@ -391,19 +407,24 @@ void receSerial_msg::readDataSlot()
                    {
                        QString dataStr = single_Data.mid(10,dataLen);
                        QString currentSingleData;
+                       int tmpTof = 0;
 
-                       for(int i=0; i<dataLen; i+=4)
+                       for(int i=0; i<dataLen; i+=8)
                        {
                            //16进制数据转化为10进制 然后再转化成字符串
-                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+0,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
-                           currentSingleData.append(QString("%1").arg(dataStr.mid(i+2,2).toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                           QString strTmp = dataStr.mid(i+2,2) + dataStr.mid(i+0,2);
+                           tmpTof = strTmp.toInt(NULL,16);
+                           currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+
+                           strTmp = dataStr.mid(i+6,2) + dataStr.mid(i+4,2);
+                           currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
 
                            DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示，一行数据存储在一个QStringList文件当中，方便主界面的显示
 
 
 
                            //StatisticData_vector 对1000帧tof数据进行循环存储
-                           int tmpTof = dataStr.mid(i+0,2).toInt(NULL,16);
+//                           int tmpTof = dataStr.mid(i+0,2).toInt(NULL,16);
 
                            int statistic_offset = StatisticData_vector.size() -1000;
                            if(statistic_offset >= 0)

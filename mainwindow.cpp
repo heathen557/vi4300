@@ -1167,11 +1167,16 @@ void MainWindow::on_calibration_pushButton_clicked()
 {
     int realDis = ui->realDisFactory_lineEdit->text().toInt();
     float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
-    qDebug()<<"K1 = "<<K1;
-    QString K1Str = floatToQString(K1);
+    int k1_num = int (K1 *1000);
+
+//    QString K1Str = floatToQString(K1);
 
     QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));
     QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
+
+    QString k1Tmp = QString("%1").arg(k1_num,8,16,QLatin1Char('0'));
+    QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);
+//    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
 
     //命令组帧
     QString cmdStr = "5A 01 07 00 04 ";
@@ -1282,7 +1287,9 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
             QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
             int disTance = strDis.toInt(NULL,16);
             QString k1_str = cmdAck.mid(4,8) ;
-            float K1 = QStringToFloat(k1_str);
+            QString tmpStr = k1_str.mid(6,2) +k1_str.mid(4,2)+k1_str.mid(2,2)+k1_str.mid(0,2);
+
+            float K1 = tmpStr.toInt(NULL,16)/1000.0;
 
             ui->realDisFactory_lineEdit->setText(QString::number(disTance));
             ui->K1_lineEdit->setText(QString::number(K1));
