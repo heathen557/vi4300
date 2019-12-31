@@ -118,8 +118,14 @@ void receSerial_msg::readDataSlot()
 
                //进行和校验
                QString single_Data = m_buffer.left(len);       //single_Data就是单个命令
-//               if(!msgCheck(single_Data))
-//                    return;
+               if(!msgCheck(single_Data))
+               {
+                   qDebug()<<QStringLiteral("和校验失败,singleData =")<<single_Data;
+                   m_buffer = m_buffer.right(totallen - len);                                                  //一帧处理完毕 减去该帧的长度
+                   totallen = m_buffer.size();
+                   return;
+               }
+
 
 //             qDebug()<<" receive single_Data = "<<single_Data;
 
@@ -286,6 +292,7 @@ void receSerial_msg::readDataSlot()
                if("80" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
+                   int tmpTof = 0;
                    if("07" == secCmd )
                    {
                        if(dataLen != 8*2)
@@ -299,6 +306,7 @@ void receSerial_msg::readDataSlot()
 
                        //16进制数据转化为10进制 然后再转化成字符串
                        QString strTmp = dataStr.mid(2,2) + dataStr.mid(0,2);
+                       tmpTof = strTmp.toInt(NULL,16);
                        currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
 
                        strTmp = dataStr.mid(6,2) + dataStr.mid(4,2);
@@ -315,7 +323,7 @@ void receSerial_msg::readDataSlot()
                        showResultMsg_signal(DistanceStr);
                        DistanceStr.clear();                            //发送完数据清空链表
 
-                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
+                       int tof_int = tmpTof;  //转换为10进制显示 实时TOF的值   显示的第一个峰
                        QString currentTof = QString::number(tof_int);
                        emit dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
                    }
@@ -414,7 +422,9 @@ void receSerial_msg::readDataSlot()
                            //16进制数据转化为10进制 然后再转化成字符串
                            QString strTmp = dataStr.mid(i+2,2) + dataStr.mid(i+0,2);
                            tmpTof = strTmp.toInt(NULL,16);
-                           currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
+                           currentSingleData = QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '));
+                           currentSingleData.append("   ");
+
 
                            strTmp = dataStr.mid(i+6,2) + dataStr.mid(i+4,2);
                            currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
@@ -447,7 +457,7 @@ void receSerial_msg::readDataSlot()
                        showResultMsg_signal(DistanceStr);
                        DistanceStr.clear();                            //发送完数据清空链表
 
-                       int tof_int = dataStr.mid(0,2).toInt(NULL,16);  //转换为10进制显示 实时TOF的值   显示的第一个峰
+                       int tof_int = tmpTof;  //转换为10进制显示 实时TOF的值   显示的第一个峰
                        QString currentTof = QString::number(tof_int);
                        emit dealedData_signal(currentTof,PlotData_vector,StatisticData_vector);    //发送至主程序，用于显示当前TOf 均值  方差
                    }
@@ -549,9 +559,9 @@ void receSerial_msg::readDataSlot()
 bool receSerial_msg::msgCheck(QString msg)
 {
     int len = msg.length();
-    int i=3;
+    int i=2;
     int num = 0;
-    for(;i<len-3;i+=3)
+    for(;i<len-2;i+=2)
     {
         num += msg.mid(i,2).toInt(NULL,16);
     }

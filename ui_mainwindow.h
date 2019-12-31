@@ -197,7 +197,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1180, 714);
+        MainWindow->resize(1249, 760);
         MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
         QIcon icon;
         icon.addFile(QStringLiteral(":/new/image/images/icon_1.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -239,7 +239,7 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 240, 535));
+        page->setGeometry(QRect(0, 0, 240, 581));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_7 = new QGridLayout(page);
@@ -440,7 +440,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 240, 535));
+        page_4->setGeometry(QRect(0, 0, 240, 581));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -577,7 +577,7 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 240, 535));
+        page_5->setGeometry(QRect(0, 0, 240, 581));
         gridLayout_17 = new QGridLayout(page_5);
         gridLayout_17->setSpacing(6);
         gridLayout_17->setContentsMargins(11, 11, 11, 11);
@@ -945,7 +945,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1180, 22));
+        menuBar->setGeometry(QRect(0, 0, 1249, 22));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
@@ -979,7 +979,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(2);
+        toolBox->setCurrentIndex(0);
         stackedWidget->setCurrentIndex(0);
 
 

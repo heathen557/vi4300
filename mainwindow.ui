@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1180</width>
-    <height>714</height>
+    <width>1249</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -54,7 +54,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -62,7 +62,7 @@ font: 10pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>240</width>
-          <height>535</height>
+          <height>581</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -324,7 +324,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>240</width>
-          <height>535</height>
+          <height>581</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -636,7 +636,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>240</width>
-          <height>535</height>
+          <height>581</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1119,7 +1119,7 @@ font: 9pt &quot;黑体&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1180</width>
+     <width>1249</width>
      <height>22</height>
     </rect>
    </property>
