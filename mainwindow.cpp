@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 //    ui->groupBox_5->setEnabled(false);
-    ui->ResultHistory_textEdit->document()->setMaximumBlockCount(7000);    //最多显示10000行，滑动存储  10w
+    ui->ResultHistory_textEdit->document()->setMaximumBlockCount(200000);    //最多显示10000行，滑动存储  10w
 
     qRegisterMetaType<vector<double>>("vector<double>");   //注册函数
     qRegisterMetaType<vector<int>>("vector<int>");       //注册函数
@@ -36,8 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->splitter->setStretchFactor(2,5);
     ui->groupBox_2->setVisible(true);
 
-
-    ui->savePath_lineEdit->setReadOnly(true);
     ui->timeInnterval_label->setEnabled(false);
     ui->timeInnterval_lineEdit->setEnabled(false);
 
@@ -92,8 +90,6 @@ void MainWindow::SerialSetting_Enable_false()
     ui->delayMeasure_pushButton->setEnabled(false);
     ui->stopMeasure_pushButton->setEnabled(false);
     ui->reStoreFactory_pushButton->setEnabled(false);
-    ui->Histogram_radioButton->setEnabled(false);
-    ui->TOF_radioButton->setEnabled(false);
 
 }
 
@@ -116,8 +112,6 @@ void MainWindow::SerialSetting_Enable_true()
     ui->delayMeasure_pushButton->setEnabled(true);
     ui->stopMeasure_pushButton->setEnabled(true);
     ui->reStoreFactory_pushButton->setEnabled(true);
-    ui->Histogram_radioButton->setEnabled(true);
-    ui->TOF_radioButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
@@ -586,53 +580,44 @@ void MainWindow::showTimerSlot()
 
 }
 
-//选择文件的保存路径
-void MainWindow::on_selectSavePathtoolButton_clicked()
-{
-    QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
-    if(file_path.isEmpty())
-    {
-       qDebug()<<QStringLiteral("没有选择路径")<<endl;
-       QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
-        return;
-    }
-    else
-    {
-        file_path.append("/");
-        qDebug() << file_path << endl;
-        ui->savePath_lineEdit->setText(file_path);
-    }
-}
-
 
 //选中文件保存功能
 void MainWindow::on_save_pushButton_clicked()
 {
-
-    QString text = ui->ResultHistory_textEdit->toPlainText();
-
     QString sFilePath = ui->savePath_lineEdit->text() ;
     if(sFilePath.isEmpty())
     {
-        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("请先选择文件保存路径"));
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("请先设置文件保存路径"));
         return;
     }
 
+    QString text = ui->ResultHistory_textEdit->toPlainText();
 
-    QDateTime currTime = QDateTime::currentDateTime();
-    QString fileName = currTime.toString("yyyyMMdd_hh_mm_ss");
-    fileName.append(".txt");
-    sFilePath.append(fileName);     //加上文件名
+
+    if("txt" != sFilePath.right(3))
+    {
+        sFilePath.append(".txt");
+    }
+
 
 
     QFile file(sFilePath);
-    file.open(QIODevice::WriteOnly|QIODevice::Text);
-    QTextStream out(&file);
-    out<<text.toLocal8Bit()<<endl;
-    file.close();
+    if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+    {
+        QTextStream out(&file);
+        out<<text.toLocal8Bit()<<endl;
+        file.close();
+        ui->savePath_lineEdit->setText(sFilePath);
+    }else
+    {
+        QString strMsg = QStringLiteral("文件保存失败，请检查路径");
+        QMessageBox::information(NULL,QStringLiteral("提示"),strMsg);
+    }
 
-    QString strMsg = QStringLiteral("已保存在指定路径下，文件名为：") + fileName;
-    QMessageBox::information(NULL,QStringLiteral("提示"),strMsg);
+
+
+
+
 }
 
 
@@ -671,7 +656,7 @@ void MainWindow::showResultMsg_slot(QStringList DisStr)
 void MainWindow::oneSecondTimer_slot()
 {
 //    int dps = Count_num - Count_num_lastSec;
-    int dps = Count_num;
+    int dps = Count_num * 8;
     if(dps > 0)
     {
         ui->DPS_label->setText(QString::number(dps));
@@ -715,10 +700,25 @@ void MainWindow::on_TimingSave_checkBox_clicked()
     QString sFilePath = ui->savePath_lineEdit->text();
     if(sFilePath.isEmpty())
     {
-        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("请先选择文件保存路径"));
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("请先设置文件保存路径"));
         ui->TimingSave_checkBox->setChecked(false);
         return;
     }
+    //设置文件的保存路径
+    if(sFilePath.right(3)=="txt")
+    {
+        sFilePath = sFilePath.left(sFilePath.length() - 4);
+    }
+
+
+    if(sFilePath.right(1) != "\\")
+    {
+        sFilePath.append("\\");
+    }
+
+    ui->savePath_lineEdit->setText(sFilePath);
+
+
 
     if(ui->TimingSave_checkBox->isChecked())
     {
@@ -749,32 +749,37 @@ void MainWindow::on_timeInnterval_lineEdit_returnPressed()
 void MainWindow::on_clear_pushButton_clicked()
 {
 
+    receSerial_Obj->clearFlag = true;
+    PlotData_vector.clear();
     ui->ResultHistory_textEdit->clear();
     allCountNum = 0;
+
 }
 
 
-//显示TOF的统计信息   刷新频率为50ms
-void MainWindow::on_TOF_radioButton_clicked()
+//画图的选项  currentIndex=1:画TOF 图  currentIndex=2:画直方图
+void MainWindow::on_plot_comboBox_currentIndexChanged(int index)
 {
-    if(plotShowTimer.isActive())
-        plotShowTimer.stop();
-    plotShowTimer.start(70);
+    if(1 == index)
+    {
+        if(plotShowTimer.isActive())
+            plotShowTimer.stop();
+        plotShowTimer.start(70);
 
-    plot_type = 0;
-    ui->stackedWidget->setCurrentIndex(0);
-}
+        plot_Mode = true;
+        plot_type = 0;
+        ui->stackedWidget->setCurrentIndex(0);
+    }else if(2 == index)
+    {
+        plot_Mode = true;
+        if(plotShowTimer.isActive())
+            plotShowTimer.stop();
+        plotShowTimer.start(500);      //定时器改为100ms进行一次刷新
 
-//显示统计直方图   由于耗时严重，由专门的线程进行处理 直方图定时器为500ms
-void MainWindow::on_Histogram_radioButton_clicked()
-{
-    plot_Mode = true;
-    if(plotShowTimer.isActive())
-        plotShowTimer.stop();
-    plotShowTimer.start(500);      //定时器改为100ms进行一次刷新
+        plot_type = 1;
+        ui->stackedWidget->setCurrentIndex(1);
+    }
 
-    plot_type = 1;
-    ui->stackedWidget->setCurrentIndex(1);
 }
 
 
@@ -822,8 +827,7 @@ void MainWindow::plotShowTimer_slot()
         if(0 == plot_type)          //显示tof的统计信息      暂时不考虑之
         {
             int len = PlotData_vector.size();
-            if(len<1)
-                return;
+
             for(int i=0; i< len; i++)
             {
                 label_x[i] = i;
@@ -834,8 +838,10 @@ void MainWindow::plotShowTimer_slot()
             }
             labelMax = PlotData_vector.size();
 
+//            qDebug()<<"valueMin = "<<valueMin<<"   valueMax="<<valueMax;
+
             ui->TOF_widget->xAxis->setRange(0,labelMax);
-            ui->TOF_widget->yAxis->setRange(valueMin-10,valueMax+10);
+            ui->TOF_widget->yAxis->setRange(valueMin-1,valueMax+1);
             ui->TOF_widget->graph(0)->setData(label_x,tofValue);
             ui->TOF_widget->replot();
 
@@ -1198,26 +1204,24 @@ void MainWindow::on_gaofan_pushButton_clicked()
 
 
 
-//!
-//! \brief MainWindow::on_realDis_out_radioButton_clicked
-//! 输出真实距离  5A 01 02 00 06 00
-void MainWindow::on_realDis_out_radioButton_clicked()
-{
-    //命令组帧
-    QString cmdStr = "5A 01 02 00 06 00";
-    emit sendSerialSignal(cmdStr);
-}
-//!
-//! \brief MainWindow::on_LSB_out_radioButton_clicked
-//!输出设置为LSB 5A 01 02 00 06 01
-void MainWindow::on_LSB_out_radioButton_clicked()
-{
-    //命令组帧
-    QString cmdStr = "5A 01 02 00 06 01";
-    emit sendSerialSignal(cmdStr);
-}
 
 
+//输出真实距离 与 原始LSB 的选项
+void MainWindow::on_comboBox_currentIndexChanged(int index)
+{
+    if(1 == index)    //输出真实距离  5A 01 02 00 06 00
+    {
+        //命令组帧
+        QString cmdStr = "5A 01 02 00 06 00";
+        emit sendSerialSignal(cmdStr);
+
+    }else if(2 == index)  //输出设置为LSB 5A 01 02 00 06 01
+    {
+        //命令组帧
+        QString cmdStr = "5A 01 02 00 06 01";
+        emit sendSerialSignal(cmdStr);
+    }
+}
 
 
 //!
@@ -1400,9 +1404,14 @@ void MainWindow::on_HistogramData_pushButton_clicked()
         isSaveHistData_flag = false;
         ui->HistogramData_pushButton->setText("HistData_save");
     }
-
-
-
 }
 
 
+
+
+//显示历史TOF图的窗口
+void MainWindow::on_showTOF_action_TOF_triggered()
+{
+    hisTof_dia.setModal(true);
+    hisTof_dia.show();
+}

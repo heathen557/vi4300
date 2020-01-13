@@ -7,6 +7,7 @@ receSerial_msg::receSerial_msg(QObject *parent) : QObject(parent)
     qDebug()<<" the thread begin "<<endl;
     isTranslateFlag = true;
     serial = NULL;
+    clearFlag = false;
 
     historgramVec.resize(2048);    //2048个数据
 
@@ -386,6 +387,12 @@ void receSerial_msg::readDataSlot()
                            StatisticData_vector.push_back(tmpTof_2);
 
 
+                           if(clearFlag)
+                           {
+                               PlotData_vector.clear();
+                               clearFlag = false;
+                           }
+
                            //PlotData_vector 对20000帧tof数据进行循环存储
                            int Plot_offset = PlotData_vector.size() - 20000;
                            if(Plot_offset >= 0)
@@ -394,6 +401,9 @@ void receSerial_msg::readDataSlot()
                            }
                            PlotData_vector.push_back(tmpTof_1);
                            PlotData_vector.push_back(tmpTof_2);
+
+
+
 
                        }
                        showResultMsg_signal(DistanceStr);
@@ -443,6 +453,11 @@ void receSerial_msg::readDataSlot()
                            }
                            StatisticData_vector.push_back(tmpTof);
 
+                           if(clearFlag)
+                           {
+                               PlotData_vector.clear();
+                               clearFlag = false;
+                           }
 
                            //PlotData_vector 对20000帧tof数据进行循环存储
                            int Plot_offset = PlotData_vector.size() - 20000;
@@ -532,9 +547,6 @@ void receSerial_msg::readDataSlot()
                }
 
 
-
-
-
                ////////////////////////////////////////////////////////单个命令处理代码块//////////////////////////////////////////////////////////////////////////////////////////
                m_buffer = m_buffer.right(totallen - len);                                                  //一帧处理完毕 减去该帧的长度
                totallen = m_buffer.size();
@@ -590,7 +602,7 @@ void receSerial_msg::sendSerialSlot(QString sendCmdStr)
     QString wholeStr;
     wholeStr = addCheck(sendCmdStr);     //添加校验
     sendArray = StringToByte(wholeStr);  //转换成字节数据
-    if(serial->isWritable())
+    if(serial!=NULL && serial->isWritable())
     {
         serial->write(sendArray);            //串口发送字节数据
         serial->flush();                     //清空缓冲区

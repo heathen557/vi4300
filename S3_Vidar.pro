@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     regisitersetdialog.cpp \
     mcuupgradedialog.cpp \
     hex.cpp \
-    highreact_dialog.cpp
+    highreact_dialog.cpp \
+    historytof_dialog.cpp
 
 HEADERS  += mainwindow.h \
     receserial_msg.h \
@@ -40,12 +41,14 @@ HEADERS  += mainwindow.h \
     regisitersetdialog.h \
     mcuupgradedialog.h \
     hex.h \
-    highreact_dialog.h
+    highreact_dialog.h \
+    historytof_dialog.h
 
 FORMS    += mainwindow.ui \
     regisitersetdialog.ui \
     mcuupgradedialog.ui \
-    highreact_dialog.ui
+    highreact_dialog.ui \
+    historytof_dialog.ui
 
 RESOURCES += \
     img.qrc

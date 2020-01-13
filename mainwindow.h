@@ -19,6 +19,7 @@
 #include<highreact_dialog.h>
 #include<QMenu>
 #include<QAction>
+#include<historytof_dialog.h>
 
 
 namespace Ui {
@@ -124,6 +125,11 @@ public:
     bool isSaveHistData_flag;
     QString saveHistDataFilePath;
 
+
+
+    //显示历史数据TOF 图
+    HistoryTof_Dialog hisTof_dia;
+
 private slots:
     void on_save_pushButton_clicked();
 
@@ -143,8 +149,6 @@ private slots:
 
     void stopTimer();
 
-    void on_selectSavePathtoolButton_clicked();
-
     void oneSecondTimer_slot();
 
     void on_TimingSave_checkBox_clicked();
@@ -159,10 +163,6 @@ private slots:
     void showResultMsg_slot(QStringList);    //接收界面的要显示的tof和peak信息,每一秒钟显示一次，然后清空暂存变量
 
     void plotShowTimer_slot();
-
-    void on_TOF_radioButton_clicked();
-
-    void on_Histogram_radioButton_clicked();
 
     void returnLinkInfo_slot(QString, bool);
 
@@ -196,10 +196,6 @@ private slots:
 
     void on_reStoreFactory_pushButton_clicked();
 
-    void on_realDis_out_radioButton_clicked();
-
-    void on_LSB_out_radioButton_clicked();
-
     void on_rowData_pushButton_clicked();
 
     void on_gaofan_pushButton_clicked();
@@ -220,6 +216,12 @@ private slots:
     float QStringToFloat(QString );
 
     QByteArray StringToByte(QString str);
+
+    void on_plot_comboBox_currentIndexChanged(int index);
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_showTOF_action_TOF_triggered();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close

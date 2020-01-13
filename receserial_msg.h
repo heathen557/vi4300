@@ -51,6 +51,8 @@ public:
 
     QVector<double> historgramVec;
 
+    bool clearFlag;
+
 signals:
     void dealedData_signal(QString,vector<double>,vector<double>);     //当前的tof值 ; plotData ; statisticData
 

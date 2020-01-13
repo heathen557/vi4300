@@ -34,7 +34,6 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolBox>
-#include <QtWidgets/QToolButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "qcustomplot.h"
@@ -48,8 +47,9 @@ public:
     QAction *Register_action;
     QAction *actionEnglish;
     QAction *action_china;
+    QAction *showTOF_action_TOF;
     QWidget *centralWidget;
-    QGridLayout *gridLayout_10;
+    QGridLayout *gridLayout_2;
     QSplitter *splitter;
     QToolBox *toolBox;
     QWidget *page;
@@ -114,8 +114,9 @@ public:
     QPushButton *reStoreFactory_pushButton;
     QGroupBox *groupBox_10;
     QGridLayout *gridLayout_3;
-    QRadioButton *realDis_out_radioButton;
-    QRadioButton *LSB_out_radioButton;
+    QSpacerItem *horizontalSpacer_12;
+    QComboBox *comboBox;
+    QSpacerItem *horizontalSpacer_13;
     QSpacerItem *verticalSpacer;
     QWidget *page_5;
     QGridLayout *gridLayout_17;
@@ -159,7 +160,6 @@ public:
     QSpacerItem *horizontalSpacer_5;
     QHBoxLayout *horizontalLayout_7;
     QLineEdit *savePath_lineEdit;
-    QToolButton *selectSavePathtoolButton;
     QHBoxLayout *horizontalLayout_4;
     QPushButton *save_pushButton;
     QLabel *timeInnterval_label;
@@ -170,21 +170,23 @@ public:
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_12;
     QHBoxLayout *horizontalLayout_2;
-    QRadioButton *TOF_radioButton;
+    QLabel *label_24;
+    QComboBox *plot_comboBox;
     QSpacerItem *horizontalSpacer_3;
-    QRadioButton *Histogram_radioButton;
-    QSpacerItem *horizontalSpacer_4;
     QStackedWidget *stackedWidget;
     QWidget *page_2;
-    QGridLayout *gridLayout_2;
+    QGridLayout *gridLayout_10;
     QCustomPlot *TOF_widget;
+    QHBoxLayout *horizontalLayout_5;
+    QPushButton *savePicture_pushButton;
+    QSpacerItem *horizontalSpacer_7;
     QWidget *page_3;
     QGridLayout *gridLayout_13;
     QCustomPlot *Histogram_widget;
-    QHBoxLayout *horizontalLayout_5;
-    QPushButton *savePicture_pushButton;
+    QHBoxLayout *horizontalLayout_9;
+    QPushButton *savePicture_pushButton_4;
     QPushButton *HistogramData_pushButton;
-    QSpacerItem *horizontalSpacer_7;
+    QSpacerItem *horizontalSpacer_4;
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menu_2;
@@ -217,12 +219,17 @@ public:
         actionEnglish->setObjectName(QStringLiteral("actionEnglish"));
         action_china = new QAction(MainWindow);
         action_china->setObjectName(QStringLiteral("action_china"));
+        showTOF_action_TOF = new QAction(MainWindow);
+        showTOF_action_TOF->setObjectName(QStringLiteral("showTOF_action_TOF"));
+        QIcon icon3;
+        icon3.addFile(QStringLiteral(":/new/image/images/monitor.svg"), QSize(), QIcon::Normal, QIcon::Off);
+        showTOF_action_TOF->setIcon(icon3);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        gridLayout_10 = new QGridLayout(centralWidget);
-        gridLayout_10->setSpacing(6);
-        gridLayout_10->setContentsMargins(11, 11, 11, 11);
-        gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         splitter = new QSplitter(centralWidget);
         splitter->setObjectName(QStringLiteral("splitter"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -239,7 +246,7 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 240, 581));
+        page->setGeometry(QRect(0, 0, 240, 585));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_7 = new QGridLayout(page);
@@ -440,7 +447,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 240, 581));
+        page_4->setGeometry(QRect(0, 0, 240, 585));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -553,16 +560,18 @@ public:
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        realDis_out_radioButton = new QRadioButton(groupBox_10);
-        realDis_out_radioButton->setObjectName(QStringLiteral("realDis_out_radioButton"));
-        realDis_out_radioButton->setChecked(true);
+        horizontalSpacer_12 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_3->addWidget(realDis_out_radioButton, 0, 0, 1, 1);
+        gridLayout_3->addItem(horizontalSpacer_12, 0, 0, 1, 1);
 
-        LSB_out_radioButton = new QRadioButton(groupBox_10);
-        LSB_out_radioButton->setObjectName(QStringLiteral("LSB_out_radioButton"));
+        comboBox = new QComboBox(groupBox_10);
+        comboBox->setObjectName(QStringLiteral("comboBox"));
 
-        gridLayout_3->addWidget(LSB_out_radioButton, 0, 1, 1, 1);
+        gridLayout_3->addWidget(comboBox, 0, 1, 1, 1);
+
+        horizontalSpacer_13 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_3->addItem(horizontalSpacer_13, 0, 2, 1, 1);
 
 
         gridLayout_14->addWidget(groupBox_10, 1, 0, 1, 1);
@@ -577,7 +586,7 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 240, 581));
+        page_5->setGeometry(QRect(0, 0, 240, 585));
         gridLayout_17 = new QGridLayout(page_5);
         gridLayout_17->setSpacing(6);
         gridLayout_17->setContentsMargins(11, 11, 11, 11);
@@ -794,11 +803,6 @@ public:
 
         horizontalLayout_7->addWidget(savePath_lineEdit);
 
-        selectSavePathtoolButton = new QToolButton(groupBox);
-        selectSavePathtoolButton->setObjectName(QStringLiteral("selectSavePathtoolButton"));
-
-        horizontalLayout_7->addWidget(selectSavePathtoolButton);
-
 
         gridLayout->addLayout(horizontalLayout_7, 3, 0, 1, 1);
 
@@ -857,29 +861,20 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        TOF_radioButton = new QRadioButton(groupBox_2);
-        TOF_radioButton->setObjectName(QStringLiteral("TOF_radioButton"));
-        TOF_radioButton->setChecked(true);
+        label_24 = new QLabel(groupBox_2);
+        label_24->setObjectName(QStringLiteral("label_24"));
 
-        horizontalLayout_2->addWidget(TOF_radioButton);
+        horizontalLayout_2->addWidget(label_24);
 
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        plot_comboBox = new QComboBox(groupBox_2);
+        plot_comboBox->setObjectName(QStringLiteral("plot_comboBox"));
+
+        horizontalLayout_2->addWidget(plot_comboBox);
+
+        horizontalSpacer_3 = new QSpacerItem(208, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_3);
 
-        Histogram_radioButton = new QRadioButton(groupBox_2);
-        Histogram_radioButton->setObjectName(QStringLiteral("Histogram_radioButton"));
-
-        horizontalLayout_2->addWidget(Histogram_radioButton);
-
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_2->addItem(horizontalSpacer_4);
-
-        horizontalLayout_2->setStretch(0, 1);
-        horizontalLayout_2->setStretch(1, 1);
-        horizontalLayout_2->setStretch(2, 1);
-        horizontalLayout_2->setStretch(3, 3);
 
         gridLayout_12->addLayout(horizontalLayout_2, 0, 0, 1, 1);
 
@@ -887,15 +882,37 @@ public:
         stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
         page_2 = new QWidget();
         page_2->setObjectName(QStringLiteral("page_2"));
-        gridLayout_2 = new QGridLayout(page_2);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_10 = new QGridLayout(page_2);
+        gridLayout_10->setSpacing(6);
+        gridLayout_10->setContentsMargins(11, 11, 11, 11);
+        gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
         TOF_widget = new QCustomPlot(page_2);
         TOF_widget->setObjectName(QStringLiteral("TOF_widget"));
 
-        gridLayout_2->addWidget(TOF_widget, 0, 0, 1, 1);
+        gridLayout_10->addWidget(TOF_widget, 0, 0, 1, 1);
 
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setSpacing(6);
+        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
+        savePicture_pushButton = new QPushButton(page_2);
+        savePicture_pushButton->setObjectName(QStringLiteral("savePicture_pushButton"));
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/new/image/images/ccSave.png"), QSize(), QIcon::Normal, QIcon::Off);
+        savePicture_pushButton->setIcon(icon4);
+
+        horizontalLayout_5->addWidget(savePicture_pushButton);
+
+        horizontalSpacer_7 = new QSpacerItem(338, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer_7);
+
+        horizontalLayout_5->setStretch(0, 1);
+        horizontalLayout_5->setStretch(1, 8);
+
+        gridLayout_10->addLayout(horizontalLayout_5, 1, 0, 1, 1);
+
+        gridLayout_10->setRowStretch(0, 18);
+        gridLayout_10->setRowStretch(1, 1);
         stackedWidget->addWidget(page_2);
         page_3 = new QWidget();
         page_3->setObjectName(QStringLiteral("page_3"));
@@ -908,44 +925,44 @@ public:
 
         gridLayout_13->addWidget(Histogram_widget, 0, 0, 1, 1);
 
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setSpacing(6);
+        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        savePicture_pushButton_4 = new QPushButton(page_3);
+        savePicture_pushButton_4->setObjectName(QStringLiteral("savePicture_pushButton_4"));
+        savePicture_pushButton_4->setIcon(icon4);
+
+        horizontalLayout_9->addWidget(savePicture_pushButton_4);
+
+        HistogramData_pushButton = new QPushButton(page_3);
+        HistogramData_pushButton->setObjectName(QStringLiteral("HistogramData_pushButton"));
+        HistogramData_pushButton->setIcon(icon4);
+
+        horizontalLayout_9->addWidget(HistogramData_pushButton);
+
+        horizontalSpacer_4 = new QSpacerItem(238, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_9->addItem(horizontalSpacer_4);
+
+
+        gridLayout_13->addLayout(horizontalLayout_9, 1, 0, 1, 1);
+
+        gridLayout_13->setRowStretch(0, 18);
+        gridLayout_13->setRowStretch(1, 1);
+        gridLayout_13->setRowMinimumHeight(0, 18);
+        gridLayout_13->setRowMinimumHeight(1, 1);
         stackedWidget->addWidget(page_3);
 
         gridLayout_12->addWidget(stackedWidget, 1, 0, 1, 1);
 
-        horizontalLayout_5 = new QHBoxLayout();
-        horizontalLayout_5->setSpacing(6);
-        horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        savePicture_pushButton = new QPushButton(groupBox_2);
-        savePicture_pushButton->setObjectName(QStringLiteral("savePicture_pushButton"));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral(":/new/image/images/ccSave.png"), QSize(), QIcon::Normal, QIcon::Off);
-        savePicture_pushButton->setIcon(icon3);
-
-        horizontalLayout_5->addWidget(savePicture_pushButton);
-
-        HistogramData_pushButton = new QPushButton(groupBox_2);
-        HistogramData_pushButton->setObjectName(QStringLiteral("HistogramData_pushButton"));
-        HistogramData_pushButton->setIcon(icon3);
-
-        horizontalLayout_5->addWidget(HistogramData_pushButton);
-
-        horizontalSpacer_7 = new QSpacerItem(338, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout_5->addItem(horizontalSpacer_7);
-
-        horizontalLayout_5->setStretch(0, 1);
-        horizontalLayout_5->setStretch(2, 8);
-
-        gridLayout_12->addLayout(horizontalLayout_5, 2, 0, 1, 1);
-
         splitter->addWidget(groupBox_2);
 
-        gridLayout_10->addWidget(splitter, 0, 0, 1, 1);
+        gridLayout_2->addWidget(splitter, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1249, 22));
+        menuBar->setGeometry(QRect(0, 0, 1249, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
@@ -974,13 +991,15 @@ public:
         menu_4->addAction(actionEnglish);
         menu_4->addAction(action_china);
         menu_3->addAction(actionMCU);
+        menu_3->addAction(showTOF_action_TOF);
         mainToolBar->addAction(Register_action);
         mainToolBar->addAction(actionMCU);
+        mainToolBar->addAction(showTOF_action_TOF);
 
         retranslateUi(MainWindow);
 
         toolBox->setCurrentIndex(0);
-        stackedWidget->setCurrentIndex(0);
+        stackedWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -993,6 +1012,7 @@ public:
         Register_action->setText(QApplication::translate("MainWindow", "\345\257\204\345\255\230\345\231\250\351\205\215\347\275\256", Q_NULLPTR));
         actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));
         action_china->setText(QApplication::translate("MainWindow", "\344\270\255\346\226\207\347\256\200\344\275\223", Q_NULLPTR));
+        showTOF_action_TOF->setText(QApplication::translate("MainWindow", "\345\216\206\345\217\262\346\225\260\346\215\256TOF\345\233\276", Q_NULLPTR));
         groupBox_5->setTitle(QApplication::translate("MainWindow", "\346\265\213\351\207\217\357\274\232", Q_NULLPTR));
         singleMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\215\225\346\254\241\346\265\213\351\207\217", Q_NULLPTR));
         delayMeasure_pushButton->setText(QApplication::translate("MainWindow", "\350\277\236\347\273\255\346\265\213\351\207\217", Q_NULLPTR));
@@ -1062,8 +1082,12 @@ public:
         send_outFactory_pushButton->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
         reStoreFactory_pushButton->setText(QApplication::translate("MainWindow", "\346\201\242\345\244\215\345\207\272\345\216\202\350\256\276\347\275\256", Q_NULLPTR));
         groupBox_10->setTitle(QApplication::translate("MainWindow", "\350\276\223\345\207\272\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
-        realDis_out_radioButton->setText(QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273", Q_NULLPTR));
-        LSB_out_radioButton->setText(QApplication::translate("MainWindow", "\345\216\237\345\247\213LSB", Q_NULLPTR));
+        comboBox->clear();
+        comboBox->insertItems(0, QStringList()
+         << QString()
+         << QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "\345\216\237\345\247\213LSB", Q_NULLPTR)
+        );
         toolBox->setItemText(toolBox->indexOf(page_4), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\351\205\215\347\275\256", Q_NULLPTR));
         groupBox_9->setTitle(QApplication::translate("MainWindow", "offset\346\240\241\345\207\2061\357\274\232", Q_NULLPTR));
         label_6->setText(QApplication::translate("MainWindow", "\350\267\235\347\246\273(mm):", Q_NULLPTR));
@@ -1089,15 +1113,20 @@ public:
         Transform_checkBox->setText(QApplication::translate("MainWindow", "\350\275\254\346\215\242", Q_NULLPTR));
         label_5->setText(QApplication::translate("MainWindow", "\344\277\235\345\255\230\346\226\207\344\273\266\350\267\257\345\276\204", Q_NULLPTR));
         TimingSave_checkBox->setText(QApplication::translate("MainWindow", "\345\256\232\346\227\266\344\277\235\345\255\230", Q_NULLPTR));
-        selectSavePathtoolButton->setText(QApplication::translate("MainWindow", "...", Q_NULLPTR));
         save_pushButton->setText(QApplication::translate("MainWindow", "\344\277\235\345\255\230", Q_NULLPTR));
         timeInnterval_label->setText(QApplication::translate("MainWindow", "\346\227\266\351\227\264\351\227\264\351\232\224(S):", Q_NULLPTR));
         timeInnterval_lineEdit->setText(QApplication::translate("MainWindow", "60", Q_NULLPTR));
         clear_pushButton->setText(QApplication::translate("MainWindow", "\346\270\205\347\251\272", Q_NULLPTR));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "\347\224\273\345\233\276", Q_NULLPTR));
-        TOF_radioButton->setText(QApplication::translate("MainWindow", "TOF\345\233\276", Q_NULLPTR));
-        Histogram_radioButton->setText(QApplication::translate("MainWindow", "\347\233\264\346\226\271\345\233\276", Q_NULLPTR));
+        label_24->setText(QApplication::translate("MainWindow", "\347\224\273\345\233\276\351\200\211\351\241\271\357\274\232", Q_NULLPTR));
+        plot_comboBox->clear();
+        plot_comboBox->insertItems(0, QStringList()
+         << QString()
+         << QApplication::translate("MainWindow", "TOF\345\233\276", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "\347\233\264\346\226\271\345\233\276", Q_NULLPTR)
+        );
         savePicture_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
+        savePicture_pushButton_4->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
         HistogramData_pushButton->setText(QApplication::translate("MainWindow", "HistData_save", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", Q_NULLPTR));
         menu_2->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
