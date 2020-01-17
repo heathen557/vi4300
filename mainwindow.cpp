@@ -151,7 +151,7 @@ void MainWindow::initConnect()
 {
     //接收数据线程 接收并处理数据后，将处理结果发送给主线程的信号与槽
     connect(receSerial_Obj,SIGNAL(dealedData_signal(QString,vector<double>,vector<double>)),this,SLOT(dealedData_slot(QString,vector<double>,vector<double>)));
-    connect(receSerial_Obj,SIGNAL(showResultMsg_signal(QStringList)),SLOT(showResultMsg_slot(QStringList)));
+    connect(receSerial_Obj,SIGNAL(showResultMsg_signal(QStringList,int)),SLOT(showResultMsg_slot(QStringList,int)));
     //link info slot
     connect(this,SIGNAL(openOrCloseSerial_signal(bool)),receSerial_Obj,SLOT(openOrCloseSerial_slot(bool)));
     connect(receSerial_Obj,SIGNAL(returnLinkInfo_signal(QString, bool)),this,SLOT(returnLinkInfo_slot(QString, bool)));
@@ -622,9 +622,9 @@ void MainWindow::on_save_pushButton_clicked()
 
 
 //接收串口处理线程发送来的用于界面上显示的字符串连接
-void MainWindow::showResultMsg_slot(QStringList DisStr)
+void MainWindow::showResultMsg_slot(QStringList DisStr, int pointNum)
 {
-    Count_num++;
+    Count_num += pointNum;
 
     allCountNum++;
 
@@ -656,7 +656,7 @@ void MainWindow::showResultMsg_slot(QStringList DisStr)
 void MainWindow::oneSecondTimer_slot()
 {
 //    int dps = Count_num - Count_num_lastSec;
-    int dps = Count_num * 8;
+    int dps = Count_num;
     if(dps > 0)
     {
         ui->DPS_label->setText(QString::number(dps));
@@ -679,10 +679,18 @@ void MainWindow::oneSecondTimer_slot()
             {
                 QString filePathName = ui->savePath_lineEdit->text() +"AutoSave" +QString::number(generateCnt)+".txt";  //文件名
                 QFile file(filePathName);
-                file.open(QIODevice::WriteOnly|QIODevice::Text);
-                QTextStream out(&file);
-                out<<textBox_Data.toLocal8Bit()<<endl;
-                file.close();
+                if(file.open(QIODevice::WriteOnly|QIODevice::Text))
+                {
+                    QTextStream out(&file);
+                    out<<textBox_Data.toLocal8Bit()<<endl;
+                    file.close();
+                }else
+                {
+                    QString strWarn = QStringLiteral("定时保存时路径存在问题，请检查路径！");
+                    QMessageBox::warning(NULL,QStringLiteral("提示"),strWarn);
+                }
+
+
 
                 generateCnt++;
                 ui->ResultHistory_textEdit->clear(); //清空控件上的数据
@@ -778,6 +786,11 @@ void MainWindow::on_plot_comboBox_currentIndexChanged(int index)
 
         plot_type = 1;
         ui->stackedWidget->setCurrentIndex(1);
+    }else if(0 == index)
+    {
+        if(plotShowTimer.isActive())
+            plotShowTimer.stop();
+
     }
 
 }
@@ -1414,4 +1427,62 @@ void MainWindow::on_showTOF_action_TOF_triggered()
 {
     hisTof_dia.setModal(true);
     hisTof_dia.show();
+}
+
+
+//!
+//! \brief MainWindow::on_manageMent_action_triggered
+//!设备数据库管理界面
+void MainWindow::on_manageMent_action_triggered()
+{
+    devManagement_dia.initSelect();
+    devManagement_dia.setModal(true);
+    devManagement_dia.show();
+}
+
+
+//!
+//! \brief MainWindow::on_savePicture_his_pushButton_clicked
+//!存储直方图数据
+void MainWindow::on_savePicture_his_pushButton_clicked()
+{
+    QString filePath;
+
+    QFileDialog *fileDialog = new QFileDialog(this);//创建一个QFileDialog对象，构造函数中的参数可以有所添加。
+    fileDialog->setWindowTitle(tr("Save As"));//设置文件保存对话框的标题
+    fileDialog->setAcceptMode(QFileDialog::AcceptSave);//设置文件对话框为保存模式
+    fileDialog->setFileMode(QFileDialog::AnyFile);//设置文件对话框弹出的时候显示任何文件，不论是文件夹还是文件
+    fileDialog->setViewMode(QFileDialog::Detail);//文件以详细的形式显示，显示文件名，大小，创建日期等信息；
+    fileDialog->setGeometry(10,30,300,200);//设置文件对话框的显示位置
+    fileDialog->setDirectory(".");//设置文件对话框打开时初始打开的位置
+    QStringList mimeTypeFilters;
+//    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
+    mimeTypeFilters<<"bmp(*.bmp)|*.bmp"<<"JPEG(*.jpg)|*.jpg"<<"Png(*.png)|*.png"<<"PDF(*.pdf)|*.pdf";
+    fileDialog->setNameFilters(mimeTypeFilters);
+
+
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        filePath = fileDialog->selectedFiles()[0];//得到用户选择的文件名
+        qDebug()<<" filePath = "<<filePath<<endl;
+        QString formatStr = filePath.right(3);
+        //保存直方图
+        if("bmp" == formatStr)
+        {
+            ui->Histogram_widget->saveBmp(filePath.toLatin1().data());
+        }else if("jpg" == formatStr)
+        {
+            ui->Histogram_widget->saveJpg(filePath.toLatin1().data());
+        }else if("png" == formatStr)
+        {
+            ui->Histogram_widget->savePng(filePath.toLatin1().data());
+        }else if("pdf" == formatStr)
+        {
+            ui->Histogram_widget->savePdf(filePath.toLatin1().data());
+        }
+
+    }else
+    {
+        return ;
+    }
 }

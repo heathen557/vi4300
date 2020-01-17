@@ -249,6 +249,7 @@ Makefile: S3_Vidar.pro ..\..\programInstall\QT580\5.8\msvc2015_64\mkspecs\win32-
 		..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Widgets.prl \
 		..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Gui.prl \
 		..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5SerialPort.prl \
+		..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Sql.prl \
 		..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Core.prl
 	$(QMAKE) -o Makefile S3_Vidar.pro -spec win32-msvc2015
 ..\..\programInstall\QT580\5.8\msvc2015_64\mkspecs\features\spec_pre.prf:
@@ -427,6 +428,7 @@ S3_Vidar.pro:
 ..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Widgets.prl:
 ..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Gui.prl:
 ..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5SerialPort.prl:
+..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Sql.prl:
 ..\..\programInstall\QT580\5.8\msvc2015_64\lib\Qt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -o Makefile S3_Vidar.pro -spec win32-msvc2015

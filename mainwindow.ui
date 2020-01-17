@@ -1113,7 +1113,7 @@ font: 9pt &quot;黑体&quot;;</string>
             <item row="1" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <item>
-               <widget class="QPushButton" name="savePicture_pushButton_4">
+               <widget class="QPushButton" name="savePicture_his_pushButton">
                 <property name="text">
                  <string>图片保存</string>
                 </property>
@@ -1194,9 +1194,16 @@ font: 9pt &quot;黑体&quot;;</string>
     <addaction name="actionMCU"/>
     <addaction name="showTOF_action_TOF"/>
    </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>数据库</string>
+    </property>
+    <addaction name="manageMent_action"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
+   <addaction name="menu_5"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="contextMenuPolicy">
@@ -1220,6 +1227,7 @@ font: 9pt &quot;黑体&quot;;</string>
    <addaction name="Register_action"/>
    <addaction name="actionMCU"/>
    <addaction name="showTOF_action_TOF"/>
+   <addaction name="manageMent_action"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionMCU">
@@ -1257,6 +1265,15 @@ font: 9pt &quot;黑体&quot;;</string>
    </property>
    <property name="text">
     <string>历史数据TOF图</string>
+   </property>
+  </action>
+  <action name="manageMent_action">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/new/image/images/dbContainerSymbol.png</normaloff>:/new/image/images/dbContainerSymbol.png</iconset>
+   </property>
+   <property name="text">
+    <string>设备管理</string>
    </property>
   </action>
  </widget>

@@ -321,7 +321,7 @@ void receSerial_msg::readDataSlot()
 
 
                        DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示
-                       showResultMsg_signal(DistanceStr);
+                       showResultMsg_signal(DistanceStr,1);
                        DistanceStr.clear();                            //发送完数据清空链表
 
                        int tof_int = tmpTof;  //转换为10进制显示 实时TOF的值   显示的第一个峰
@@ -353,8 +353,12 @@ void receSerial_msg::readDataSlot()
                        QString currentSingleData;
                        int tmpTof_1,tmpTof_2;
 
+                       int pointNum = 0;
+
                        for(int i=0; i<dataLen; i+=16)
                        {
+                           pointNum += 2;     //每次循坏会有两个点的数据  （因为是双峰）
+
                            //16进制数据转化为10进制 然后再转化成字符串
                            QString strTmp = dataStr.mid(i+2,2) + dataStr.mid(i+0,2);
                            tmpTof_1 = strTmp.toInt(NULL,16);
@@ -406,7 +410,7 @@ void receSerial_msg::readDataSlot()
 
 
                        }
-                       showResultMsg_signal(DistanceStr);
+                       emit showResultMsg_signal(DistanceStr,pointNum);
                        DistanceStr.clear();                            //发送完数据清空链表
 
 
@@ -426,9 +430,12 @@ void receSerial_msg::readDataSlot()
                        QString dataStr = single_Data.mid(10,dataLen);
                        QString currentSingleData;
                        int tmpTof = 0;
+                       int pointNum = 0;   //该包数据点的个数
 
                        for(int i=0; i<dataLen; i+=8)
                        {
+                           pointNum++;
+
                            //16进制数据转化为10进制 然后再转化成字符串
                            QString strTmp = dataStr.mid(i+2,2) + dataStr.mid(i+0,2);
                            tmpTof = strTmp.toInt(NULL,16);
@@ -469,7 +476,7 @@ void receSerial_msg::readDataSlot()
 
 
                        }
-                       showResultMsg_signal(DistanceStr);
+                       showResultMsg_signal(DistanceStr,pointNum);
                        DistanceStr.clear();                            //发送完数据清空链表
 
                        int tof_int = tmpTof;  //转换为10进制显示 实时TOF的值   显示的第一个峰
@@ -522,7 +529,7 @@ void receSerial_msg::readDataSlot()
 
                        //发送给主线程 在数据区显示原始数据
                        DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
-                       showResultMsg_signal(DistanceStr);
+                       showResultMsg_signal(DistanceStr,2048);
                        DistanceStr.clear();
                    }
                }
@@ -541,7 +548,7 @@ void receSerial_msg::readDataSlot()
                        QString dataStr = single_Data.mid(10,dataLen);
                        //发送给主线程 在数据区显示原始数据
                        DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
-                       showResultMsg_signal(DistanceStr);
+                       showResultMsg_signal(DistanceStr,4096);
                        DistanceStr.clear();
                    }
                }
@@ -556,7 +563,7 @@ void receSerial_msg::readDataSlot()
         else   //直接打印16进制的数据
         {
                 DistanceStr.append(m_buffer);
-                emit showResultMsg_signal(DistanceStr);                                                   //发送用于界面显示的数据  显示TOF或者PEAK 或者16进制数据
+                emit showResultMsg_signal(DistanceStr,0);                                                   //发送用于界面显示的数据  显示TOF或者PEAK 或者16进制数据
                 DistanceStr.clear();                                                                      //清空
                 m_buffer.clear();
                 totallen = m_buffer.size();

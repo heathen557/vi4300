@@ -48,6 +48,7 @@ public:
     QAction *actionEnglish;
     QAction *action_china;
     QAction *showTOF_action_TOF;
+    QAction *manageMent_action;
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QSplitter *splitter;
@@ -184,7 +185,7 @@ public:
     QGridLayout *gridLayout_13;
     QCustomPlot *Histogram_widget;
     QHBoxLayout *horizontalLayout_9;
-    QPushButton *savePicture_pushButton_4;
+    QPushButton *savePicture_his_pushButton;
     QPushButton *HistogramData_pushButton;
     QSpacerItem *horizontalSpacer_4;
     QMenuBar *menuBar;
@@ -192,6 +193,7 @@ public:
     QMenu *menu_2;
     QMenu *menu_4;
     QMenu *menu_3;
+    QMenu *menu_5;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -224,6 +226,11 @@ public:
         QIcon icon3;
         icon3.addFile(QStringLiteral(":/new/image/images/monitor.svg"), QSize(), QIcon::Normal, QIcon::Off);
         showTOF_action_TOF->setIcon(icon3);
+        manageMent_action = new QAction(MainWindow);
+        manageMent_action->setObjectName(QStringLiteral("manageMent_action"));
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/new/image/images/dbContainerSymbol.png"), QSize(), QIcon::Normal, QIcon::Off);
+        manageMent_action->setIcon(icon4);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_2 = new QGridLayout(centralWidget);
@@ -896,9 +903,9 @@ public:
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
         savePicture_pushButton = new QPushButton(page_2);
         savePicture_pushButton->setObjectName(QStringLiteral("savePicture_pushButton"));
-        QIcon icon4;
-        icon4.addFile(QStringLiteral(":/new/image/images/ccSave.png"), QSize(), QIcon::Normal, QIcon::Off);
-        savePicture_pushButton->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/new/image/images/ccSave.png"), QSize(), QIcon::Normal, QIcon::Off);
+        savePicture_pushButton->setIcon(icon5);
 
         horizontalLayout_5->addWidget(savePicture_pushButton);
 
@@ -928,15 +935,15 @@ public:
         horizontalLayout_9 = new QHBoxLayout();
         horizontalLayout_9->setSpacing(6);
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
-        savePicture_pushButton_4 = new QPushButton(page_3);
-        savePicture_pushButton_4->setObjectName(QStringLiteral("savePicture_pushButton_4"));
-        savePicture_pushButton_4->setIcon(icon4);
+        savePicture_his_pushButton = new QPushButton(page_3);
+        savePicture_his_pushButton->setObjectName(QStringLiteral("savePicture_his_pushButton"));
+        savePicture_his_pushButton->setIcon(icon5);
 
-        horizontalLayout_9->addWidget(savePicture_pushButton_4);
+        horizontalLayout_9->addWidget(savePicture_his_pushButton);
 
         HistogramData_pushButton = new QPushButton(page_3);
         HistogramData_pushButton->setObjectName(QStringLiteral("HistogramData_pushButton"));
-        HistogramData_pushButton->setIcon(icon4);
+        HistogramData_pushButton->setIcon(icon5);
 
         horizontalLayout_9->addWidget(HistogramData_pushButton);
 
@@ -971,6 +978,8 @@ public:
         menu_4->setObjectName(QStringLiteral("menu_4"));
         menu_3 = new QMenu(menuBar);
         menu_3->setObjectName(QStringLiteral("menu_3"));
+        menu_5 = new QMenu(menuBar);
+        menu_5->setObjectName(QStringLiteral("menu_5"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -986,15 +995,18 @@ public:
         menuBar->addAction(menu->menuAction());
         menuBar->addAction(menu_2->menuAction());
         menuBar->addAction(menu_3->menuAction());
+        menuBar->addAction(menu_5->menuAction());
         menu_2->addAction(Register_action);
         menu_2->addAction(menu_4->menuAction());
         menu_4->addAction(actionEnglish);
         menu_4->addAction(action_china);
         menu_3->addAction(actionMCU);
         menu_3->addAction(showTOF_action_TOF);
+        menu_5->addAction(manageMent_action);
         mainToolBar->addAction(Register_action);
         mainToolBar->addAction(actionMCU);
         mainToolBar->addAction(showTOF_action_TOF);
+        mainToolBar->addAction(manageMent_action);
 
         retranslateUi(MainWindow);
 
@@ -1013,6 +1025,7 @@ public:
         actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));
         action_china->setText(QApplication::translate("MainWindow", "\344\270\255\346\226\207\347\256\200\344\275\223", Q_NULLPTR));
         showTOF_action_TOF->setText(QApplication::translate("MainWindow", "\345\216\206\345\217\262\346\225\260\346\215\256TOF\345\233\276", Q_NULLPTR));
+        manageMent_action->setText(QApplication::translate("MainWindow", "\350\256\276\345\244\207\347\256\241\347\220\206", Q_NULLPTR));
         groupBox_5->setTitle(QApplication::translate("MainWindow", "\346\265\213\351\207\217\357\274\232", Q_NULLPTR));
         singleMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\215\225\346\254\241\346\265\213\351\207\217", Q_NULLPTR));
         delayMeasure_pushButton->setText(QApplication::translate("MainWindow", "\350\277\236\347\273\255\346\265\213\351\207\217", Q_NULLPTR));
@@ -1126,12 +1139,13 @@ public:
          << QApplication::translate("MainWindow", "\347\233\264\346\226\271\345\233\276", Q_NULLPTR)
         );
         savePicture_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
-        savePicture_pushButton_4->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
+        savePicture_his_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
         HistogramData_pushButton->setText(QApplication::translate("MainWindow", "HistData_save", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", Q_NULLPTR));
         menu_2->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
         menu_4->setTitle(QApplication::translate("MainWindow", "\350\257\255\350\250\200(language)", Q_NULLPTR));
         menu_3->setTitle(QApplication::translate("MainWindow", "\345\205\266\344\273\226", Q_NULLPTR));
+        menu_5->setTitle(QApplication::translate("MainWindow", "\346\225\260\346\215\256\345\272\223", Q_NULLPTR));
     } // retranslateUi
 
 };

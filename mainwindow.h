@@ -20,6 +20,7 @@
 #include<QMenu>
 #include<QAction>
 #include<historytof_dialog.h>
+#include<devmanagement_dialog.h>
 
 
 namespace Ui {
@@ -130,6 +131,8 @@ public:
     //显示历史数据TOF 图
     HistoryTof_Dialog hisTof_dia;
 
+    devManagement_Dialog devManagement_dia;
+
 private slots:
     void on_save_pushButton_clicked();
 
@@ -160,7 +163,7 @@ private slots:
     void on_portScan_pushButton_clicked();
 
 
-    void showResultMsg_slot(QStringList);    //接收界面的要显示的tof和peak信息,每一秒钟显示一次，然后清空暂存变量
+    void showResultMsg_slot(QStringList,int);    //接收界面的要显示的tof和peak信息,每一秒钟显示一次，然后清空暂存变量 ;该包数据中点的个数。接收到点个数增加即可
 
     void plotShowTimer_slot();
 
@@ -222,6 +225,10 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
 
     void on_showTOF_action_TOF_triggered();
+
+    void on_manageMent_action_triggered();    //设备数据库管理
+
+    void on_savePicture_his_pushButton_clicked();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close

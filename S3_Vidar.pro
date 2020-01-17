@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport
+QT       += core gui serialport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -32,7 +32,10 @@ SOURCES += main.cpp\
     mcuupgradedialog.cpp \
     hex.cpp \
     highreact_dialog.cpp \
-    historytof_dialog.cpp
+    historytof_dialog.cpp \
+    devmanagement_dialog.cpp \
+    pagewidget.cpp \
+    adddev_dialog.cpp
 
 HEADERS  += mainwindow.h \
     receserial_msg.h \
@@ -42,13 +45,19 @@ HEADERS  += mainwindow.h \
     mcuupgradedialog.h \
     hex.h \
     highreact_dialog.h \
-    historytof_dialog.h
+    historytof_dialog.h \
+    devmanagement_dialog.h \
+    pagewidget.h \
+    adddev_dialog.h
 
 FORMS    += mainwindow.ui \
     regisitersetdialog.ui \
     mcuupgradedialog.ui \
     highreact_dialog.ui \
-    historytof_dialog.ui
+    historytof_dialog.ui \
+    devmanagement_dialog.ui \
+    pagewidget.ui \
+    adddev_dialog.ui
 
 RESOURCES += \
     img.qrc
