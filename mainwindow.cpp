@@ -2,6 +2,10 @@
 #include "ui_mainwindow.h"
 
 
+//设备类型 0x01 芯视界内部测试用，不对外开放  所以获取设备类型时是根据名称来获取，而不是根据其序号
+#define VisionICS_USE
+
+
 Settings currentSettings;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -19,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_menu->addAction(m_China);
     m_menu->addAction(m_English);
 //    m_pTitleBar->m_pBtnMenu->setMenu(m_menu);
+
 
 
 
@@ -143,6 +148,13 @@ void MainWindow::initUINum()
 void MainWindow::initUILanguage()
 {
 //    ui->groupBox_3->setTitle(QStringLiteral("串口设置"));
+
+    ui->deviceType_comboBox->addItem("VI4300_Master");
+#ifdef VisionICS_USE
+    ui->deviceType_comboBox->addItem("VI4300_Slave");
+#endif
+    ui->deviceType_comboBox->addItem("LDS");
+
 }
 
 
@@ -1072,7 +1084,23 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
 
     //设备类型
-    QString deviceType = QString("%1").arg(ui->deviceType_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+    //  VI4300_Master =0x00;
+    //  VI4300_Slave = 0x01;
+    //  LDS = 0x02
+    QString deviceType_str = ui->deviceType_comboBox->currentText();
+    int TypeIndex = 0;
+    if("VI4300_Master" == deviceType_str)
+    {
+        TypeIndex = 0;
+    }else if("VI4300_Slave" == deviceType_str)
+    {
+        TypeIndex = 1;
+    }else if("LDS" == deviceType_str)
+    {
+        TypeIndex = 2;
+    }
+
+    QString deviceType = QString("%1").arg(TypeIndex,2,16,QLatin1Char('0'));
     qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
 
 
@@ -1265,7 +1293,7 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         ui->SN_lineEdit->setText(SN_str);
         ui->UUID_lineEdit->setText(UUID_str);
         ui->botelv_comboBox->setCurrentIndex(baudRateIndex);
-        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
+        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);    //VI4300_Slave（芯视界测试用，不对外开放）  0x01
         ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);
         ui->YULIU_lineEdit->setText(YuLiuStr);
         return;

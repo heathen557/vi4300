@@ -14,7 +14,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>VI4300配置程序</string>
+   <string>VI4300配置程序(v1.1)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="img.qrc">
@@ -54,7 +54,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -62,7 +62,7 @@ font: 10pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>240</width>
-          <height>585</height>
+          <height>581</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -324,7 +324,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>240</width>
-          <height>585</height>
+          <height>581</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -507,13 +507,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QComboBox" name="deviceType_comboBox">
-                  <item>
-                   <property name="text">
-                    <string>VI4300</string>
-                   </property>
-                  </item>
-                 </widget>
+                 <widget class="QComboBox" name="deviceType_comboBox"/>
                 </item>
                 <item row="4" column="0">
                  <widget class="QLabel" name="label_17">
@@ -664,7 +658,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
           <x>0</x>
           <y>0</y>
           <width>240</width>
-          <height>585</height>
+          <height>581</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1165,7 +1159,7 @@ font: 9pt &quot;黑体&quot;;</string>
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
