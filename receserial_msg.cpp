@@ -202,13 +202,13 @@ void receSerial_msg::readDataSlot()
                }
 
                //读取  距离offset 1 校准应答命令 5A 80 07 00 04 DD DD DD DD DD DD XX
-               //读取  距离offset 2 校准应答命令 5A 80 0B 00 04 DD DD DD DD DD DD XX
+               //读取  距离offset 2 校准应答命令 5A 80 0B 00 04 DD DD DD DD DD DD XX   现在只有这一个
                if("80" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
                    if("04" == secCmd)
                    {
-                       QString thirdCmd = single_Data.mid(4,2);   //根据长度判断是哪一种校准
+                       QString thirdCmd = single_Data.mid(4,2);   //根据长度判断是哪一种校准,此种校准取消
                        if("07" == thirdCmd)
                        {
                            QString firstCmd = "8004";
@@ -303,7 +303,6 @@ void receSerial_msg::readDataSlot()
 
                        QString dataStr = single_Data.mid(10,dataLen);
                        QString currentSingleData;
-
 
                        //16进制数据转化为10进制 然后再转化成字符串
                        QString strTmp = dataStr.mid(2,2) + dataStr.mid(0,2);
@@ -550,6 +549,62 @@ void receSerial_msg::readDataSlot()
                        DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
                        showResultMsg_signal(DistanceStr,4096);
                        DistanceStr.clear();
+                   }
+               }
+
+
+               //读取 单Pixel模式peak值数据
+//               1号     4号     7号   	10号  	13号	    16号
+//               2号     5号     8号	    11号	    14号	    17号
+//               3号     6号  	9号	    12号	    15号 	18号
+
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0B" == secCmd)
+                   {
+                       if(dataLen != 36*2)
+                       {
+                           qDebug()<<QStringLiteral("解析单Pixel模式peak值数据，长度出错, dataLen = ")<<dataLen;
+                       }
+
+                       vector<int> peak_vec;
+                       QString dataStr = single_Data.mid(10,dataLen);      //36个字节的数据
+                       for(int i=0; i<dataStr.length();i+=4)     //获取18个像素的值
+                       {
+                           QString data_str = dataStr.mid(i+2,2)+dataStr.mid(i,2);
+                           int peak_value = data_str.toInt(NULL,16);
+                           peak_vec.push_back(peak_value);
+
+                       }
+
+                       QString currentSingleData;
+                       //三行数据  分别写入到列表当中
+                       for(int i=0; i<18; i+=3)
+                       {
+                           int tmp_int = peak_vec[i];
+                           currentSingleData = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                           currentSingleData.append('  ');
+                           DistanceStr.append(currentSingleData);
+                       }
+                       for(int i=1; i<18; i+=3)
+                       {
+                           int tmp_int = peak_vec[i];
+                           currentSingleData = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                           currentSingleData.append('  ');
+                           DistanceStr.append(currentSingleData);
+                       }
+                       for(int i=2; i<18; i+=3)
+                       {
+                           int tmp_int = peak_vec[i];
+                           currentSingleData = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                           currentSingleData.append('  ');
+                           DistanceStr.append(currentSingleData);
+                       }
+                       showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
+                       DistanceStr.clear();
+
+
                    }
                }
 

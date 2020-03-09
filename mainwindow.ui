@@ -54,7 +54,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
@@ -72,47 +72,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
         <attribute name="label">
          <string>              基本设置</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_7" rowstretch="5,2,5,2">
-         <item row="1" column="0">
-          <widget class="QGroupBox" name="groupBox_5">
-           <property name="title">
-            <string>测量：</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_6">
-            <property name="topMargin">
-             <number>3</number>
-            </property>
-            <property name="bottomMargin">
-             <number>3</number>
-            </property>
-            <item row="0" column="0">
-             <layout class="QFormLayout" name="formLayout_5">
-              <item row="0" column="0">
-               <widget class="QPushButton" name="singleMeasure_pushButton">
-                <property name="text">
-                 <string>单次测量</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="delayMeasure_pushButton">
-                <property name="text">
-                 <string>连续测量</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="stopMeasure_pushButton">
-                <property name="text">
-                 <string>停止</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
+        <layout class="QGridLayout" name="gridLayout_18">
          <item row="0" column="0">
           <widget class="QGroupBox" name="groupBox_3">
            <property name="styleSheet">
@@ -192,6 +152,46 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                <widget class="QPushButton" name="openPort_pushButton">
                 <property name="text">
                  <string>Open</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QGroupBox" name="groupBox_5">
+           <property name="title">
+            <string>测量：</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="0">
+             <layout class="QFormLayout" name="formLayout_5">
+              <item row="0" column="0">
+               <widget class="QPushButton" name="singleMeasure_pushButton">
+                <property name="text">
+                 <string>单次测量</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="delayMeasure_pushButton">
+                <property name="text">
+                 <string>连续测量</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="stopMeasure_pushButton">
+                <property name="text">
+                 <string>停止</string>
                 </property>
                </widget>
               </item>
@@ -306,10 +306,26 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+           </layout>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QGroupBox" name="groupBox_6">
+           <property name="title">
+            <string>数据读取：</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
              <widget class="QPushButton" name="rowData_pushButton">
               <property name="text">
                <string>RawData</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QPushButton" name="pixel_read_pushButton">
+              <property name="text">
+               <string>Pixel</string>
               </property>
              </widget>
             </item>
@@ -509,14 +525,14 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 <item row="3" column="1">
                  <widget class="QComboBox" name="deviceType_comboBox"/>
                 </item>
-                <item row="4" column="0">
+                <item row="5" column="0">
                  <widget class="QLabel" name="label_17">
                   <property name="text">
                    <string>UUID:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="5" column="1">
                  <spacer name="horizontalSpacer_8">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -529,17 +545,17 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                   </property>
                  </spacer>
                 </item>
-                <item row="5" column="0" colspan="2">
+                <item row="6" column="0" colspan="2">
                  <widget class="QLineEdit" name="UUID_lineEdit"/>
                 </item>
-                <item row="6" column="0">
+                <item row="7" column="0">
                  <widget class="QLabel" name="label_19">
                   <property name="text">
                    <string>预留数据：</string>
                   </property>
                  </widget>
                 </item>
-                <item row="6" column="1">
+                <item row="7" column="1">
                  <spacer name="horizontalSpacer_11">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -552,27 +568,37 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                   </property>
                  </spacer>
                 </item>
-                <item row="7" column="0" colspan="2">
+                <item row="8" column="0" colspan="2">
                  <widget class="QLineEdit" name="YULIU_lineEdit"/>
                 </item>
-                <item row="8" column="0">
+                <item row="9" column="0">
                  <widget class="QPushButton" name="read_outFactory_pushButton">
                   <property name="text">
                    <string>读取</string>
                   </property>
                  </widget>
                 </item>
-                <item row="8" column="1">
+                <item row="9" column="1">
                  <widget class="QPushButton" name="send_outFactory_pushButton">
                   <property name="text">
                    <string>设置</string>
                   </property>
                  </widget>
                 </item>
-                <item row="9" column="0" colspan="2">
+                <item row="10" column="0" colspan="2">
                  <widget class="QPushButton" name="reStoreFactory_pushButton">
                   <property name="text">
                    <string>恢复出厂设置</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="Range_lineEdit"/>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_25">
+                  <property name="text">
+                   <string>量程(mm):</string>
                   </property>
                  </widget>
                 </item>
@@ -668,7 +694,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <item row="0" column="0">
           <widget class="QGroupBox" name="groupBox_9">
            <property name="title">
-            <string>offset校准1：</string>
+            <string>offset校准设置：</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_9">
             <item row="0" column="0">
@@ -693,19 +719,22 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
               <item row="1" column="1">
                <widget class="QLineEdit" name="K1_lineEdit"/>
               </item>
-              <item row="2" column="0">
-               <widget class="QPushButton" name="calibration_read_pushButton">
-                <property name="text">
-                 <string>读取</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <widget class="QPushButton" name="calibration_pushButton">
                 <property name="text">
                  <string>设置</string>
                 </property>
                </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_26">
+                <property name="text">
+                 <string>温度系数：</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="tempture_k_lineEdit"/>
               </item>
              </layout>
             </item>
@@ -715,7 +744,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <item row="1" column="0">
           <widget class="QGroupBox" name="groupBox_11">
            <property name="title">
-            <string>offset校准2：</string>
+            <string>offset校准结果读取：</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_16">
             <item row="0" column="0">
@@ -768,17 +797,10 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
               <item row="3" column="1">
                <widget class="QLineEdit" name="K2_lineEdit"/>
               </item>
-              <item row="4" column="0">
-               <widget class="QPushButton" name="calibration_read2_pushButton">
+              <item row="4" column="1">
+               <widget class="QPushButton" name="calibration_read_pushButton">
                 <property name="text">
                  <string>读取</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QPushButton" name="calibration_set2_pushButton">
-                <property name="text">
-                 <string>设置</string>
                 </property>
                </widget>
               </item>

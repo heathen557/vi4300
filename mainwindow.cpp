@@ -87,8 +87,6 @@ void MainWindow::SerialSetting_Enable_false()
     ui->read_outFactory_pushButton->setEnabled(false);
     ui->calibration_read_pushButton->setEnabled(false);
     ui->calibration_pushButton->setEnabled(false);
-    ui->calibration_read2_pushButton->setEnabled(false);
-    ui->calibration_set2_pushButton->setEnabled(false);
     ui->gaofan_pushButton->setEnabled(false);
     ui->groupBox_10->setEnabled(false);
     ui->singleMeasure_pushButton->setEnabled(false);
@@ -109,8 +107,6 @@ void MainWindow::SerialSetting_Enable_true()
     ui->read_outFactory_pushButton->setEnabled(true);
     ui->calibration_pushButton->setEnabled(true);
     ui->calibration_read_pushButton->setEnabled(true);
-    ui->calibration_read2_pushButton->setEnabled(true);
-    ui->calibration_set2_pushButton->setEnabled(true);
     ui->gaofan_pushButton->setEnabled(true);
     ui->groupBox_10->setEnabled(true);
     ui->singleMeasure_pushButton->setEnabled(true);
@@ -627,9 +623,6 @@ void MainWindow::on_save_pushButton_clicked()
     }
 
 
-
-
-
 }
 
 
@@ -813,9 +806,9 @@ void MainWindow::on_plot_comboBox_currentIndexChanged(int index)
 //!  请求RowData的数据 5A 00 01 10 0A DD..DD
 void MainWindow::on_rowData_pushButton_clicked()
 {
-    QString strData = QString("%1").arg(2,4096*2,16,QLatin1Char('0'));
-    QString cmdStr = "5A 00 01 10 0A ";
-    cmdStr.append(strData);
+//    QString strData = QString("%1").arg(2,4096*2,16,QLatin1Char('0'));
+    QString cmdStr = "5A 00 01 00 0A ";
+//    cmdStr.append(strData);
     emit sendSerialSignal(cmdStr);
 }
 
@@ -1043,10 +1036,11 @@ void MainWindow::on_read_outFactory_pushButton_clicked()
 //!  出厂设置 点击发送的槽函数  （SN 、 波特率）  5A 01 23 00 02 DD..DD XX
 //! SN :      4
 //! UUID :    12
-//! BAUDRATE: 4
+//! BAUDRATE: 1
 //! CAIJI:    1
 //! DeviceId :1
-//! YULIU:    15
+//! Ranges :  2
+//! YULIU:    13
 //! 界面上输入十六进制数据
 void MainWindow::on_send_outFactory_pushButton_clicked()
 {
@@ -1075,7 +1069,6 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     qDebug()<<" UUID_str = "<<UUID_str<<" len="<<UUID_str.size();
 
 //    //波特率
-
     QString banuRateStr = QString("%1").arg(ui->botelv_comboBox->currentIndex(),2,16,QLatin1Char('0'));
     qDebug()<<" baudRateStr = "<<banuRateStr<<" len="<<banuRateStr.size();
 
@@ -1104,22 +1097,29 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
 
 
+    //最大量程(单位 ：mm)
+    int measurement_range = ui->Range_lineEdit->text().toInt();
+    QString measurement_range_str_tmp = QString("%1").arg(measurement_range,4,16,QLatin1Char('0'));
+    QString measurement_range_str = measurement_range_str_tmp.mid(2,2) + measurement_range_str_tmp.mid(0,2);
+    qDebug()<<"measurement_range_str = "<<measurement_range_str;
+
+
     //预留数据
     QString YuLiu_num = ui->YULIU_lineEdit->text();
     QString YuLiu_str = YuLiu_num.replace(" ","");
-    if(YuLiu_str.length()>30)
+    if(YuLiu_str.length()>26)
     {
         QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("预留数据过长，请重新输入！"));
         return;
     }
     str = "00000000000000000000000000000000" + YuLiu_str;
-    YuLiu_str = str.right(30);
+    YuLiu_str = str.right(26);
     qDebug()<<" YuLiu_str = "<<YuLiu_str<<" len="<<YuLiu_str.length();
 
 
     //命令组帧
     QString cmdStr = "5A 01 23 00 02 ";
-    cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(YuLiu_str);
+    cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(measurement_range_str).append(YuLiu_str);
 
     emit sendSerialSignal(cmdStr);
 }
@@ -1199,10 +1199,13 @@ QString MainWindow::floatToQString(float fVal)
 //!
 //! \brief MainWindow::on_calibration_read_pushButton_clicked
 //!  出厂校准1 读取 点击槽函数  （真实距离）  5A 00 07 00 04 DD DD DD DD DD DD
+//!  出厂校准1 读取 点击槽函数  （真实距离）  5A 00 02 00 04 00
+//!
 void MainWindow::on_calibration_read_pushButton_clicked()
 {
     //命令组帧
-    QString cmdStr = "5A 00 07 00 04 00 00 00 00 00 00 ";
+//    QString cmdStr = "5A 00 0B 00 04 ";
+    QString cmdStr = "5A 00 01 00 04";
     emit sendSerialSignal(cmdStr);
 }
 
@@ -1210,11 +1213,19 @@ void MainWindow::on_calibration_read_pushButton_clicked()
 //!
 //! \brief MainWindow::on_calibration_pushButton_clicked
 //! 出厂校准1 点击设置的槽函数 （真实距离）  5A 01 07 00 04 DD DD DD DD DD DD
+//!     增加了一个字节，协议更改为          5A 01 08 00 04 DD DD DD DD DD DD DD
+//! 距离值：2byte
+//! 系数K：4byte
+//! 温度系数：1byte
 void MainWindow::on_calibration_pushButton_clicked()
 {
     int realDis = ui->realDisFactory_lineEdit->text().toInt();
     float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
-    int k1_num = int (K1 *1000);
+    int k1_num = int (K1 *1000);      //转化为10进制,扩大1000以后的数值
+
+    int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
+    QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));
+
 
 //    QString K1Str = floatToQString(K1);
 
@@ -1226,9 +1237,10 @@ void MainWindow::on_calibration_pushButton_clicked()
 //    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
 
     //命令组帧
-    QString cmdStr = "5A 01 07 00 04 ";
+    QString cmdStr = "5A 01 08 00 04 ";
     cmdStr.append(realDisStr);
     cmdStr.append(K1Str);
+    cmdStr.append(tempture_coeff_str);
     emit sendSerialSignal(cmdStr);
 
 }
@@ -1345,11 +1357,14 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
             QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
             int disTance = strDis.toInt(NULL,16);
             QString temptureStr = cmdAck.mid(6,2) + cmdAck.mid(4,2);
-            int tempture = temptureStr.toInt(NULL,16);
+            int tempture = temptureStr.toInt(NULL,16);          //这里是校准时温度 扩大100倍的值
             QString offsetStr = cmdAck.mid(10,2) + cmdAck.mid(8,2);
-            int offset = offsetStr.toInt(NULL,16);
-            QString k2_str = cmdAck.mid(12,8) ;
-            float K2 = QStringToFloat(k2_str);
+            int offset = offsetStr.toInt(NULL,16);              //这里是offset值，扩大10倍后的值
+
+            QString k2_str = cmdAck.mid(12,8) ;                 //K2的系数  这里是扩大1000倍以后的数值
+            QString k2_str_tmp = k2_str.mid(6,2)+k2_str.mid(4,2)+k2_str.mid(2,2)+k2_str.mid(0,2);
+            float K2 = k2_str_tmp.toInt(NULL,16)/1000.0;
+
 
             ui->realDisFactory_2_lineEdit->setText(QString::number(disTance));
             ui->temperature_lineEdit->setText(QString::number(tempture));
@@ -1514,3 +1529,21 @@ void MainWindow::on_savePicture_his_pushButton_clicked()
         return ;
     }
 }
+
+
+//!
+//! \brief MainWindow::on_pixel_read_pushButton_clicked
+//!//单pixel模式peak值读取: 5A 00 01 00 0B
+void MainWindow::on_pixel_read_pushButton_clicked()
+{
+    QString cmdStr = "5A 00 01 00 0B ";
+    emit sendSerialSignal(cmdStr);
+}
+
+
+
+
+
+
+
+

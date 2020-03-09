@@ -230,6 +230,8 @@ private slots:
 
     void on_savePicture_his_pushButton_clicked();
 
+    void on_pixel_read_pushButton_clicked();
+
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close
 
