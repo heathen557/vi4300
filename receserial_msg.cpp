@@ -202,7 +202,7 @@ void receSerial_msg::readDataSlot()
                }
 
                //读取  距离offset 1 校准应答命令 5A 80 07 00 04 DD DD DD DD DD DD XX
-               //读取  距离offset 2 校准应答命令 5A 80 0B 00 04 DD DD DD DD DD DD XX   现在只有这一个
+               //读取  距离offset 2 校准应答命令 5A 80 0C 00 04 DD DD DD DD DD DD XX   现在只有这一个
                if("80" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
@@ -215,7 +215,7 @@ void receSerial_msg::readDataSlot()
                            QString dataStr = single_Data.mid(10,dataLen);
                            emit AckCmdMain_signal(firstCmd,dataStr);
 
-                       }else if("0B" == thirdCmd )
+                       }else if("0C" == thirdCmd )
                        {
                            QString firstCmd = "8004";
                            QString dataStr = single_Data.mid(10,dataLen);
@@ -602,9 +602,32 @@ void receSerial_msg::readDataSlot()
                            DistanceStr.append(currentSingleData);
                        }
                        showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
-                       DistanceStr.clear();
+                       DistanceStr.clear();                   //发送完毕后清空字符队列
+                   }
+               }
 
 
+               //直接读寄存器相关
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0D"== secCmd)
+                   {
+                       QString firstCmd = "800D";
+                       QString dataStr = single_Data.mid(10,2);   //00真实距离 01：LSB
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+                   }
+               }
+
+               //直接写寄存器
+               if("81" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0D" == secCmd)
+                   {
+                       QString firstCmd= "810D";
+                       QString dataStr = "00";   //此参数暂时无意义
+                       emit AckCmdMain_signal(firstCmd,dataStr);
                    }
                }
 

@@ -93,6 +93,10 @@ void MainWindow::SerialSetting_Enable_false()
     ui->delayMeasure_pushButton->setEnabled(false);
     ui->stopMeasure_pushButton->setEnabled(false);
     ui->reStoreFactory_pushButton->setEnabled(false);
+    ui->rowData_pushButton->setEnabled(false);
+    ui->pixel_read_pushButton->setEnabled(false);
+    ui->singleReg_read_pushButton->setEnabled(false);
+    ui->singleReg_write_pushButton->setEnabled(false);
 
 }
 
@@ -113,6 +117,10 @@ void MainWindow::SerialSetting_Enable_true()
     ui->delayMeasure_pushButton->setEnabled(true);
     ui->stopMeasure_pushButton->setEnabled(true);
     ui->reStoreFactory_pushButton->setEnabled(true);
+    ui->rowData_pushButton->setEnabled(true);
+    ui->pixel_read_pushButton->setEnabled(true);
+    ui->singleReg_read_pushButton->setEnabled(true);
+    ui->singleReg_write_pushButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
@@ -1122,6 +1130,15 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(measurement_range_str).append(YuLiu_str);
 
     emit sendSerialSignal(cmdStr);
+
+
+
+    //清空lineEdit
+    ui->SN_lineEdit->clear();
+    ui->UUID_lineEdit->clear();
+    ui->Range_lineEdit->clear();
+    ui->YULIU_lineEdit->clear();
+
 }
 
 //!
@@ -1214,18 +1231,16 @@ void MainWindow::on_calibration_read_pushButton_clicked()
 //! \brief MainWindow::on_calibration_pushButton_clicked
 //! 出厂校准1 点击设置的槽函数 （真实距离）  5A 01 07 00 04 DD DD DD DD DD DD
 //!     增加了一个字节，协议更改为          5A 01 08 00 04 DD DD DD DD DD DD DD
+//!     增加了抗阳光一个字节，协议改为      5A 01 09 00 04 DD DD DD DD DD DD DD DD
 //! 距离值：2byte
 //! 系数K：4byte
 //! 温度系数：1byte
+//! 抗阳光强度设置：1byte
 void MainWindow::on_calibration_pushButton_clicked()
 {
     int realDis = ui->realDisFactory_lineEdit->text().toInt();
     float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
     int k1_num = int (K1 *1000);      //转化为10进制,扩大1000以后的数值
-
-    int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
-    QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));
-
 
 //    QString K1Str = floatToQString(K1);
 
@@ -1236,11 +1251,20 @@ void MainWindow::on_calibration_pushButton_clicked()
     QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);
 //    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
 
+
+    int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
+    QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));
+
+
+    int sunPower_index = ui->sunPower_set_comboBox->currentIndex();
+    QString sunPower_str = QString("%1").arg(sunPower_index,2,16,QLatin1Char('0'));
+
     //命令组帧
-    QString cmdStr = "5A 01 08 00 04 ";
+    QString cmdStr = "5A 01 09 00 04 ";
     cmdStr.append(realDisStr);
     cmdStr.append(K1Str);
     cmdStr.append(tempture_coeff_str);
+    cmdStr.append(sunPower_str);
     emit sendSerialSignal(cmdStr);
 
 }
@@ -1286,6 +1310,8 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 //!                             参数1：“8105”：高反校准成功，      参数2暂无
 //!                             参数1：“8106”：输出数据设置成功     参数2 00：原始距离 01：LSB
 //!                             参数1：“8004”：读取 距离offset校准信息  参数2 6个字节第一种校准，10个字节第二种校准
+//!                             参数1：“800D”：读取单个寄存器      参数2:4个字节 前两个字节为地址，后两个字节为值
+//!                             参数1："810D":写入单个寄存器成功   参数2：暂无
 void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
 {
     if("8102" ==returnCmdStr )
@@ -1293,20 +1319,25 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("出厂设置成功！"));
         return;
     }
-    else if("8002" == returnCmdStr)
+    else if("8002" == returnCmdStr)   //SN:4  UUID:12  baudRate:1   caiji:1   deviceType:1  range:2  yuliu:13
     {
         QString SN_str = cmdAck.mid(0,8);
         QString UUID_str = cmdAck.mid(8,24);
         int baudRateIndex = cmdAck.mid(32,2).toInt(NULL,16);
         int caijiIndex = cmdAck.mid(34,2).toInt(NULL,16);
         int deviceTypeIndex = cmdAck.mid(36,2).toInt(NULL,16);
-        QString YuLiuStr = cmdAck.mid(38,30);
+        QString range_str = cmdAck.mid(38,4);
+        QString range_tmp = range_str.mid(2,2)+ range_str.mid(0,2);
+        int range_int = range_tmp.toInt(NULL,16);
+
+        QString YuLiuStr = cmdAck.mid(42,26);
 
         ui->SN_lineEdit->setText(SN_str);
         ui->UUID_lineEdit->setText(UUID_str);
         ui->botelv_comboBox->setCurrentIndex(baudRateIndex);
-        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);    //VI4300_Slave（芯视界测试用，不对外开放）  0x01
-        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);
+        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
+        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);  //VI4300_Slave（芯视界测试用，不对外开放）  0x01
+        ui->Range_lineEdit->setText(QString::number(range_int));
         ui->YULIU_lineEdit->setText(YuLiuStr);
         return;
     }
@@ -1351,9 +1382,9 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
             ui->realDisFactory_lineEdit->setText(QString::number(disTance));
             ui->K1_lineEdit->setText(QString::number(K1));
 
-        }else if(20 == ackCmdLen)    //第二次校准  读取返回指令 信息
+        }else if(22 == ackCmdLen)    //第二次校准  读取返回指令 信息    新增了抗阳光强度信息的读取（1个字节）
         {
-            //  D1 D1 D2 D2 D3 D3 D4 D4 D4 D4
+            //  D1 D1 D2 D2 D3 D3 D4 D4 D4 D4 D5
             QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
             int disTance = strDis.toInt(NULL,16);
             QString temptureStr = cmdAck.mid(6,2) + cmdAck.mid(4,2);
@@ -1365,14 +1396,32 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
             QString k2_str_tmp = k2_str.mid(6,2)+k2_str.mid(4,2)+k2_str.mid(2,2)+k2_str.mid(0,2);
             float K2 = k2_str_tmp.toInt(NULL,16)/1000.0;
 
+            QString sunPower_str = cmdAck.mid(20,2);
+            int sunPower_int = sunPower_str.toInt(NULL,16);
 
             ui->realDisFactory_2_lineEdit->setText(QString::number(disTance));
             ui->temperature_lineEdit->setText(QString::number(tempture));
             ui->offset_jiaozhun_lineEdit->setText(QString::number(offset));
             ui->K2_lineEdit->setText(QString::number(K2));
+            ui->sunPower_read_lineEdit->setText(QString::number(sunPower_int));
 
         }
     }
+    else if("800D" == returnCmdStr)   //cmdAck ：四个字节 前两个字节为地址 后两个字节为值
+    {
+        QString addr_reg = cmdAck.mid(0,2);
+        QString value_reg = cmdAck.mid(2,2);
+        if(addr_reg == ui->singleReg_addr_lineEdit->text())
+        {
+            ui->singleReg_value_lineEdit->setText(value_reg);
+        }
+    }
+    else if("810D" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("寄存器写入成功！"));
+        return;
+    }
+
 }
 
 
@@ -1542,8 +1591,54 @@ void MainWindow::on_pixel_read_pushButton_clicked()
 
 
 
+//!
+//! \brief MainWindow::on_singleReg_read_pushButton_clicked
+//!单个寄存器的读取
+//!  5A 00 03 00 0D DD DD
+void MainWindow::on_singleReg_read_pushButton_clicked()
+{
+    QString single_addr = ui->singleReg_addr_lineEdit->text();
+    QString single_value = "00";
+
+    //地址1个字节 要判断长度
+    if(single_addr.length()!=2)
+    {
+        QMessageBox::warning(NULL,QStringLiteral("提示"),QStringLiteral("地址输入错误，请重新输入!"));
+        ui->singleReg_addr_lineEdit->clear();
+    }
+
+    QString cmdStr = "5A 00 03 00 0D ";
+    cmdStr.append(single_addr).append(single_value);
+    emit sendSerialSignal(cmdStr);
+}
 
 
 
+//!
+//! \brief MainWindow::on_singleReg_write_pushButton_clicked   //单个寄存去的写入
+//!  5A 01 03 00 0D DD DD
+void MainWindow::on_singleReg_write_pushButton_clicked()
+{
+    QString single_addr = ui->singleReg_addr_lineEdit->text();
+    QString single_value = ui->singleReg_value_lineEdit->text();
+    //地址1个字节 要判断长度
+    if(single_addr.length()!=2)
+    {
+        QMessageBox::warning(NULL,QStringLiteral("提示"),QStringLiteral("地址输入错误，请重新输入!"));
+        ui->singleReg_addr_lineEdit->clear();
+    }
+    //值1个字节 要判断长度
+    if(single_value.length()!=2)
+    {
+        QMessageBox::warning(NULL,QStringLiteral("提示"),QStringLiteral("地址输入错误，请重新输入!"));
+        ui->singleReg_value_lineEdit->clear();
+    }
 
+    QString cmdStr = "5A 01 03 00 0D";
+    cmdStr.append(single_addr).append(single_value);
+    emit sendSerialSignal(cmdStr);
 
+    //把值清空
+    ui->singleReg_value_lineEdit->clear();
+
+}
