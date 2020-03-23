@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 
+#define historgram_label_num 4096
+
 //设备类型 0x01 芯视界内部测试用，不对外开放  所以获取设备类型时是根据名称来获取，而不是根据其序号
 #define VisionICS_USE
 
@@ -131,14 +133,14 @@ void MainWindow::initUINum()
 //    ui->botelv_comboBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
 //    ui->botelv_comboBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
 
-    HistorgramTicks.resize(2048);
-    HistorgramLabels.resize(2048);
+    HistorgramTicks.resize(historgram_label_num);
+    HistorgramLabels.resize(historgram_label_num);
 
-    for(int i=0; i<2048; i++)
+    for(int i=0; i<historgram_label_num; i++)
     {
         HistorgramTicks[i] = i;
         HistorgramLabels[i] = "";
-        if(0 == i%100)         //相隔100个数据打一个标签
+        if(0 == i%200)         //相隔100个数据打一个标签
         {
             HistorgramLabels[i] = QString::number(i);
         }
@@ -894,7 +896,7 @@ void MainWindow::toShowHistogram_slot(QVector<double> numData,int yMax)
     textTicker->setTicks(HistorgramTicks, HistorgramLabels);
     ui->Histogram_widget->xAxis->setTicker(textTicker);
 
-    ui->Histogram_widget->xAxis->setRange(0,2048);
+    ui->Histogram_widget->xAxis->setRange(0,historgram_label_num);
     ui->Histogram_widget->yAxis->setRange(0,yMax);
 
     regen->setData(HistorgramTicks, numData);        //只不过第一个向量xTicks的每个元素表示“第几个柱子”，然后后面对应的values表示对应“柱子的值”
@@ -1609,7 +1611,7 @@ void MainWindow::on_singleReg_read_pushButton_clicked()
 
     QString cmdStr = "5A 00 03 00 0D ";
     cmdStr.append(single_addr).append(single_value);
-    emit sendSerialSignal(cmdStr);
+    emit sendSerialSignal(cmdStr);    
 }
 
 

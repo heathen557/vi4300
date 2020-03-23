@@ -487,14 +487,16 @@ void receSerial_msg::readDataSlot()
 
 
                //读取Historgram的 应答命令 5A 80 01 08 09 DD.DD XX
-               //直方图数据解析 横坐标：依次为1536，1024，512，0；1537，1025，513，1；  ......；2047,1535,1023,511
+               //直方图数据解析 横坐标：依次为1536，1024，512，0； 1537，1025，513，1；  ......； 2047,1535,1023,511
+               //                     更改 3072,2048,1024,0； 3073，2049，1025，1； .......；4095，3071，2047，1023        --2020:03：23
+
                //每个字节代表一个数,需要解析到相应的vector中
                if("80" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
                    if("09" == secCmd)
                    {
-                       if(dataLen != 2048*2)     //  0800 = 2048
+                       if(dataLen != 4096*2)     //  0800 = 2048
                        {
                            qDebug()<<QStringLiteral("解析直方图数据，长度出错,  dataLen = ")<<dataLen;
                        }
@@ -505,15 +507,15 @@ void receSerial_msg::readDataSlot()
                        for(int i=0; i<dataLen; i+=8)    //4个字节为一组
                        {
                            tmpValue = dataStr.mid(i,2).toInt(NULL,16);
-                           historgramVec[1536 + index] = tmpValue;
+                           historgramVec[3072 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            tmpValue = dataStr.mid(i+2,2).toInt(NULL,16);
-                           historgramVec[1024 + index] = tmpValue;
+                           historgramVec[2048 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            tmpValue = dataStr.mid(i+4,2).toInt(NULL,16);
-                           historgramVec[512 + index] = tmpValue;
+                           historgramVec[1024 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            tmpValue = dataStr.mid(i+6,2).toInt(NULL,16);
