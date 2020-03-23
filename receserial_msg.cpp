@@ -9,7 +9,7 @@ receSerial_msg::receSerial_msg(QObject *parent) : QObject(parent)
     serial = NULL;
     clearFlag = false;
 
-    historgramVec.resize(2048);    //2048个数据
+    historgramVec.resize(4096);    //2048个数据
 
 
 }
@@ -496,9 +496,9 @@ void receSerial_msg::readDataSlot()
                    QString secCmd = single_Data.mid(8,2);
                    if("09" == secCmd)
                    {
-                       if(dataLen != 4096*2)     //  0800 = 2048
+                       if(dataLen != 8192)     //  0800 = 2048
                        {
-                           qDebug()<<QStringLiteral("解析直方图数据，长度出错,  dataLen = ")<<dataLen;
+                           qDebug()<<QStringLiteral("解析直方图数据，长度出错, 这里的 dataLen = ")<<dataLen;
                        }
                        QString dataStr = single_Data.mid(10,dataLen);
                        int index = 0;
@@ -530,7 +530,7 @@ void receSerial_msg::readDataSlot()
 
                        //发送给主线程 在数据区显示原始数据
                        DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
-                       showResultMsg_signal(DistanceStr,2048);
+                       showResultMsg_signal(DistanceStr,4096);
                        DistanceStr.clear();
                    }
                }

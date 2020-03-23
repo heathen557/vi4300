@@ -271,7 +271,7 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 240, 581));
+        page->setGeometry(QRect(0, 0, 247, 581));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_18 = new QGridLayout(page);
@@ -482,7 +482,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 240, 581));
+        page_4->setGeometry(QRect(0, 0, 247, 581));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -682,7 +682,7 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 240, 581));
+        page_5->setGeometry(QRect(0, 0, 247, 581));
         gridLayout_17 = new QGridLayout(page_5);
         gridLayout_17->setSpacing(6);
         gridLayout_17->setContentsMargins(11, 11, 11, 11);
@@ -1128,7 +1128,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.1)", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.2)", Q_NULLPTR));
         actionMCU->setText(QApplication::translate("MainWindow", "MCU\345\215\207\347\272\247", Q_NULLPTR));
         Register_action->setText(QApplication::translate("MainWindow", "\345\257\204\345\255\230\345\231\250\351\205\215\347\275\256", Q_NULLPTR));
         actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));

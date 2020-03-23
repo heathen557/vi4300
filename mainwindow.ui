@@ -14,7 +14,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>VI4300配置程序(v1.1)</string>
+   <string>VI4300配置程序(v1.2)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="img.qrc">
@@ -61,7 +61,7 @@ font: 10pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>240</width>
+          <width>247</width>
           <height>581</height>
          </rect>
         </property>
@@ -339,7 +339,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>240</width>
+          <width>247</width>
           <height>581</height>
          </rect>
         </property>
@@ -736,7 +736,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>240</width>
+          <width>247</width>
           <height>581</height>
          </rect>
         </property>
