@@ -49,7 +49,9 @@ public:
 
     vector<double> PlotData_vector;          //plot相关 画图
 
-    QVector<double> historgramVec;
+    QVector<double> historgramVec_2048;
+
+    QVector<double> historgramVec_4096;
 
     bool clearFlag;
 
@@ -86,6 +88,11 @@ signals:
     //! \brief toShowHistogram_signal
     //!将脂肪乳数据解析以后发送给主界面进行直方图显示  参数1：1-2048 个数  参数2 Y轴的最大值
     void toShowHistogram_signal(QVector<double> ,int );
+
+    //!
+    //! \brief toShowHistogram_signal
+    //!将脂肪乳数据解析以后发送给主界面进行直方图显示  参数1：1-4096 个数  参数2 Y轴的最大值
+    void toShowHistogram_4096_signal(QVector<double> ,int );
 
 public slots:
     void readDataSlot();

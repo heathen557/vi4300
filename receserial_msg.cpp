@@ -9,7 +9,8 @@ receSerial_msg::receSerial_msg(QObject *parent) : QObject(parent)
     serial = NULL;
     clearFlag = false;
 
-    historgramVec.resize(4096);    //2048个数据
+    historgramVec_2048.resize(2048);    //2048个数据
+    historgramVec_4096.resize(4096);   //4096个数据
 
 
 }
@@ -20,6 +21,7 @@ void receSerial_msg::openOrCloseSerial_slot(bool flag)
     {
         serial = new QSerialPort(this);
         connect(serial, SIGNAL(readyRead()), this, SLOT(readDataSlot()),Qt::DirectConnection);
+
     }
 
     if(true == flag)   //打开串口
@@ -209,18 +211,22 @@ void receSerial_msg::readDataSlot()
                    if("04" == secCmd)
                    {
                        QString thirdCmd = single_Data.mid(4,2);   //根据长度判断是哪一种校准,此种校准取消
-                       if("07" == thirdCmd)
-                       {
-                           QString firstCmd = "8004";
-                           QString dataStr = single_Data.mid(10,dataLen);
-                           emit AckCmdMain_signal(firstCmd,dataStr);
+                       QString firstCmd = "8004";
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       emit AckCmdMain_signal(firstCmd,dataStr);
 
-                       }else if("0C" == thirdCmd )
-                       {
-                           QString firstCmd = "8004";
-                           QString dataStr = single_Data.mid(10,dataLen);
-                           emit AckCmdMain_signal(firstCmd,dataStr);
-                       }
+//                       if("07" == thirdCmd)
+//                       {
+//                           QString firstCmd = "8004";
+//                           QString dataStr = single_Data.mid(10,dataLen);
+//                           emit AckCmdMain_signal(firstCmd,dataStr);
+
+//                       }else if("0C" == thirdCmd )
+//                       {
+//                           QString firstCmd = "8004";
+//                           QString dataStr = single_Data.mid(10,dataLen);
+//                           emit AckCmdMain_signal(firstCmd,dataStr);
+//                       }
 
                    }
                }
@@ -247,17 +253,20 @@ void receSerial_msg::readDataSlot()
                    if("04" == secCmd)
                    {
                        QString thirdCmd = single_Data.mid(4,2);
-                       if("07" == thirdCmd)   //根据长度来判断是第一次校准的返回命令
-                       {
-                           QString firstCmd = "8104";
-                           QString dataStr= "07";
-                           emit AckCmdMain_signal(firstCmd,dataStr);
-                       }else if("0B" == thirdCmd)
-                       {
-                           QString firstCmd = "8104";
-                           QString dataStr= "0B";
-                           emit AckCmdMain_signal(firstCmd,dataStr);
-                       }
+                       QString firstCmd = "8104";
+                       QString dataStr= "07";
+                       emit AckCmdMain_signal(firstCmd,dataStr);
+//                       if("07" == thirdCmd)   //根据长度来判断是第一次校准的返回命令
+//                       {
+//                           QString firstCmd = "8104";
+//                           QString dataStr= "07";
+//                           emit AckCmdMain_signal(firstCmd,dataStr);
+//                       }else if("0B" == thirdCmd)
+//                       {
+//                           QString firstCmd = "8104";
+//                           QString dataStr= "0B";
+//                           emit AckCmdMain_signal(firstCmd,dataStr);
+//                       }
 
                    }
                }
@@ -496,9 +505,9 @@ void receSerial_msg::readDataSlot()
                    QString secCmd = single_Data.mid(8,2);
                    if("09" == secCmd)
                    {
-                       if(dataLen != 8192)     //  0800 = 2048
+                       if(dataLen != 2048*2)     //  0800 = 2048
                        {
-                           qDebug()<<QStringLiteral("解析直方图数据，长度出错, 这里的 dataLen = ")<<dataLen;
+                           qDebug()<<QStringLiteral("解析4300直方图数据，长度出错, 这里的 dataLen = ")<<dataLen;
                        }
                        QString dataStr = single_Data.mid(10,dataLen);
                        int index = 0;
@@ -507,30 +516,30 @@ void receSerial_msg::readDataSlot()
                        for(int i=0; i<dataLen; i+=8)    //4个字节为一组
                        {
                            tmpValue = dataStr.mid(i,2).toInt(NULL,16);
-                           historgramVec[3072 + index] = tmpValue;
+                           historgramVec_2048[1536 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            tmpValue = dataStr.mid(i+2,2).toInt(NULL,16);
-                           historgramVec[2048 + index] = tmpValue;
+                           historgramVec_2048[1024 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            tmpValue = dataStr.mid(i+4,2).toInt(NULL,16);
-                           historgramVec[1024 + index] = tmpValue;
+                           historgramVec_2048[512 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            tmpValue = dataStr.mid(i+6,2).toInt(NULL,16);
-                           historgramVec[0 + index] = tmpValue;
+                           historgramVec_2048[0 + index] = tmpValue;
                            maxValue = tmpValue>maxValue ? tmpValue:maxValue;
 
                            index++;
                        }
 
                        //发送给主线程进行显示直方图
-                       emit toShowHistogram_signal(historgramVec,maxValue);
+                       emit toShowHistogram_signal(historgramVec_2048,maxValue);
 
                        //发送给主线程 在数据区显示原始数据
                        DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
-                       showResultMsg_signal(DistanceStr,4096);
+                       showResultMsg_signal(DistanceStr,2048);
                        DistanceStr.clear();
                    }
                }
@@ -563,7 +572,7 @@ void receSerial_msg::readDataSlot()
                if("80" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
-                   if("0B" == secCmd)
+                   if("0F" == secCmd)
                    {
                        if(dataLen != 36*2)
                        {
@@ -581,28 +590,38 @@ void receSerial_msg::readDataSlot()
                        }
 
                        QString currentSingleData;
+
                        //三行数据  分别写入到列表当中
+                       currentSingleData.clear();
                        for(int i=0; i<18; i+=3)
                        {
                            int tmp_int = peak_vec[i];
-                           currentSingleData = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                           currentSingleData.append('  ');
-                           DistanceStr.append(currentSingleData);
+                           QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                           currentSingleData.append(tmp);
+                           currentSingleData.append("   ");
+
                        }
+                       DistanceStr.append(currentSingleData);
+                       currentSingleData.clear();
                        for(int i=1; i<18; i+=3)
                        {
                            int tmp_int = peak_vec[i];
-                           currentSingleData = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                           currentSingleData.append('  ');
-                           DistanceStr.append(currentSingleData);
+                           QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                           currentSingleData.append(tmp);
+                           currentSingleData.append("   ");
+
                        }
+                       DistanceStr.append(currentSingleData);
+                       currentSingleData.clear();
                        for(int i=2; i<18; i+=3)
                        {
                            int tmp_int = peak_vec[i];
-                           currentSingleData = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                           currentSingleData.append('  ');
-                           DistanceStr.append(currentSingleData);
+                           QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                           currentSingleData.append(tmp);
+                           currentSingleData.append("   ");
+
                        }
+                       DistanceStr.append(currentSingleData);
                        showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
                        DistanceStr.clear();                   //发送完毕后清空字符队列
                    }
@@ -632,6 +651,58 @@ void receSerial_msg::readDataSlot()
                        emit AckCmdMain_signal(firstCmd,dataStr);
                    }
                }
+
+               //读取Historgram的 应答命令 5A 80 01 08 09 DD.DD XX
+               //直方图数据解析 横坐标：依次为1536，1024，512，0； 1537，1025，513，1；  ......； 2047,1535,1023,511
+               //                     更改 3072,2048,1024,0； 3073，2049，1025，1； .......；4095，3071，2047，1023        --2020:03：23
+
+               //每个字节代表一个数,需要解析到相应的vector中
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("0E" == secCmd)
+                   {
+                       if(dataLen != 4096*2)     //  0800 = 2048
+                       {
+                           qDebug()<<QStringLiteral("解析CASSET直方图数据, 这里的 dataLen = ")<<dataLen;
+                       }
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       int index = 0;
+                       int tmpValue = 0;
+                       int maxValue = 0;
+                       for(int i=0; i<dataLen; i+=8)    //4个字节为一组
+                       {
+                           tmpValue = dataStr.mid(i,2).toInt(NULL,16);
+                           historgramVec_4096[3072 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           tmpValue = dataStr.mid(i+2,2).toInt(NULL,16);
+                           historgramVec_4096[2048 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           tmpValue = dataStr.mid(i+4,2).toInt(NULL,16);
+                           historgramVec_4096[1024 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           tmpValue = dataStr.mid(i+6,2).toInt(NULL,16);
+                           historgramVec_4096[0 + index] = tmpValue;
+                           maxValue = tmpValue>maxValue ? tmpValue:maxValue;
+
+                           index++;
+                       }
+
+                       //发送给主线程进行显示直方图
+                       emit toShowHistogram_4096_signal(historgramVec_4096,maxValue);
+
+                       //发送给主线程 在数据区显示原始数据
+                       DistanceStr.append(dataStr);   //原始数据存放入链表中,供数据区显示
+                       showResultMsg_signal(DistanceStr,4096);
+                       DistanceStr.clear();
+                   }
+
+               }
+
+
 
 
                ////////////////////////////////////////////////////////单个命令处理代码块//////////////////////////////////////////////////////////////////////////////////////////

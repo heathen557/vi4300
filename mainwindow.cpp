@@ -2,7 +2,8 @@
 #include "ui_mainwindow.h"
 
 
-#define historgram_label_num 4096
+#define historgram_label_num_2048 2048
+#define historgram_label_num_4096 4096
 
 //设备类型 0x01 芯视界内部测试用，不对外开放  所以获取设备类型时是根据名称来获取，而不是根据其序号
 #define VisionICS_USE
@@ -15,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->groupBox_11->setVisible(false);
 
     initUILanguage();
     allCountNum = 0;
@@ -133,16 +136,16 @@ void MainWindow::initUINum()
 //    ui->botelv_comboBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
 //    ui->botelv_comboBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
 
-    HistorgramTicks.resize(historgram_label_num);
-    HistorgramLabels.resize(historgram_label_num);
+    HistorgramTicks_2048.resize(historgram_label_num_2048);
+    HistorgramLabels_2048.resize(historgram_label_num_2048);
 
-    for(int i=0; i<historgram_label_num; i++)
+    for(int i=0; i<historgram_label_num_2048; i++)
     {
-        HistorgramTicks[i] = i;
-        HistorgramLabels[i] = "";
-        if(0 == i%200)         //相隔100个数据打一个标签
+        HistorgramTicks_2048[i] = i;
+        HistorgramLabels_2048[i] = "";
+        if(0 == i%100)         //相隔100个数据打一个标签
         {
-            HistorgramLabels[i] = QString::number(i);
+            HistorgramLabels_2048[i] = QString::number(i);
         }
     }
 
@@ -197,6 +200,7 @@ void MainWindow::initConnect()
 
     //画统计直方图
     connect(receSerial_Obj,SIGNAL(toShowHistogram_signal(QVector<double>,int)),this,SLOT(toShowHistogram_slot(QVector<double>,int)));
+    connect(receSerial_Obj,SIGNAL(toShowHistogram_4096_signal(QVector<double>,int)),this,SLOT(toShowHistogram_4096_slot(QVector<double>,int)));
 
     //高反设置的串口数据
     connect(&highReactDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
@@ -225,8 +229,6 @@ void MainWindow::initStatisticUI()
     ui->TOF_widget->graph(0)->setName(QStringLiteral("TOF"));
 
 //Histgram统计相关
-//    ui->Histogram_widget->setBackground(QBrush(gradient));//设置图表背景（用画刷设置）
-
     regen = new QCPBars(ui->Histogram_widget->xAxis, ui->Histogram_widget->yAxis);
     regen->setAntialiased(false);
     regen->setStackingGap(2);
@@ -252,14 +254,12 @@ void MainWindow::initStatisticUI()
     ui->Histogram_widget->yAxis->setBasePen(QPen(Qt::black));
     ui->Histogram_widget->yAxis->setTickPen(QPen(Qt::black));
     ui->Histogram_widget->yAxis->setSubTickPen(QPen(Qt::black));//设置SubTick颜色，SubTick指的是轴上的
-                                                      //刻度线
+//刻度线
     ui->Histogram_widget->yAxis->grid()->setSubGridVisible(true);
     ui->Histogram_widget->yAxis->setTickLabelColor(Qt::black);//设置标记标签颜色（y轴标记标签）
     ui->Histogram_widget->yAxis->setLabelColor(Qt::black);//设置标签颜色（y轴右边标签）
     ui->Histogram_widget->yAxis->grid()->setPen(QPen(QColor(130, 130, 130), 0, Qt::SolidLine));
     ui->Histogram_widget->yAxis->grid()->setSubGridPen(QPen(QColor(130, 130, 130), 0, Qt::DotLine));
-
-
     // setup legend: 设置标签
 //    ui->Histogram_widget->legend->setVisible(true);
     ui->Histogram_widget->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignHCenter);
@@ -269,6 +269,49 @@ void MainWindow::initStatisticUI()
     legendFont.setPointSize(10);
     ui->Histogram_widget->legend->setFont(legendFont);
     ui->Histogram_widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);//设置 可拖动，可放大缩
+
+
+    //cassset  4096 直方图相关设置
+
+    regen_4096 = new QCPBars(ui->casset_historgrm_widget->xAxis, ui->casset_historgrm_widget->yAxis);
+    regen_4096->setAntialiased(false);
+    regen_4096->setStackingGap(2);
+    regen_4096->setName("Regenerative");
+    regen_4096->setPen(QPen(QColor(0, 168, 140).lighter(130)));
+    regen_4096->setBrush(QColor(0, 168, 140));
+
+    ui->casset_historgrm_widget->xAxis->setTickLabelRotation(60);//设置标签角度旋转
+    ui->casset_historgrm_widget->xAxis->setSubTicks(false);//设置是否显示子标签
+    ui->casset_historgrm_widget->xAxis->setTickLength(0, 4);
+    ui->casset_historgrm_widget->xAxis->setRange(0, 500);     //设置x轴区间
+    ui->casset_historgrm_widget->xAxis->setBasePen(QPen(Qt::black));
+    ui->casset_historgrm_widget->xAxis->setTickPen(QPen(Qt::black));
+    ui->casset_historgrm_widget->xAxis->grid()->setVisible(true);//设置网格是否显示
+    ui->casset_historgrm_widget->xAxis->grid()->setPen(QPen(QColor(130, 130, 130), 0, Qt::DotLine));
+    ui->casset_historgrm_widget->xAxis->setTickLabelColor(Qt::black);//设置标记标签颜色
+    ui->casset_historgrm_widget->xAxis->setLabelColor(Qt::black);
+
+    // prepare y axis: //设置y轴
+    ui->casset_historgrm_widget->yAxis->setRange(0, 800);
+    ui->casset_historgrm_widget->yAxis->setPadding(5); // a bit more space to the left border 设置左边留空间
+//    ui->Histogram_widget->yAxis->setLabel("Power Consumption in\nKilowatts per Capita (2007)");
+    ui->casset_historgrm_widget->yAxis->setBasePen(QPen(Qt::black));
+    ui->casset_historgrm_widget->yAxis->setTickPen(QPen(Qt::black));
+    ui->casset_historgrm_widget->yAxis->setSubTickPen(QPen(Qt::black));//设置SubTick颜色，SubTick指的是轴上的
+//刻度线
+    ui->casset_historgrm_widget->yAxis->grid()->setSubGridVisible(true);
+    ui->casset_historgrm_widget->yAxis->setTickLabelColor(Qt::black);//设置标记标签颜色（y轴标记标签）
+    ui->casset_historgrm_widget->yAxis->setLabelColor(Qt::black);//设置标签颜色（y轴右边标签）
+    ui->casset_historgrm_widget->yAxis->grid()->setPen(QPen(QColor(130, 130, 130), 0, Qt::SolidLine));
+    ui->casset_historgrm_widget->yAxis->grid()->setSubGridPen(QPen(QColor(130, 130, 130), 0, Qt::DotLine));
+    // setup legend: 设置标签
+//    ui->Histogram_widget->legend->setVisible(true);
+    ui->casset_historgrm_widget->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignHCenter);
+    ui->casset_historgrm_widget->legend->setBrush(QColor(255, 255, 255, 100));
+    ui->casset_historgrm_widget->legend->setBorderPen(Qt::NoPen);
+
+    ui->casset_historgrm_widget->legend->setFont(legendFont);
+    ui->casset_historgrm_widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);//设置 可拖动，可放大缩
 
 }
 
@@ -353,7 +396,10 @@ void MainWindow::initSerial()
     ui->baudRateBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
     ui->baudRateBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
     ui->baudRateBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
+    ui->baudRateBox->addItem(QStringLiteral("230400"), QSerialPort::Baud230400);
     ui->baudRateBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
+    ui->baudRateBox->addItem(QStringLiteral("460800"), QSerialPort::Baud460800);
+
     ui->baudRateBox->addItem(tr("Custom"));
     ui->baudRateBox->setCurrentIndex(baudRateBox_);
 
@@ -389,6 +435,9 @@ void MainWindow::on_openPort_pushButton_clicked()
             currentSettings.baudRate = static_cast<QSerialPort::BaudRate>(
                         ui->baudRateBox->itemData(ui->baudRateBox->currentIndex()).toInt());
         }
+
+
+        qDebug()<<" currentIndex ="<<ui->baudRateBox->currentIndex() <<" currentSettings.baudRate = "<<currentSettings.baudRate;
         currentSettings.stringBaudRate = QString::number(currentSettings.baudRate);
 
         currentSettings.dataBits = static_cast<QSerialPort::DataBits>(
@@ -407,29 +456,6 @@ void MainWindow::on_openPort_pushButton_clicked()
 
 
         emit openOrCloseSerial_signal(true);
-
-//        receSerial_Obj->serial->setPortName(currentSettings.name);
-//        receSerial_Obj->serial->setBaudRate(currentSettings.baudRate);
-//        receSerial_Obj->serial->setDataBits(currentSettings.dataBits);
-//        receSerial_Obj->serial->setParity(currentSettings.parity);
-//        receSerial_Obj->serial->setStopBits(currentSettings.stopBits);
-//        receSerial_Obj->serial->setFlowControl(currentSettings.flowControl);
-//        if (receSerial_Obj->serial->open(QIODevice::ReadWrite)) {
-//            isLinked = true;
-//             ui->serialPortInfoListBox->setEnabled(false);
-//             ui->baudRateBox->setEnabled(false);
-//             ui->dataBitsBox->setEnabled(false);
-//             ui->parityBox->setEnabled(false);
-//             ui->stopBitsBox->setEnabled(false);
-
-//             portOffSetting();
-
-//        } else {
-//            isLinked = false;
-//            QMessageBox::critical(this, QStringLiteral("告警"), QStringLiteral("打开串口失败！"));
-//            return;
-
-//        }
 
         qDebug()<<"name="<<currentSettings.name<<" baudRate ="<<currentSettings.baudRate<<" dataBits="<<currentSettings.dataBits<<" parity="<<currentSettings.parity<<" stopBits="<<currentSettings.stopBits<<" flowCon"<<currentSettings.flowControl;
 
@@ -466,21 +492,11 @@ void MainWindow::on_openPort_pushButton_clicked()
             file.close();
         }
 
-//        ui->openPort_pushButton->setText("ClosePort");
-//        beginTimer();
     }
     else
     {
         emit openOrCloseSerial_signal(false);
-//        receSerial_Obj->serial->close();
-//        stopTimer();
-//        ui->openPort_pushButton->setText("OpenPort");
-//        ui->serialPortInfoListBox->setEnabled(true);
-//        ui->baudRateBox->setEnabled(true);
-//        ui->dataBitsBox->setEnabled(true);
-//        ui->parityBox->setEnabled(true);
-//        ui->stopBitsBox->setEnabled(true);
-//        portOnSetting();
+
     }
 
 
@@ -801,7 +817,18 @@ void MainWindow::on_plot_comboBox_currentIndexChanged(int index)
 
         plot_type = 1;
         ui->stackedWidget->setCurrentIndex(1);
-    }else if(0 == index)
+    }else if(3 == index)
+    {
+        plot_Mode = true;
+        if(plotShowTimer.isActive())
+            plotShowTimer.stop();
+        plotShowTimer.start(500);      //定时器改为100ms进行一次刷新
+
+        plot_type = 2;
+        ui->stackedWidget->setCurrentIndex(2);
+
+    }
+    else if(0 == index)
     {
         if(plotShowTimer.isActive())
             plotShowTimer.stop();
@@ -877,30 +904,56 @@ void MainWindow::plotShowTimer_slot()
         }
 
         //  5A 00 01 08 09 DD..DDDDD  XX
-        else if(1 == plot_type)    //显示直方图的信息      将这里改成发送请求 直方图的数据
+        else if(1 == plot_type)    //  VI4300显示直方图的信息      将这里改成发送请求 直方图的数据
         {
 //            QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
             QString cmdStr = "5A 00 02 00 09 00";
 //            cmdStr.append(strData);
             emit sendSerialSignal(cmdStr);
         }
+        else if(2 == plot_type)    //CASSSET 显示直方图信息  请求直方图的数据
+        {
+            QString cmdStr = "5A 00 02 00 0E 00";
+            emit sendSerialSignal(cmdStr);
+        }
+
+
     }
 }
 
 
-//显示统计直方图放的槽函数
+// 4300 显示统计直方图放的槽函数
 void MainWindow::toShowHistogram_slot(QVector<double> numData,int yMax)
 {
 //    qDebug()<<" xTicks = "<<xTicks;
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
-    textTicker->setTicks(HistorgramTicks, HistorgramLabels);
+    textTicker->setTicks(HistorgramTicks_2048, HistorgramLabels_2048);
     ui->Histogram_widget->xAxis->setTicker(textTicker);
 
-    ui->Histogram_widget->xAxis->setRange(0,historgram_label_num);
+    ui->Histogram_widget->xAxis->setRange(0,historgram_label_num_2048);
     ui->Histogram_widget->yAxis->setRange(0,yMax);
 
-    regen->setData(HistorgramTicks, numData);        //只不过第一个向量xTicks的每个元素表示“第几个柱子”，然后后面对应的values表示对应“柱子的值”
+    regen->setData(HistorgramTicks_2048, numData);        //只不过第一个向量xTicks的每个元素表示“第几个柱子”，然后后面对应的values表示对应“柱子的值”
     ui->Histogram_widget->replot();
+
+}
+
+
+//!
+//! \brief MainWindow::toShowHistogram_4096_signal
+//!   cassset   4096个点的
+void MainWindow::toShowHistogram_4096_slot(QVector<double> numData,int yMax)
+{
+//    qDebug()<<" xTicks = "<<xTicks;
+    QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
+    textTicker->setTicks(HistorgramTicks_4096, HistorgramLabels_4096);
+    ui->casset_historgrm_widget->xAxis->setTicker(textTicker);
+
+    ui->casset_historgrm_widget->xAxis->setRange(0,historgram_label_num_4096);
+    ui->casset_historgrm_widget->yAxis->setRange(0,yMax);
+
+    regen_4096->setData(HistorgramTicks_4096,numData);
+    ui->casset_historgrm_widget->replot();
 
 }
 
@@ -1082,9 +1135,9 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     QString banuRateStr = QString("%1").arg(ui->botelv_comboBox->currentIndex(),2,16,QLatin1Char('0'));
     qDebug()<<" baudRateStr = "<<banuRateStr<<" len="<<banuRateStr.size();
 
-    //采集频率
-    QString caiji_str = QString("%1").arg(ui->CAIJI_frequency_comboBox->currentIndex(),2,16,QLatin1Char('0'));
-    qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
+//    //采集频率
+//    QString caiji_str = QString("%1").arg(ui->CAIJI_frequency_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+//    qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
 
     //设备类型
     //  VI4300_Master =0x00;
@@ -1107,29 +1160,33 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
 
 
-    //最大量程(单位 ：mm)
-    int measurement_range = ui->Range_lineEdit->text().toInt();
-    QString measurement_range_str_tmp = QString("%1").arg(measurement_range,4,16,QLatin1Char('0'));
-    QString measurement_range_str = measurement_range_str_tmp.mid(2,2) + measurement_range_str_tmp.mid(0,2);
-    qDebug()<<"measurement_range_str = "<<measurement_range_str;
+    QString version_str = "0000";
+
+
+//    //最大量程(单位 ：mm)
+//    int measurement_range = ui->Range_lineEdit->text().toInt();
+//    QString measurement_range_str_tmp = QString("%1").arg(measurement_range,4,16,QLatin1Char('0'));
+//    QString measurement_range_str = measurement_range_str_tmp.mid(2,2) + measurement_range_str_tmp.mid(0,2);
+//    qDebug()<<"measurement_range_str = "<<measurement_range_str;
 
 
     //预留数据
-    QString YuLiu_num = ui->YULIU_lineEdit->text();
-    QString YuLiu_str = YuLiu_num.replace(" ","");
-    if(YuLiu_str.length()>26)
-    {
-        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("预留数据过长，请重新输入！"));
-        return;
-    }
-    str = "00000000000000000000000000000000" + YuLiu_str;
-    YuLiu_str = str.right(26);
-    qDebug()<<" YuLiu_str = "<<YuLiu_str<<" len="<<YuLiu_str.length();
+    QString YuLiu_str = QString("%1").arg(0,28,16,QLatin1Char('0'));
+//    QString YuLiu_num = ui->YULIU_lineEdit->text();
+//    QString YuLiu_str = YuLiu_num.replace(" ","");
+//    if(YuLiu_str.length()>26)
+//    {
+//        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("预留数据过长，请重新输入！"));
+//        return;
+//    }
+//    str = "00000000000000000000000000000000" + YuLiu_str;
+//    YuLiu_str = str.right(26);
+//    qDebug()<<" YuLiu_str = "<<YuLiu_str<<" len="<<YuLiu_str.length();
 
 
     //命令组帧
     QString cmdStr = "5A 01 23 00 02 ";
-    cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(caiji_str).append(deviceType).append(measurement_range_str).append(YuLiu_str);
+    cmdStr.append(SN_numberStr).append(UUID_str).append(banuRateStr).append(deviceType).append(version_str).append(YuLiu_str);
 
     emit sendSerialSignal(cmdStr);
 
@@ -1138,8 +1195,7 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     //清空lineEdit
     ui->SN_lineEdit->clear();
     ui->UUID_lineEdit->clear();
-    ui->Range_lineEdit->clear();
-    ui->YULIU_lineEdit->clear();
+
 
 }
 
@@ -1234,40 +1290,69 @@ void MainWindow::on_calibration_read_pushButton_clicked()
 //! 出厂校准1 点击设置的槽函数 （真实距离）  5A 01 07 00 04 DD DD DD DD DD DD
 //!     增加了一个字节，协议更改为          5A 01 08 00 04 DD DD DD DD DD DD DD
 //!     增加了抗阳光一个字节，协议改为      5A 01 09 00 04 DD DD DD DD DD DD DD DD
-//! 距离值：2byte
-//! 系数K：4byte
-//! 温度系数：1byte
-//! 抗阳光强度设置：1byte
+//! 2020-03-24  协议更改
+//!   5A 01 19 00  04  DDDDDDD(24 BYTE)
 void MainWindow::on_calibration_pushButton_clicked()
 {
     int realDis = ui->realDisFactory_lineEdit->text().toInt();
-    float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
-    int k1_num = int (K1 *1000);      //转化为10进制,扩大1000以后的数值
-
-//    QString K1Str = floatToQString(K1);
-
-    QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));
+    QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));   //真实距离
     QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
+    qDebug()<<"realDis = "<<realDisStr;
 
+    float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
+    int k1_num = int (K1 *1000);                        //转化为10进制,扩大1000以后的数值
     QString k1Tmp = QString("%1").arg(k1_num,8,16,QLatin1Char('0'));
-    QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);
-//    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
+    QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);  //K1
+    qDebug()<<"K1Str="<<K1Str;
 
 
     int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
-    QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));
-
+    QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));  //温度校正系数
+    qDebug()<<"tempture_coeff_str="<<tempture_coeff_str;
 
     int sunPower_index = ui->sunPower_set_comboBox->currentIndex();
-    QString sunPower_str = QString("%1").arg(sunPower_index,2,16,QLatin1Char('0'));
+    QString sunPower_str = QString("%1").arg(sunPower_index,2,16,QLatin1Char('0'));   //抗阳光强度
+    qDebug()<<"sunPower_str="<<sunPower_str;
+
+    int maxValue = ui->offset_maxValue_lineEdit->text().toInt();
+    QString maxValueTmp = QString("%1").arg(maxValue,8,16,QLatin1Char('0'));
+    QString maxValueStr = maxValueTmp.mid(6,2) +maxValueTmp.mid(4,2) +maxValueTmp.mid(2,2) +maxValueTmp.mid(0,2);  //最大量程
+    qDebug()<<"maxValueStr="<<maxValueStr;
+
+    int filter_select = ui->filter_comboBox->currentIndex();
+    QString filter_str = QString("%1").arg(filter_select,2,16,QLatin1Char('0'));   //滤波方式
+    qDebug()<<"filter_str="<<filter_str;
+
+
+    int caiji_int = ui->offset_caiji_comboBox->currentIndex();
+    QString caiji_str =  QString("%1").arg(caiji_int,2,16,QLatin1Char('0'));   //采集频率
+    qDebug()<<"caiji_str="<<caiji_str;
+
+    int peak_offset = ui->peakOffset_lineEdit->text().toInt();
+    QString peakOffset_str = QString("%1").arg(peak_offset,2,16,QLatin1Char('0'));   //peak阈值
+    qDebug()<<"peakOffset_str="<<peakOffset_str;
+
+    QString yuliu_str = QString("%1").arg(0,18,16,QLatin1Char('0'));   //peak阈值
+
 
     //命令组帧
-    QString cmdStr = "5A 01 09 00 04 ";
+    QString cmdStr = "5A 01 19 00 04 ";
     cmdStr.append(realDisStr);
     cmdStr.append(K1Str);
     cmdStr.append(tempture_coeff_str);
     cmdStr.append(sunPower_str);
+    cmdStr.append(maxValueStr);
+    cmdStr.append(filter_str);
+    cmdStr.append(caiji_str);
+    cmdStr.append(peakOffset_str);
+    cmdStr.append(yuliu_str);
     emit sendSerialSignal(cmdStr);
+
+    ui->realDisFactory_lineEdit->clear();
+    ui->K1_lineEdit->clear();
+    ui->tempture_k_lineEdit->clear();
+    ui->offset_maxValue_lineEdit->clear();
+    ui->peakOffset_lineEdit->clear();
 
 }
 
@@ -1326,21 +1411,21 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         QString SN_str = cmdAck.mid(0,8);
         QString UUID_str = cmdAck.mid(8,24);
         int baudRateIndex = cmdAck.mid(32,2).toInt(NULL,16);
-        int caijiIndex = cmdAck.mid(34,2).toInt(NULL,16);
-        int deviceTypeIndex = cmdAck.mid(36,2).toInt(NULL,16);
-        QString range_str = cmdAck.mid(38,4);
-        QString range_tmp = range_str.mid(2,2)+ range_str.mid(0,2);
-        int range_int = range_tmp.toInt(NULL,16);
+        int deviceTypeIndex = cmdAck.mid(34,2).toInt(NULL,16);
+        QString version_str = cmdAck.mid(36,4);
 
-        QString YuLiuStr = cmdAck.mid(42,26);
+//        QString range_str = cmdAck.mid(38,4);
+//        QString range_tmp = range_str.mid(2,2)+ range_str.mid(0,2);
+//        int range_int = range_tmp.toInt(NULL,16);
+//        QString YuLiuStr = cmdAck.mid(42,26);
 
         ui->SN_lineEdit->setText(SN_str);
         ui->UUID_lineEdit->setText(UUID_str);
         ui->botelv_comboBox->setCurrentIndex(baudRateIndex);
-        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
+//        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
         ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);  //VI4300_Slave（芯视界测试用，不对外开放）  0x01
-        ui->Range_lineEdit->setText(QString::number(range_int));
-        ui->YULIU_lineEdit->setText(YuLiuStr);
+        ui->versionNum_lineEdit->setText(version_str);
+
         return;
     }
     else if("8103" == returnCmdStr)
@@ -1372,6 +1457,8 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
     else if("8004" == returnCmdStr)
     {
         int ackCmdLen = cmdAck.length();  //  D1 D1 D2 D2 D2 D2
+        qDebug()<<"ackCmdLen = "<<ackCmdLen;
+
         if(12 == ackCmdLen)   //第一次校准  读取返回指令 信息
         {
             QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
@@ -1407,7 +1494,79 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
             ui->K2_lineEdit->setText(QString::number(K2));
             ui->sunPower_read_lineEdit->setText(QString::number(sunPower_int));
 
+        }else if(48 == ackCmdLen)   //新增协议 03.24
+        {
+//            int realDis = ui->realDisFactory_lineEdit->text().toInt();
+
+//            float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
+//            int k1_num = int (K1 *1000);      //转化为10进制,扩大1000以后的数值
+
+//        //    QString K1Str = floatToQString(K1);
+
+//            QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));   //真实距离
+//            QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
+
+//            QString k1Tmp = QString("%1").arg(k1_num,8,16,QLatin1Char('0'));
+//            QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);  //K1
+//        //    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
+
+
+//            int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
+//            QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));  //温度校正系数
+
+//            int sunPower_index = ui->sunPower_set_comboBox->currentIndex();
+//            QString sunPower_str = QString("%1").arg(sunPower_index,2,16,QLatin1Char('0'));   //抗阳光强度
+
+//            int maxValue = ui->offset_maxValue_lineEdit->text().toInt();
+//            QString maxValueTmp = QString("%1").arg(maxValue,8,16,QLatin1Char('0'));
+//            QString maxValueStr = maxValueTmp.mid(6,2) +maxValueTmp.mid(4,2) +maxValueTmp.mid(2,2) +maxValueTmp.mid(0,2);  //最大量程
+
+//            int filter_select = ui->filter_comboBox->currentIndex();
+//            QString filter_str = QString("%1").arg(filter_select,2,16,QLatin1Char('0'));   //滤波方式
+
+//            int caiji_int = ui->offset_caiji_comboBox->currentIndex();
+//            QString caiji_str =  QString("%1").arg(caiji_int,2,16,QLatin1Char('0'));   //采集频率
+
+//            int peak_offset = ui->peakOffset_lineEdit->text().toInt();
+//            QString peakOffset_str = QString("%1").arg(peak_offset,2,16,QLatin1Char('0'));   //peak阈值
+
+//            QString yuliu_str = QString("%1").arg(0,18,16,QLatin1Char('0'));   //peak阈值
+
+            //距离
+            QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
+            int disTance = strDis.toInt(NULL,16);
+            ui->realDisFactory_lineEdit->setText(QString::number(disTance));
+            //系数 K
+            QString k2_str = cmdAck.mid(4,8) ;                 //K2的系数  这里是扩大1000倍以后的数值
+            QString k2_str_tmp = k2_str.mid(6,2)+k2_str.mid(4,2)+k2_str.mid(2,2)+k2_str.mid(0,2);
+            float K2 = k2_str_tmp.toInt(NULL,16)/1000.0;
+            ui->K1_lineEdit->setText(QString::number(K2));
+            //温度校正系数
+            QString tempture_str = cmdAck.mid(12,2);
+            int tempture_int = tempture_str.toInt(NULL,16);
+            ui->tempture_k_lineEdit->setText(QString::number(tempture_int));
+            //抗阳光强度
+            int sunPower_index = cmdAck.mid(14,2).toInt(NULL,16);
+            ui->sunPower_set_comboBox->setCurrentIndex(sunPower_index);
+            //最大量程设置
+            QString maxValue_str = cmdAck.mid(16,8);
+            QString maxValueTmp = maxValue_str.mid(6,2)+maxValue_str.mid(4,2)+maxValue_str.mid(2,2)+maxValue_str.mid(0,2);;
+            int maxValue_int =  maxValueTmp.toInt(NULL,16);
+            ui->offset_maxValue_lineEdit->setText(QString::number(maxValue_int));
+            //滤波方式
+            int filter_int = cmdAck.mid(24,2).toInt(NULL,16);
+            ui->filter_comboBox->setCurrentIndex(filter_int);
+            //采集频率
+            int caiji_int = cmdAck.mid(26,2).toInt(NULL,16);
+            ui->offset_caiji_comboBox->setCurrentIndex(caiji_int);
+            //过滤阈值
+            int peakOffset = cmdAck.mid(28,2).toInt(NULL,16);
+            ui->peakOffset_lineEdit->setText(QString::number(peakOffset));
+
         }
+
+
+
     }
     else if("800D" == returnCmdStr)   //cmdAck ：四个字节 前两个字节为地址 后两个字节为值
     {
@@ -1478,40 +1637,6 @@ void MainWindow::changeEvent(QEvent *e)
 
 
 
-//!
-//! \brief MainWindow::on_HistogramData_pushButton_clicked
-//!//选择是否保存 直方图数据
-//! 文件标识：saveHist_index;
-//! 是否保存文件标识: isSaveHistData_flag
-void MainWindow::on_HistogramData_pushButton_clicked()
-{
-    if("HistData_save" == ui->HistogramData_pushButton->text())
-    {
-        QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
-        if(file_path.isEmpty())
-        {
-           qDebug()<<QStringLiteral("没有选择路径")<<endl;
-           QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
-            return;
-        }
-        else
-        {
-            file_path.append("/");
-            qDebug() << file_path << endl;
-            saveHistDataFilePath = file_path;
-
-            saveHist_index = 1;  //文件标号
-            isSaveHistData_flag = true;//开始保存
-            ui->HistogramData_pushButton->setText("Stop");
-        }
-
-
-    }else
-    {
-        isSaveHistData_flag = false;
-        ui->HistogramData_pushButton->setText("HistData_save");
-    }
-}
 
 
 
@@ -1537,7 +1662,7 @@ void MainWindow::on_manageMent_action_triggered()
 
 //!
 //! \brief MainWindow::on_savePicture_his_pushButton_clicked
-//!存储直方图数据
+//!存储直方图 图片
 void MainWindow::on_savePicture_his_pushButton_clicked()
 {
     QString filePath;
@@ -1581,13 +1706,131 @@ void MainWindow::on_savePicture_his_pushButton_clicked()
     }
 }
 
+//!
+//! \brief MainWindow::on_HistogramData_pushButton_clicked
+//!//选择是否保存 直方图数据
+//! 文件标识：saveHist_index;
+//! 是否保存文件标识: isSaveHistData_flag
+void MainWindow::on_HistogramData_pushButton_clicked()
+{
+    if("HistData_save" == ui->HistogramData_pushButton->text())
+    {
+        QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
+        if(file_path.isEmpty())
+        {
+           qDebug()<<QStringLiteral("没有选择路径")<<endl;
+           QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
+            return;
+        }
+        else
+        {
+            file_path.append("/");
+            qDebug() << file_path << endl;
+            saveHistDataFilePath = file_path;
+
+            saveHist_index = 1;  //文件标号
+            isSaveHistData_flag = true;//开始保存
+            ui->HistogramData_pushButton->setText("Stop");
+        }
+
+
+    }else
+    {
+        isSaveHistData_flag = false;
+        ui->HistogramData_pushButton->setText("HistData_save");
+    }
+}
+
+
+
+
+
+//!
+//! \brief MainWindow::on_casset_imageSave_pushButton_clicked
+//!  CASSET 直方图  图片保存
+void MainWindow::on_casset_imageSave_pushButton_clicked()
+{
+    QString filePath;
+
+    QFileDialog *fileDialog = new QFileDialog(this);//创建一个QFileDialog对象，构造函数中的参数可以有所添加。
+    fileDialog->setWindowTitle(tr("Save As"));//设置文件保存对话框的标题
+    fileDialog->setAcceptMode(QFileDialog::AcceptSave);//设置文件对话框为保存模式
+    fileDialog->setFileMode(QFileDialog::AnyFile);//设置文件对话框弹出的时候显示任何文件，不论是文件夹还是文件
+    fileDialog->setViewMode(QFileDialog::Detail);//文件以详细的形式显示，显示文件名，大小，创建日期等信息；
+    fileDialog->setGeometry(10,30,300,200);//设置文件对话框的显示位置
+    fileDialog->setDirectory(".");//设置文件对话框打开时初始打开的位置
+    QStringList mimeTypeFilters;
+//    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
+    mimeTypeFilters<<"bmp(*.bmp)|*.bmp"<<"JPEG(*.jpg)|*.jpg"<<"Png(*.png)|*.png"<<"PDF(*.pdf)|*.pdf";
+    fileDialog->setNameFilters(mimeTypeFilters);
+
+
+    if(fileDialog->exec() == QDialog::Accepted)
+    {
+        filePath = fileDialog->selectedFiles()[0];//得到用户选择的文件名
+        qDebug()<<" filePath = "<<filePath<<endl;
+        QString formatStr = filePath.right(3);
+        //保存直方图
+        if("bmp" == formatStr)
+        {
+            ui->casset_historgrm_widget->saveBmp(filePath.toLatin1().data());
+        }else if("jpg" == formatStr)
+        {
+            ui->casset_historgrm_widget->saveJpg(filePath.toLatin1().data());
+        }else if("png" == formatStr)
+        {
+            ui->casset_historgrm_widget->savePng(filePath.toLatin1().data());
+        }else if("pdf" == formatStr)
+        {
+            ui->casset_historgrm_widget->savePdf(filePath.toLatin1().data());
+        }
+
+    }else
+    {
+        return ;
+    }
+}
+
+
+//!
+//! \brief MainWindow::on_casset_historgram_pushButton_clicked
+//!  CASSET 直方图数据保存 保存的为原始顺序的数据
+void MainWindow::on_casset_historgram_pushButton_clicked()
+{
+    if("HistData_save" == ui->casset_historgram_pushButton->text())
+    {
+        QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
+        if(file_path.isEmpty())
+        {
+           qDebug()<<QStringLiteral("没有选择路径")<<endl;
+           QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
+            return;
+        }
+        else
+        {
+            file_path.append("/");
+            qDebug() << file_path << endl;
+            saveHistDataFilePath = file_path;
+            saveHist_index = 1;  //文件标号
+            isSaveHistData_flag = true;//开始保存
+            ui->casset_historgram_pushButton->setText("Stop");
+        }
+    }else
+    {
+        isSaveHistData_flag = false;
+        ui->casset_historgram_pushButton->setText("HistData_save");
+    }
+}
+
+
+
 
 //!
 //! \brief MainWindow::on_pixel_read_pushButton_clicked
-//!//单pixel模式peak值读取: 5A 00 01 00 0B
+//!//单pixel模式peak值读取: 5A 00 01 00 0F
 void MainWindow::on_pixel_read_pushButton_clicked()
 {
-    QString cmdStr = "5A 00 01 00 0B ";
+    QString cmdStr = "5A 00 01 00 0F ";
     emit sendSerialSignal(cmdStr);
 }
 
@@ -1644,3 +1887,6 @@ void MainWindow::on_singleReg_write_pushButton_clicked()
     ui->singleReg_value_lineEdit->clear();
 
 }
+
+
+

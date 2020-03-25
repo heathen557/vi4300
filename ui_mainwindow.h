@@ -104,20 +104,15 @@ public:
     QLabel *label_2;
     QComboBox *botelv_comboBox;
     QLabel *label_18;
-    QComboBox *CAIJI_frequency_comboBox;
+    QLineEdit *versionNum_lineEdit;
     QLabel *label_20;
     QComboBox *deviceType_comboBox;
     QLabel *label_17;
     QSpacerItem *horizontalSpacer_8;
     QLineEdit *UUID_lineEdit;
-    QLabel *label_19;
-    QSpacerItem *horizontalSpacer_11;
-    QLineEdit *YULIU_lineEdit;
     QPushButton *read_outFactory_pushButton;
     QPushButton *send_outFactory_pushButton;
     QPushButton *reStoreFactory_pushButton;
-    QLineEdit *Range_lineEdit;
-    QLabel *label_25;
     QSpacerItem *verticalSpacer;
     QGroupBox *groupBox_10;
     QGridLayout *gridLayout_3;
@@ -134,19 +129,35 @@ public:
     QPushButton *singleReg_read_pushButton;
     QPushButton *singleReg_write_pushButton;
     QWidget *page_5;
-    QGridLayout *gridLayout_17;
     QGroupBox *groupBox_9;
     QGridLayout *gridLayout_9;
-    QFormLayout *formLayout_3;
+    QHBoxLayout *horizontalLayout_6;
     QLabel *label_6;
     QLineEdit *realDisFactory_lineEdit;
+    QHBoxLayout *horizontalLayout_8;
     QLabel *label_13;
     QLineEdit *K1_lineEdit;
+    QHBoxLayout *horizontalLayout_10;
     QLabel *label_26;
     QLineEdit *tempture_k_lineEdit;
+    QHBoxLayout *horizontalLayout_11;
     QLabel *label_32;
-    QPushButton *calibration_pushButton;
     QComboBox *sunPower_set_comboBox;
+    QHBoxLayout *horizontalLayout_12;
+    QLabel *label_29;
+    QLineEdit *offset_maxValue_lineEdit;
+    QHBoxLayout *horizontalLayout_13;
+    QLabel *label_30;
+    QComboBox *filter_comboBox;
+    QHBoxLayout *horizontalLayout_14;
+    QLabel *label_31;
+    QComboBox *offset_caiji_comboBox;
+    QHBoxLayout *horizontalLayout_15;
+    QLabel *label_34;
+    QLineEdit *peakOffset_lineEdit;
+    QHBoxLayout *horizontalLayout_16;
+    QPushButton *calibration_pushButton;
+    QPushButton *calibration_read_pushButton;
     QGroupBox *groupBox_11;
     QGridLayout *gridLayout_16;
     QFormLayout *formLayout_4;
@@ -158,11 +169,9 @@ public:
     QLineEdit *offset_jiaozhun_lineEdit;
     QLabel *label_21;
     QLineEdit *K2_lineEdit;
-    QPushButton *calibration_read_pushButton;
-    QLineEdit *sunPower_read_lineEdit;
     QLabel *label_33;
+    QLineEdit *sunPower_read_lineEdit;
     QPushButton *gaofan_pushButton;
-    QSpacerItem *verticalSpacer_2;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QHBoxLayout *horizontalLayout;
@@ -206,6 +215,12 @@ public:
     QPushButton *savePicture_his_pushButton;
     QPushButton *HistogramData_pushButton;
     QSpacerItem *horizontalSpacer_4;
+    QWidget *casset_historgram_page;
+    QGridLayout *gridLayout_20;
+    QCustomPlot *casset_historgrm_widget;
+    QPushButton *casset_imageSave_pushButton;
+    QPushButton *casset_historgram_pushButton;
+    QSpacerItem *horizontalSpacer_9;
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menu_2;
@@ -271,7 +286,7 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 247, 581));
+        page->setGeometry(QRect(0, 0, 245, 581));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_18 = new QGridLayout(page);
@@ -482,7 +497,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 247, 581));
+        page_4->setGeometry(QRect(0, 0, 245, 581));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -525,10 +540,11 @@ public:
 
         formLayout_2->setWidget(2, QFormLayout::LabelRole, label_18);
 
-        CAIJI_frequency_comboBox = new QComboBox(groupBox_7);
-        CAIJI_frequency_comboBox->setObjectName(QStringLiteral("CAIJI_frequency_comboBox"));
+        versionNum_lineEdit = new QLineEdit(groupBox_7);
+        versionNum_lineEdit->setObjectName(QStringLiteral("versionNum_lineEdit"));
+        versionNum_lineEdit->setReadOnly(true);
 
-        formLayout_2->setWidget(2, QFormLayout::FieldRole, CAIJI_frequency_comboBox);
+        formLayout_2->setWidget(2, QFormLayout::FieldRole, versionNum_lineEdit);
 
         label_20 = new QLabel(groupBox_7);
         label_20->setObjectName(QStringLiteral("label_20"));
@@ -543,55 +559,31 @@ public:
         label_17 = new QLabel(groupBox_7);
         label_17->setObjectName(QStringLiteral("label_17"));
 
-        formLayout_2->setWidget(5, QFormLayout::LabelRole, label_17);
+        formLayout_2->setWidget(4, QFormLayout::LabelRole, label_17);
 
         horizontalSpacer_8 = new QSpacerItem(105, 13, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        formLayout_2->setItem(5, QFormLayout::FieldRole, horizontalSpacer_8);
+        formLayout_2->setItem(4, QFormLayout::FieldRole, horizontalSpacer_8);
 
         UUID_lineEdit = new QLineEdit(groupBox_7);
         UUID_lineEdit->setObjectName(QStringLiteral("UUID_lineEdit"));
 
-        formLayout_2->setWidget(6, QFormLayout::SpanningRole, UUID_lineEdit);
-
-        label_19 = new QLabel(groupBox_7);
-        label_19->setObjectName(QStringLiteral("label_19"));
-
-        formLayout_2->setWidget(7, QFormLayout::LabelRole, label_19);
-
-        horizontalSpacer_11 = new QSpacerItem(105, 13, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        formLayout_2->setItem(7, QFormLayout::FieldRole, horizontalSpacer_11);
-
-        YULIU_lineEdit = new QLineEdit(groupBox_7);
-        YULIU_lineEdit->setObjectName(QStringLiteral("YULIU_lineEdit"));
-
-        formLayout_2->setWidget(8, QFormLayout::SpanningRole, YULIU_lineEdit);
+        formLayout_2->setWidget(5, QFormLayout::SpanningRole, UUID_lineEdit);
 
         read_outFactory_pushButton = new QPushButton(groupBox_7);
         read_outFactory_pushButton->setObjectName(QStringLiteral("read_outFactory_pushButton"));
 
-        formLayout_2->setWidget(9, QFormLayout::LabelRole, read_outFactory_pushButton);
+        formLayout_2->setWidget(6, QFormLayout::LabelRole, read_outFactory_pushButton);
 
         send_outFactory_pushButton = new QPushButton(groupBox_7);
         send_outFactory_pushButton->setObjectName(QStringLiteral("send_outFactory_pushButton"));
 
-        formLayout_2->setWidget(9, QFormLayout::FieldRole, send_outFactory_pushButton);
+        formLayout_2->setWidget(6, QFormLayout::FieldRole, send_outFactory_pushButton);
 
         reStoreFactory_pushButton = new QPushButton(groupBox_7);
         reStoreFactory_pushButton->setObjectName(QStringLiteral("reStoreFactory_pushButton"));
 
-        formLayout_2->setWidget(10, QFormLayout::SpanningRole, reStoreFactory_pushButton);
-
-        Range_lineEdit = new QLineEdit(groupBox_7);
-        Range_lineEdit->setObjectName(QStringLiteral("Range_lineEdit"));
-
-        formLayout_2->setWidget(4, QFormLayout::FieldRole, Range_lineEdit);
-
-        label_25 = new QLabel(groupBox_7);
-        label_25->setObjectName(QStringLiteral("label_25"));
-
-        formLayout_2->setWidget(4, QFormLayout::LabelRole, label_25);
+        formLayout_2->setWidget(7, QFormLayout::SpanningRole, reStoreFactory_pushButton);
 
 
         gridLayout_11->addLayout(formLayout_2, 0, 0, 1, 1);
@@ -672,7 +664,7 @@ public:
 
         gridLayout_14->addWidget(groupBox_12, 2, 0, 1, 1);
 
-        gridLayout_14->setRowStretch(0, 8);
+        gridLayout_14->setRowStretch(0, 4);
         gridLayout_14->setRowStretch(1, 1);
         gridLayout_14->setRowStretch(2, 2);
         gridLayout_14->setRowStretch(3, 1);
@@ -682,73 +674,161 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 247, 581));
-        gridLayout_17 = new QGridLayout(page_5);
-        gridLayout_17->setSpacing(6);
-        gridLayout_17->setContentsMargins(11, 11, 11, 11);
-        gridLayout_17->setObjectName(QStringLiteral("gridLayout_17"));
+        page_5->setGeometry(QRect(0, 0, 245, 581));
         groupBox_9 = new QGroupBox(page_5);
         groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
+        groupBox_9->setGeometry(QRect(9, 9, 230, 303));
         gridLayout_9 = new QGridLayout(groupBox_9);
         gridLayout_9->setSpacing(6);
         gridLayout_9->setContentsMargins(11, 11, 11, 11);
         gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
-        formLayout_3 = new QFormLayout();
-        formLayout_3->setSpacing(6);
-        formLayout_3->setObjectName(QStringLiteral("formLayout_3"));
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setSpacing(6);
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
         label_6 = new QLabel(groupBox_9);
         label_6->setObjectName(QStringLiteral("label_6"));
 
-        formLayout_3->setWidget(0, QFormLayout::LabelRole, label_6);
+        horizontalLayout_6->addWidget(label_6);
 
         realDisFactory_lineEdit = new QLineEdit(groupBox_9);
         realDisFactory_lineEdit->setObjectName(QStringLiteral("realDisFactory_lineEdit"));
 
-        formLayout_3->setWidget(0, QFormLayout::FieldRole, realDisFactory_lineEdit);
+        horizontalLayout_6->addWidget(realDisFactory_lineEdit);
 
+
+        gridLayout_9->addLayout(horizontalLayout_6, 0, 0, 1, 1);
+
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setSpacing(6);
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
         label_13 = new QLabel(groupBox_9);
         label_13->setObjectName(QStringLiteral("label_13"));
 
-        formLayout_3->setWidget(1, QFormLayout::LabelRole, label_13);
+        horizontalLayout_8->addWidget(label_13);
 
         K1_lineEdit = new QLineEdit(groupBox_9);
         K1_lineEdit->setObjectName(QStringLiteral("K1_lineEdit"));
 
-        formLayout_3->setWidget(1, QFormLayout::FieldRole, K1_lineEdit);
+        horizontalLayout_8->addWidget(K1_lineEdit);
 
+
+        gridLayout_9->addLayout(horizontalLayout_8, 1, 0, 1, 1);
+
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setSpacing(6);
+        horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
         label_26 = new QLabel(groupBox_9);
         label_26->setObjectName(QStringLiteral("label_26"));
 
-        formLayout_3->setWidget(2, QFormLayout::LabelRole, label_26);
+        horizontalLayout_10->addWidget(label_26);
 
         tempture_k_lineEdit = new QLineEdit(groupBox_9);
         tempture_k_lineEdit->setObjectName(QStringLiteral("tempture_k_lineEdit"));
 
-        formLayout_3->setWidget(2, QFormLayout::FieldRole, tempture_k_lineEdit);
+        horizontalLayout_10->addWidget(tempture_k_lineEdit);
 
+
+        gridLayout_9->addLayout(horizontalLayout_10, 2, 0, 1, 1);
+
+        horizontalLayout_11 = new QHBoxLayout();
+        horizontalLayout_11->setSpacing(6);
+        horizontalLayout_11->setObjectName(QStringLiteral("horizontalLayout_11"));
         label_32 = new QLabel(groupBox_9);
         label_32->setObjectName(QStringLiteral("label_32"));
 
-        formLayout_3->setWidget(3, QFormLayout::LabelRole, label_32);
-
-        calibration_pushButton = new QPushButton(groupBox_9);
-        calibration_pushButton->setObjectName(QStringLiteral("calibration_pushButton"));
-
-        formLayout_3->setWidget(4, QFormLayout::FieldRole, calibration_pushButton);
+        horizontalLayout_11->addWidget(label_32);
 
         sunPower_set_comboBox = new QComboBox(groupBox_9);
         sunPower_set_comboBox->setObjectName(QStringLiteral("sunPower_set_comboBox"));
 
-        formLayout_3->setWidget(3, QFormLayout::FieldRole, sunPower_set_comboBox);
+        horizontalLayout_11->addWidget(sunPower_set_comboBox);
 
 
-        gridLayout_9->addLayout(formLayout_3, 0, 0, 1, 1);
+        gridLayout_9->addLayout(horizontalLayout_11, 3, 0, 1, 1);
+
+        horizontalLayout_12 = new QHBoxLayout();
+        horizontalLayout_12->setSpacing(6);
+        horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
+        label_29 = new QLabel(groupBox_9);
+        label_29->setObjectName(QStringLiteral("label_29"));
+
+        horizontalLayout_12->addWidget(label_29);
+
+        offset_maxValue_lineEdit = new QLineEdit(groupBox_9);
+        offset_maxValue_lineEdit->setObjectName(QStringLiteral("offset_maxValue_lineEdit"));
+
+        horizontalLayout_12->addWidget(offset_maxValue_lineEdit);
 
 
-        gridLayout_17->addWidget(groupBox_9, 0, 0, 1, 1);
+        gridLayout_9->addLayout(horizontalLayout_12, 4, 0, 1, 1);
+
+        horizontalLayout_13 = new QHBoxLayout();
+        horizontalLayout_13->setSpacing(6);
+        horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
+        label_30 = new QLabel(groupBox_9);
+        label_30->setObjectName(QStringLiteral("label_30"));
+
+        horizontalLayout_13->addWidget(label_30);
+
+        filter_comboBox = new QComboBox(groupBox_9);
+        filter_comboBox->setObjectName(QStringLiteral("filter_comboBox"));
+
+        horizontalLayout_13->addWidget(filter_comboBox);
+
+
+        gridLayout_9->addLayout(horizontalLayout_13, 5, 0, 1, 1);
+
+        horizontalLayout_14 = new QHBoxLayout();
+        horizontalLayout_14->setSpacing(6);
+        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
+        label_31 = new QLabel(groupBox_9);
+        label_31->setObjectName(QStringLiteral("label_31"));
+
+        horizontalLayout_14->addWidget(label_31);
+
+        offset_caiji_comboBox = new QComboBox(groupBox_9);
+        offset_caiji_comboBox->setObjectName(QStringLiteral("offset_caiji_comboBox"));
+
+        horizontalLayout_14->addWidget(offset_caiji_comboBox);
+
+
+        gridLayout_9->addLayout(horizontalLayout_14, 6, 0, 1, 1);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setSpacing(6);
+        horizontalLayout_15->setObjectName(QStringLiteral("horizontalLayout_15"));
+        label_34 = new QLabel(groupBox_9);
+        label_34->setObjectName(QStringLiteral("label_34"));
+
+        horizontalLayout_15->addWidget(label_34);
+
+        peakOffset_lineEdit = new QLineEdit(groupBox_9);
+        peakOffset_lineEdit->setObjectName(QStringLiteral("peakOffset_lineEdit"));
+
+        horizontalLayout_15->addWidget(peakOffset_lineEdit);
+
+
+        gridLayout_9->addLayout(horizontalLayout_15, 7, 0, 1, 1);
+
+        horizontalLayout_16 = new QHBoxLayout();
+        horizontalLayout_16->setSpacing(6);
+        horizontalLayout_16->setObjectName(QStringLiteral("horizontalLayout_16"));
+        calibration_pushButton = new QPushButton(groupBox_9);
+        calibration_pushButton->setObjectName(QStringLiteral("calibration_pushButton"));
+
+        horizontalLayout_16->addWidget(calibration_pushButton);
+
+        calibration_read_pushButton = new QPushButton(groupBox_9);
+        calibration_read_pushButton->setObjectName(QStringLiteral("calibration_read_pushButton"));
+
+        horizontalLayout_16->addWidget(calibration_read_pushButton);
+
+
+        gridLayout_9->addLayout(horizontalLayout_16, 8, 0, 1, 1);
 
         groupBox_11 = new QGroupBox(page_5);
         groupBox_11->setObjectName(QStringLiteral("groupBox_11"));
+        groupBox_11->setGeometry(QRect(9, 342, 224, 171));
         gridLayout_16 = new QGridLayout(groupBox_11);
         gridLayout_16->setSpacing(6);
         gridLayout_16->setContentsMargins(11, 11, 11, 11);
@@ -796,36 +876,22 @@ public:
 
         formLayout_4->setWidget(3, QFormLayout::FieldRole, K2_lineEdit);
 
-        calibration_read_pushButton = new QPushButton(groupBox_11);
-        calibration_read_pushButton->setObjectName(QStringLiteral("calibration_read_pushButton"));
+        label_33 = new QLabel(groupBox_11);
+        label_33->setObjectName(QStringLiteral("label_33"));
 
-        formLayout_4->setWidget(5, QFormLayout::FieldRole, calibration_read_pushButton);
+        formLayout_4->setWidget(4, QFormLayout::LabelRole, label_33);
 
         sunPower_read_lineEdit = new QLineEdit(groupBox_11);
         sunPower_read_lineEdit->setObjectName(QStringLiteral("sunPower_read_lineEdit"));
 
         formLayout_4->setWidget(4, QFormLayout::FieldRole, sunPower_read_lineEdit);
 
-        label_33 = new QLabel(groupBox_11);
-        label_33->setObjectName(QStringLiteral("label_33"));
-
-        formLayout_4->setWidget(4, QFormLayout::LabelRole, label_33);
-
 
         gridLayout_16->addLayout(formLayout_4, 0, 0, 1, 1);
 
-
-        gridLayout_17->addWidget(groupBox_11, 1, 0, 1, 1);
-
         gaofan_pushButton = new QPushButton(page_5);
         gaofan_pushButton->setObjectName(QStringLiteral("gaofan_pushButton"));
-
-        gridLayout_17->addWidget(gaofan_pushButton, 2, 0, 1, 1);
-
-        verticalSpacer_2 = new QSpacerItem(20, 179, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        gridLayout_17->addItem(verticalSpacer_2, 3, 0, 1, 1);
-
+        gaofan_pushButton->setGeometry(QRect(20, 540, 201, 20));
         toolBox->addItem(page_5, QString::fromUtf8("              \350\256\276\345\244\207\346\240\241\345\207\206"));
         splitter->addWidget(toolBox);
         groupBox = new QGroupBox(splitter);
@@ -1068,6 +1134,32 @@ public:
         gridLayout_13->setRowMinimumHeight(0, 18);
         gridLayout_13->setRowMinimumHeight(1, 1);
         stackedWidget->addWidget(page_3);
+        casset_historgram_page = new QWidget();
+        casset_historgram_page->setObjectName(QStringLiteral("casset_historgram_page"));
+        gridLayout_20 = new QGridLayout(casset_historgram_page);
+        gridLayout_20->setSpacing(6);
+        gridLayout_20->setContentsMargins(11, 11, 11, 11);
+        gridLayout_20->setObjectName(QStringLiteral("gridLayout_20"));
+        casset_historgrm_widget = new QCustomPlot(casset_historgram_page);
+        casset_historgrm_widget->setObjectName(QStringLiteral("casset_historgrm_widget"));
+
+        gridLayout_20->addWidget(casset_historgrm_widget, 0, 0, 1, 3);
+
+        casset_imageSave_pushButton = new QPushButton(casset_historgram_page);
+        casset_imageSave_pushButton->setObjectName(QStringLiteral("casset_imageSave_pushButton"));
+
+        gridLayout_20->addWidget(casset_imageSave_pushButton, 1, 0, 1, 1);
+
+        casset_historgram_pushButton = new QPushButton(casset_historgram_page);
+        casset_historgram_pushButton->setObjectName(QStringLiteral("casset_historgram_pushButton"));
+
+        gridLayout_20->addWidget(casset_historgram_pushButton, 1, 1, 1, 1);
+
+        horizontalSpacer_9 = new QSpacerItem(260, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_20->addItem(horizontalSpacer_9, 1, 2, 1, 1);
+
+        stackedWidget->addWidget(casset_historgram_page);
 
         gridLayout_12->addWidget(stackedWidget, 1, 0, 1, 1);
 
@@ -1119,7 +1211,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(2);
+        toolBox->setCurrentIndex(1);
         stackedWidget->setCurrentIndex(1);
 
 
@@ -1128,7 +1220,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.2)", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.3)", Q_NULLPTR));
         actionMCU->setText(QApplication::translate("MainWindow", "MCU\345\215\207\347\272\247", Q_NULLPTR));
         Register_action->setText(QApplication::translate("MainWindow", "\345\257\204\345\255\230\345\231\250\351\205\215\347\275\256", Q_NULLPTR));
         actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));
@@ -1176,10 +1268,49 @@ public:
          << QApplication::translate("MainWindow", "9600", Q_NULLPTR)
          << QApplication::translate("MainWindow", "4800", Q_NULLPTR)
          << QApplication::translate("MainWindow", "1200", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "230400", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "460800", Q_NULLPTR)
         );
-        label_18->setText(QApplication::translate("MainWindow", "\351\207\207\351\233\206\351\242\221\347\216\207\357\274\232", Q_NULLPTR));
-        CAIJI_frequency_comboBox->clear();
-        CAIJI_frequency_comboBox->insertItems(0, QStringList()
+        label_18->setText(QApplication::translate("MainWindow", "\347\211\210\346\234\254\345\217\267\357\274\232", Q_NULLPTR));
+        label_20->setText(QApplication::translate("MainWindow", "\350\256\276\345\244\207\347\261\273\345\236\213\357\274\232", Q_NULLPTR));
+        label_17->setText(QApplication::translate("MainWindow", "UUID:", Q_NULLPTR));
+        read_outFactory_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
+        send_outFactory_pushButton->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
+        reStoreFactory_pushButton->setText(QApplication::translate("MainWindow", "\346\201\242\345\244\215\345\207\272\345\216\202\350\256\276\347\275\256", Q_NULLPTR));
+        groupBox_10->setTitle(QApplication::translate("MainWindow", "\350\276\223\345\207\272\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
+        comboBox->clear();
+        comboBox->insertItems(0, QStringList()
+         << QString()
+         << QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "\345\216\237\345\247\213LSB", Q_NULLPTR)
+        );
+        groupBox_12->setTitle(QApplication::translate("MainWindow", "\345\215\225\344\270\252\345\257\204\345\255\230\345\231\250\350\257\273\345\206\231\357\274\232", Q_NULLPTR));
+        label_27->setText(QApplication::translate("MainWindow", "\345\234\260\345\235\200(0x)\357\274\232", Q_NULLPTR));
+        label_28->setText(QApplication::translate("MainWindow", "  \345\200\274(0x)\357\274\232", Q_NULLPTR));
+        singleReg_read_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
+        singleReg_write_pushButton->setText(QApplication::translate("MainWindow", "\345\206\231\345\205\245", Q_NULLPTR));
+        toolBox->setItemText(toolBox->indexOf(page_4), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\351\205\215\347\275\256", Q_NULLPTR));
+        groupBox_9->setTitle(QApplication::translate("MainWindow", "offset\346\240\241\345\207\206\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
+        label_6->setText(QApplication::translate("MainWindow", "\350\267\235\347\246\273(mm):     ", Q_NULLPTR));
+        label_13->setText(QApplication::translate("MainWindow", "\347\263\273\346\225\260K(float): ", Q_NULLPTR));
+        label_26->setText(QApplication::translate("MainWindow", "\346\270\251\345\272\246\347\263\273\346\225\260\357\274\232    ", Q_NULLPTR));
+        label_32->setText(QApplication::translate("MainWindow", "\346\212\227\351\230\263\345\205\211\345\274\272\345\272\246\357\274\232", Q_NULLPTR));
+        sunPower_set_comboBox->clear();
+        sunPower_set_comboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "0", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "1", Q_NULLPTR)
+        );
+        label_29->setText(QApplication::translate("MainWindow", "\346\234\200\345\244\247\351\207\217\347\250\213(mm)\357\274\232", Q_NULLPTR));
+        label_30->setText(QApplication::translate("MainWindow", "\346\273\244\346\263\242\346\226\271\345\274\217\357\274\232", Q_NULLPTR));
+        filter_comboBox->clear();
+        filter_comboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "\346\227\240", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "\345\235\207\345\200\274\346\273\244\346\263\242", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "\346\273\221\345\212\250\347\252\227\345\217\243\346\273\244\346\263\242", Q_NULLPTR)
+        );
+        label_31->setText(QApplication::translate("MainWindow", "\351\207\207\351\233\206\351\242\221\347\216\207\357\274\232", Q_NULLPTR));
+        offset_caiji_comboBox->clear();
+        offset_caiji_comboBox->insertItems(0, QStringList()
          << QApplication::translate("MainWindow", "4500", Q_NULLPTR)
          << QApplication::translate("MainWindow", "4000", Q_NULLPTR)
          << QApplication::translate("MainWindow", "3600", Q_NULLPTR)
@@ -1195,37 +1326,9 @@ public:
          << QApplication::translate("MainWindow", "10", Q_NULLPTR)
          << QApplication::translate("MainWindow", "1", Q_NULLPTR)
         );
-        label_20->setText(QApplication::translate("MainWindow", "\350\256\276\345\244\207\347\261\273\345\236\213\357\274\232", Q_NULLPTR));
-        label_17->setText(QApplication::translate("MainWindow", "UUID:", Q_NULLPTR));
-        label_19->setText(QApplication::translate("MainWindow", "\351\242\204\347\225\231\346\225\260\346\215\256\357\274\232", Q_NULLPTR));
-        read_outFactory_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
-        send_outFactory_pushButton->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
-        reStoreFactory_pushButton->setText(QApplication::translate("MainWindow", "\346\201\242\345\244\215\345\207\272\345\216\202\350\256\276\347\275\256", Q_NULLPTR));
-        label_25->setText(QApplication::translate("MainWindow", "\351\207\217\347\250\213(mm):", Q_NULLPTR));
-        groupBox_10->setTitle(QApplication::translate("MainWindow", "\350\276\223\345\207\272\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
-        comboBox->clear();
-        comboBox->insertItems(0, QStringList()
-         << QString()
-         << QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273", Q_NULLPTR)
-         << QApplication::translate("MainWindow", "\345\216\237\345\247\213LSB", Q_NULLPTR)
-        );
-        groupBox_12->setTitle(QApplication::translate("MainWindow", "\345\215\225\344\270\252\345\257\204\345\255\230\345\231\250\350\257\273\345\206\231\357\274\232", Q_NULLPTR));
-        label_27->setText(QApplication::translate("MainWindow", "\345\234\260\345\235\200(0x)\357\274\232", Q_NULLPTR));
-        label_28->setText(QApplication::translate("MainWindow", "  \345\200\274(0x)\357\274\232", Q_NULLPTR));
-        singleReg_read_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
-        singleReg_write_pushButton->setText(QApplication::translate("MainWindow", "\345\206\231\345\205\245", Q_NULLPTR));
-        toolBox->setItemText(toolBox->indexOf(page_4), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\351\205\215\347\275\256", Q_NULLPTR));
-        groupBox_9->setTitle(QApplication::translate("MainWindow", "offset\346\240\241\345\207\206\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
-        label_6->setText(QApplication::translate("MainWindow", "\350\267\235\347\246\273(mm):", Q_NULLPTR));
-        label_13->setText(QApplication::translate("MainWindow", "\347\263\273\346\225\260K(float):", Q_NULLPTR));
-        label_26->setText(QApplication::translate("MainWindow", "\346\270\251\345\272\246\347\263\273\346\225\260\357\274\232", Q_NULLPTR));
-        label_32->setText(QApplication::translate("MainWindow", "\346\212\227\351\230\263\345\205\211\345\274\272\345\272\246\357\274\232", Q_NULLPTR));
+        label_34->setText(QApplication::translate("MainWindow", "PEAK\351\230\210\345\200\274\357\274\232     ", Q_NULLPTR));
         calibration_pushButton->setText(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
-        sunPower_set_comboBox->clear();
-        sunPower_set_comboBox->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "0", Q_NULLPTR)
-         << QApplication::translate("MainWindow", "1", Q_NULLPTR)
-        );
+        calibration_read_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
         groupBox_11->setTitle(QApplication::translate("MainWindow", "offset\346\240\241\345\207\206\347\273\223\346\236\234\350\257\273\345\217\226\357\274\232", Q_NULLPTR));
         label_15->setText(QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273(mm):", Q_NULLPTR));
         label_22->setText(QApplication::translate("MainWindow", "\346\240\241\345\207\206\346\227\266\346\270\251\345\272\246(C):", Q_NULLPTR));
@@ -1233,7 +1336,6 @@ public:
         label_23->setText(QApplication::translate("MainWindow", "Offset\345\200\274\357\274\232", Q_NULLPTR));
         offset_jiaozhun_lineEdit->setText(QString());
         label_21->setText(QApplication::translate("MainWindow", "\347\263\273\346\225\260K(float):", Q_NULLPTR));
-        calibration_read_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
         label_33->setText(QApplication::translate("MainWindow", "\346\212\227\351\230\263\345\205\211\345\274\272\345\272\246\357\274\232", Q_NULLPTR));
         gaofan_pushButton->setText(QApplication::translate("MainWindow", "\351\253\230\345\217\215\346\240\241\345\207\206", Q_NULLPTR));
         toolBox->setItemText(toolBox->indexOf(page_5), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\346\240\241\345\207\206", Q_NULLPTR));
@@ -1255,11 +1357,14 @@ public:
         plot_comboBox->insertItems(0, QStringList()
          << QString()
          << QApplication::translate("MainWindow", "TOF\345\233\276", Q_NULLPTR)
-         << QApplication::translate("MainWindow", "\347\233\264\346\226\271\345\233\276", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "VI4300\347\233\264\346\226\271\345\233\276", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "CASSATT\347\233\264\346\226\271\345\233\276", Q_NULLPTR)
         );
         savePicture_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
         savePicture_his_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
         HistogramData_pushButton->setText(QApplication::translate("MainWindow", "HistData_save", Q_NULLPTR));
+        casset_imageSave_pushButton->setText(QApplication::translate("MainWindow", "\345\233\276\347\211\207\344\277\235\345\255\230", Q_NULLPTR));
+        casset_historgram_pushButton->setText(QApplication::translate("MainWindow", "HistorgramData", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\346\226\207\344\273\266", Q_NULLPTR));
         menu_2->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", Q_NULLPTR));
         menu_4->setTitle(QApplication::translate("MainWindow", "\350\257\255\350\250\200(language)", Q_NULLPTR));

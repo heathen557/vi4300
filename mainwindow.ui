@@ -14,7 +14,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>VI4300配置程序(v1.2)</string>
+   <string>VI4300配置程序(v1.3)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="img.qrc">
@@ -54,14 +54,14 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>247</width>
+          <width>245</width>
           <height>581</height>
          </rect>
         </property>
@@ -339,7 +339,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>247</width>
+          <width>245</width>
           <height>581</height>
          </rect>
         </property>
@@ -354,7 +354,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_15">
          <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_14" rowstretch="8,1,2,1">
+          <layout class="QGridLayout" name="gridLayout_14" rowstretch="4,1,2,1">
            <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox_7">
              <property name="title">
@@ -432,87 +432,30 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                     <string>1200</string>
                    </property>
                   </item>
+                  <item>
+                   <property name="text">
+                    <string>230400</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>460800</string>
+                   </property>
+                  </item>
                  </widget>
                 </item>
                 <item row="2" column="0">
                  <widget class="QLabel" name="label_18">
                   <property name="text">
-                   <string>采集频率：</string>
+                   <string>版本号：</string>
                   </property>
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QComboBox" name="CAIJI_frequency_comboBox">
-                  <item>
-                   <property name="text">
-                    <string>4500</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>4000</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>3600</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>3000</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>2000</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>1800</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>1000</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>500</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>200</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>100</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>50</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>20</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>10</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>1</string>
-                   </property>
-                  </item>
+                 <widget class="QLineEdit" name="versionNum_lineEdit">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="3" column="0">
@@ -525,14 +468,14 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 <item row="3" column="1">
                  <widget class="QComboBox" name="deviceType_comboBox"/>
                 </item>
-                <item row="5" column="0">
+                <item row="4" column="0">
                  <widget class="QLabel" name="label_17">
                   <property name="text">
                    <string>UUID:</string>
                   </property>
                  </widget>
                 </item>
-                <item row="5" column="1">
+                <item row="4" column="1">
                  <spacer name="horizontalSpacer_8">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -545,60 +488,27 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                   </property>
                  </spacer>
                 </item>
-                <item row="6" column="0" colspan="2">
+                <item row="5" column="0" colspan="2">
                  <widget class="QLineEdit" name="UUID_lineEdit"/>
                 </item>
-                <item row="7" column="0">
-                 <widget class="QLabel" name="label_19">
-                  <property name="text">
-                   <string>预留数据：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="1">
-                 <spacer name="horizontalSpacer_11">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>105</width>
-                    <height>13</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="8" column="0" colspan="2">
-                 <widget class="QLineEdit" name="YULIU_lineEdit"/>
-                </item>
-                <item row="9" column="0">
+                <item row="6" column="0">
                  <widget class="QPushButton" name="read_outFactory_pushButton">
                   <property name="text">
                    <string>读取</string>
                   </property>
                  </widget>
                 </item>
-                <item row="9" column="1">
+                <item row="6" column="1">
                  <widget class="QPushButton" name="send_outFactory_pushButton">
                   <property name="text">
                    <string>设置</string>
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="0" colspan="2">
+                <item row="7" column="0" colspan="2">
                  <widget class="QPushButton" name="reStoreFactory_pushButton">
                   <property name="text">
                    <string>恢复出厂设置</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QLineEdit" name="Range_lineEdit"/>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="label_25">
-                  <property name="text">
-                   <string>量程(mm):</string>
                   </property>
                  </widget>
                 </item>
@@ -736,184 +646,346 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>247</width>
+          <width>245</width>
           <height>581</height>
          </rect>
         </property>
         <attribute name="label">
          <string>              设备校准</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_17">
-         <item row="0" column="0">
-          <widget class="QGroupBox" name="groupBox_9">
-           <property name="title">
-            <string>offset校准设置：</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_9">
-            <item row="0" column="0">
-             <layout class="QFormLayout" name="formLayout_3">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>距离(mm):</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="realDisFactory_lineEdit"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_13">
-                <property name="text">
-                 <string>系数K(float):</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="K1_lineEdit"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_26">
-                <property name="text">
-                 <string>温度系数：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="tempture_k_lineEdit"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_32">
-                <property name="text">
-                 <string>抗阳光强度：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QPushButton" name="calibration_pushButton">
-                <property name="text">
-                 <string>设置</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="sunPower_set_comboBox">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-             </layout>
+        <widget class="QGroupBox" name="groupBox_9">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>9</y>
+           <width>230</width>
+           <height>303</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>offset校准设置：</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>距离(mm):     </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="realDisFactory_lineEdit"/>
             </item>
            </layout>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QGroupBox" name="groupBox_11">
-           <property name="title">
-            <string>offset校准结果读取：</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_16">
-            <item row="0" column="0">
-             <layout class="QFormLayout" name="formLayout_4">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_15">
-                <property name="text">
-                 <string>真实距离(mm):</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="realDisFactory_2_lineEdit"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_22">
-                <property name="text">
-                 <string>校准时温度(C):</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="temperature_lineEdit">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_23">
-                <property name="text">
-                 <string>Offset值：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="offset_jiaozhun_lineEdit">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_21">
-                <property name="text">
-                 <string>系数K(float):</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="K2_lineEdit"/>
-              </item>
-              <item row="5" column="1">
-               <widget class="QPushButton" name="calibration_read_pushButton">
-                <property name="text">
-                 <string>读取</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="sunPower_read_lineEdit"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_33">
-                <property name="text">
-                 <string>抗阳光强度：</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="label_13">
+              <property name="text">
+               <string>系数K(float): </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="K1_lineEdit"/>
             </item>
            </layout>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QPushButton" name="gaofan_pushButton">
-           <property name="text">
-            <string>高反校准</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>179</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <item>
+             <widget class="QLabel" name="label_26">
+              <property name="text">
+               <string>温度系数：    </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="tempture_k_lineEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="label_32">
+              <property name="text">
+               <string>抗阳光强度：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="sunPower_set_comboBox">
+              <item>
+               <property name="text">
+                <string>0</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="label_29">
+              <property name="text">
+               <string>最大量程(mm)：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="offset_maxValue_lineEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item row="5" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QLabel" name="label_30">
+              <property name="text">
+               <string>滤波方式：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="filter_comboBox">
+              <item>
+               <property name="text">
+                <string>无</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>均值滤波</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>滑动窗口滤波</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="6" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QLabel" name="label_31">
+              <property name="text">
+               <string>采集频率：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="offset_caiji_comboBox">
+              <item>
+               <property name="text">
+                <string>4500</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>4000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3600</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1800</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>500</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>200</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>100</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>50</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>20</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>10</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="7" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <item>
+             <widget class="QLabel" name="label_34">
+              <property name="text">
+               <string>PEAK阈值：     </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="peakOffset_lineEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item row="8" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QPushButton" name="calibration_pushButton">
+              <property name="text">
+               <string>设置</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="calibration_read_pushButton">
+              <property name="text">
+               <string>读取</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_11">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>342</y>
+           <width>224</width>
+           <height>171</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>offset校准结果读取：</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_16">
+          <item row="0" column="0">
+           <layout class="QFormLayout" name="formLayout_4">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_15">
+              <property name="text">
+               <string>真实距离(mm):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="realDisFactory_2_lineEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>校准时温度(C):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="temperature_lineEdit">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>Offset值：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="offset_jiaozhun_lineEdit">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_21">
+              <property name="text">
+               <string>系数K(float):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="K2_lineEdit"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_33">
+              <property name="text">
+               <string>抗阳光强度：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="sunPower_read_lineEdit"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QPushButton" name="gaofan_pushButton">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>540</y>
+           <width>201</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>高反校准</string>
+         </property>
+        </widget>
        </widget>
       </widget>
       <widget class="QGroupBox" name="groupBox">
@@ -1145,7 +1217,12 @@ font: 9pt &quot;黑体&quot;;</string>
             </item>
             <item>
              <property name="text">
-              <string>直方图</string>
+              <string>VI4300直方图</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>CASSATT直方图</string>
              </property>
             </item>
            </widget>
@@ -1248,6 +1325,40 @@ font: 9pt &quot;黑体&quot;;</string>
                </spacer>
               </item>
              </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="casset_historgram_page">
+           <layout class="QGridLayout" name="gridLayout_20">
+            <item row="0" column="0" colspan="3">
+             <widget class="QCustomPlot" name="casset_historgrm_widget" native="true"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="casset_imageSave_pushButton">
+              <property name="text">
+               <string>图片保存</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="casset_historgram_pushButton">
+              <property name="text">
+               <string>HistorgramData</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>260</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </widget>

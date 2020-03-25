@@ -103,6 +103,8 @@ public:
 
     QCPBars *regen;          //直方图用   *****标签相关
 
+    QCPBars *regen_4096;
+
     int index;
 
 
@@ -111,8 +113,13 @@ public:
     McuUpgradeDialog  McuUpgradeDia;
 
 
-    QVector<double> HistorgramTicks;
-    QVector<QString> HistorgramLabels;
+    QVector<double> HistorgramTicks_2048;      //4300
+    QVector<QString> HistorgramLabels_2048;    //4300
+
+    QVector<double> HistorgramTicks_4096;      //4300
+    QVector<QString> HistorgramLabels_4096;    //4300
+
+
 
     HighReact_Dialog highReactDia;
 
@@ -126,11 +133,8 @@ public:
     bool isSaveHistData_flag;
     QString saveHistDataFilePath;
 
-
-
     //显示历史数据TOF 图
     HistoryTof_Dialog hisTof_dia;
-
     devManagement_Dialog devManagement_dia;
 
 private slots:
@@ -169,7 +173,9 @@ private slots:
 
     void returnLinkInfo_slot(QString, bool);
 
-    void toShowHistogram_slot(QVector<double>,int);   //显示统计直方图
+    void toShowHistogram_slot(QVector<double>,int);          //显示统计直方图   VI4300   2048
+
+    void toShowHistogram_4096_slot(QVector<double>,int);   //显示统计直方图   CASSET   4096
 
 
 
@@ -235,6 +241,10 @@ private slots:
     void on_singleReg_read_pushButton_clicked();
 
     void on_singleReg_write_pushButton_clicked();
+
+    void on_casset_imageSave_pushButton_clicked();
+
+    void on_casset_historgram_pushButton_clicked();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close
