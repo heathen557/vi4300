@@ -49,6 +49,7 @@ public:
     QAction *action_china;
     QAction *showTOF_action_TOF;
     QAction *manageMent_action;
+    QAction *about_action;
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QSplitter *splitter;
@@ -76,6 +77,15 @@ public:
     QPushButton *singleMeasure_pushButton;
     QPushButton *delayMeasure_pushButton;
     QPushButton *stopMeasure_pushButton;
+    QGroupBox *groupBox_6;
+    QGridLayout *gridLayout_7;
+    QFormLayout *formLayout_3;
+    QComboBox *pixel_timeOffset_comboBox;
+    QPushButton *pixel_time_pushButton;
+    QPushButton *rowData_pushButton;
+    QPushButton *pixel_read_pushButton;
+    QSpacerItem *horizontalSpacer_10;
+    QPushButton *delayLine_pushButton;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout;
@@ -89,10 +99,6 @@ public:
     QGridLayout *gridLayout_8;
     QRadioButton *plotSet_off_radioButton;
     QRadioButton *plotSet_on_radioButton;
-    QGroupBox *groupBox_6;
-    QGridLayout *gridLayout_7;
-    QPushButton *rowData_pushButton;
-    QPushButton *pixel_read_pushButton;
     QWidget *page_4;
     QGridLayout *gridLayout_15;
     QGridLayout *gridLayout_14;
@@ -227,6 +233,7 @@ public:
     QMenu *menu_4;
     QMenu *menu_3;
     QMenu *menu_5;
+    QMenu *menu_6;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -234,7 +241,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1249, 760);
+        MainWindow->resize(1249, 788);
         MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
         QIcon icon;
         icon.addFile(QStringLiteral(":/new/image/images/icon_1.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -264,6 +271,11 @@ public:
         QIcon icon4;
         icon4.addFile(QStringLiteral(":/new/image/images/dbContainerSymbol.png"), QSize(), QIcon::Normal, QIcon::Off);
         manageMent_action->setIcon(icon4);
+        about_action = new QAction(MainWindow);
+        about_action->setObjectName(QStringLiteral("about_action"));
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/new/image/images/dbViewportSymbol.png"), QSize(), QIcon::Normal, QIcon::Off);
+        about_action->setIcon(icon5);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_2 = new QGridLayout(centralWidget);
@@ -286,13 +298,14 @@ public:
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 245, 581));
+        page->setGeometry(QRect(0, 0, 244, 609));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_18 = new QGridLayout(page);
         gridLayout_18->setSpacing(6);
         gridLayout_18->setContentsMargins(11, 11, 11, 11);
         gridLayout_18->setObjectName(QStringLiteral("gridLayout_18"));
+        gridLayout_18->setContentsMargins(-1, 2, -1, 2);
         groupBox_3 = new QGroupBox(page);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
         groupBox_3->setStyleSheet(QLatin1String(".QGroupBox\n"
@@ -402,6 +415,50 @@ public:
 
         gridLayout_18->addWidget(groupBox_5, 1, 0, 1, 1);
 
+        groupBox_6 = new QGroupBox(page);
+        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
+        gridLayout_7 = new QGridLayout(groupBox_6);
+        gridLayout_7->setSpacing(6);
+        gridLayout_7->setContentsMargins(11, 11, 11, 11);
+        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        formLayout_3 = new QFormLayout();
+        formLayout_3->setSpacing(6);
+        formLayout_3->setObjectName(QStringLiteral("formLayout_3"));
+        pixel_timeOffset_comboBox = new QComboBox(groupBox_6);
+        pixel_timeOffset_comboBox->setObjectName(QStringLiteral("pixel_timeOffset_comboBox"));
+
+        formLayout_3->setWidget(0, QFormLayout::LabelRole, pixel_timeOffset_comboBox);
+
+        pixel_time_pushButton = new QPushButton(groupBox_6);
+        pixel_time_pushButton->setObjectName(QStringLiteral("pixel_time_pushButton"));
+
+        formLayout_3->setWidget(0, QFormLayout::FieldRole, pixel_time_pushButton);
+
+        rowData_pushButton = new QPushButton(groupBox_6);
+        rowData_pushButton->setObjectName(QStringLiteral("rowData_pushButton"));
+
+        formLayout_3->setWidget(1, QFormLayout::LabelRole, rowData_pushButton);
+
+        pixel_read_pushButton = new QPushButton(groupBox_6);
+        pixel_read_pushButton->setObjectName(QStringLiteral("pixel_read_pushButton"));
+
+        formLayout_3->setWidget(1, QFormLayout::FieldRole, pixel_read_pushButton);
+
+        horizontalSpacer_10 = new QSpacerItem(78, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        formLayout_3->setItem(2, QFormLayout::LabelRole, horizontalSpacer_10);
+
+        delayLine_pushButton = new QPushButton(groupBox_6);
+        delayLine_pushButton->setObjectName(QStringLiteral("delayLine_pushButton"));
+
+        formLayout_3->setWidget(2, QFormLayout::FieldRole, delayLine_pushButton);
+
+
+        gridLayout_7->addLayout(formLayout_3, 0, 0, 1, 1);
+
+
+        gridLayout_18->addWidget(groupBox_6, 4, 0, 1, 1);
+
         groupBox_4 = new QGroupBox(page);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
         groupBox_4->setStyleSheet(QLatin1String(".QGroupBox\n"
@@ -475,29 +532,15 @@ public:
 
         gridLayout_18->addWidget(groupBox_8, 3, 0, 1, 1);
 
-        groupBox_6 = new QGroupBox(page);
-        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
-        gridLayout_7 = new QGridLayout(groupBox_6);
-        gridLayout_7->setSpacing(6);
-        gridLayout_7->setContentsMargins(11, 11, 11, 11);
-        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        rowData_pushButton = new QPushButton(groupBox_6);
-        rowData_pushButton->setObjectName(QStringLiteral("rowData_pushButton"));
-
-        gridLayout_7->addWidget(rowData_pushButton, 0, 0, 1, 1);
-
-        pixel_read_pushButton = new QPushButton(groupBox_6);
-        pixel_read_pushButton->setObjectName(QStringLiteral("pixel_read_pushButton"));
-
-        gridLayout_7->addWidget(pixel_read_pushButton, 0, 1, 1, 1);
-
-
-        gridLayout_18->addWidget(groupBox_6, 4, 0, 1, 1);
-
+        gridLayout_18->setRowStretch(0, 4);
+        gridLayout_18->setRowStretch(1, 1);
+        gridLayout_18->setRowStretch(2, 3);
+        gridLayout_18->setRowStretch(3, 1);
+        gridLayout_18->setRowStretch(4, 2);
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 245, 581));
+        page_4->setGeometry(QRect(0, 0, 244, 609));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -674,7 +717,7 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 245, 581));
+        page_5->setGeometry(QRect(0, 0, 244, 609));
         groupBox_9 = new QGroupBox(page_5);
         groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
         groupBox_9->setGeometry(QRect(9, 9, 230, 303));
@@ -1078,9 +1121,9 @@ public:
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
         savePicture_pushButton = new QPushButton(page_2);
         savePicture_pushButton->setObjectName(QStringLiteral("savePicture_pushButton"));
-        QIcon icon5;
-        icon5.addFile(QStringLiteral(":/new/image/images/ccSave.png"), QSize(), QIcon::Normal, QIcon::Off);
-        savePicture_pushButton->setIcon(icon5);
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/new/image/images/ccSave.png"), QSize(), QIcon::Normal, QIcon::Off);
+        savePicture_pushButton->setIcon(icon6);
 
         horizontalLayout_5->addWidget(savePicture_pushButton);
 
@@ -1112,13 +1155,13 @@ public:
         horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
         savePicture_his_pushButton = new QPushButton(page_3);
         savePicture_his_pushButton->setObjectName(QStringLiteral("savePicture_his_pushButton"));
-        savePicture_his_pushButton->setIcon(icon5);
+        savePicture_his_pushButton->setIcon(icon6);
 
         horizontalLayout_9->addWidget(savePicture_his_pushButton);
 
         HistogramData_pushButton = new QPushButton(page_3);
         HistogramData_pushButton->setObjectName(QStringLiteral("HistogramData_pushButton"));
-        HistogramData_pushButton->setIcon(icon5);
+        HistogramData_pushButton->setIcon(icon6);
 
         horizontalLayout_9->addWidget(HistogramData_pushButton);
 
@@ -1181,6 +1224,8 @@ public:
         menu_3->setObjectName(QStringLiteral("menu_3"));
         menu_5 = new QMenu(menuBar);
         menu_5->setObjectName(QStringLiteral("menu_5"));
+        menu_6 = new QMenu(menuBar);
+        menu_6->setObjectName(QStringLiteral("menu_6"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -1197,6 +1242,7 @@ public:
         menuBar->addAction(menu_2->menuAction());
         menuBar->addAction(menu_3->menuAction());
         menuBar->addAction(menu_5->menuAction());
+        menuBar->addAction(menu_6->menuAction());
         menu_2->addAction(Register_action);
         menu_2->addAction(menu_4->menuAction());
         menu_4->addAction(actionEnglish);
@@ -1204,6 +1250,7 @@ public:
         menu_3->addAction(actionMCU);
         menu_3->addAction(showTOF_action_TOF);
         menu_5->addAction(manageMent_action);
+        menu_6->addAction(about_action);
         mainToolBar->addAction(Register_action);
         mainToolBar->addAction(actionMCU);
         mainToolBar->addAction(showTOF_action_TOF);
@@ -1211,7 +1258,8 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(1);
+        toolBox->setCurrentIndex(0);
+        pixel_timeOffset_comboBox->setCurrentIndex(2);
         stackedWidget->setCurrentIndex(1);
 
 
@@ -1227,6 +1275,7 @@ public:
         action_china->setText(QApplication::translate("MainWindow", "\344\270\255\346\226\207\347\256\200\344\275\223", Q_NULLPTR));
         showTOF_action_TOF->setText(QApplication::translate("MainWindow", "\345\216\206\345\217\262\346\225\260\346\215\256TOF\345\233\276", Q_NULLPTR));
         manageMent_action->setText(QApplication::translate("MainWindow", "\350\256\276\345\244\207\347\256\241\347\220\206", Q_NULLPTR));
+        about_action->setText(QApplication::translate("MainWindow", "\345\205\263\344\272\216", Q_NULLPTR));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "\344\270\262\345\217\243\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
         label_10->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\267\357\274\232", Q_NULLPTR));
         label_8->setText(QApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207\357\274\232", Q_NULLPTR));
@@ -1239,6 +1288,19 @@ public:
         singleMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\215\225\346\254\241\346\265\213\351\207\217", Q_NULLPTR));
         delayMeasure_pushButton->setText(QApplication::translate("MainWindow", "\350\277\236\347\273\255\346\265\213\351\207\217", Q_NULLPTR));
         stopMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\201\234\346\255\242", Q_NULLPTR));
+        groupBox_6->setTitle(QApplication::translate("MainWindow", "\346\225\260\346\215\256\350\257\273\345\217\226\357\274\232", Q_NULLPTR));
+        pixel_timeOffset_comboBox->clear();
+        pixel_timeOffset_comboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "100ms", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "200ms", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "500ms", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "1000ms", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "2000ms", Q_NULLPTR)
+        );
+        pixel_time_pushButton->setText(QApplication::translate("MainWindow", "pixel\345\256\232\346\227\266\350\257\273\345\217\226", Q_NULLPTR));
+        rowData_pushButton->setText(QApplication::translate("MainWindow", "RawData", Q_NULLPTR));
+        pixel_read_pushButton->setText(QApplication::translate("MainWindow", "Pixel", Q_NULLPTR));
+        delayLine_pushButton->setText(QApplication::translate("MainWindow", "delay line", Q_NULLPTR));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "\347\273\223\346\236\234\346\230\276\347\244\272:", Q_NULLPTR));
         label_12->setText(QApplication::translate("MainWindow", "\345\275\223\345\211\215\350\267\235\347\246\273:(mm)", Q_NULLPTR));
         currentDistance11_label->setText(QApplication::translate("MainWindow", "0.00", Q_NULLPTR));
@@ -1249,9 +1311,6 @@ public:
         groupBox_8->setTitle(QApplication::translate("MainWindow", "\347\224\273\345\233\276\345\212\237\350\203\275:", Q_NULLPTR));
         plotSet_off_radioButton->setText(QApplication::translate("MainWindow", "OFF", Q_NULLPTR));
         plotSet_on_radioButton->setText(QApplication::translate("MainWindow", "ON", Q_NULLPTR));
-        groupBox_6->setTitle(QApplication::translate("MainWindow", "\346\225\260\346\215\256\350\257\273\345\217\226\357\274\232", Q_NULLPTR));
-        rowData_pushButton->setText(QApplication::translate("MainWindow", "RawData", Q_NULLPTR));
-        pixel_read_pushButton->setText(QApplication::translate("MainWindow", "Pixel", Q_NULLPTR));
         toolBox->setItemText(toolBox->indexOf(page), QApplication::translate("MainWindow", "              \345\237\272\346\234\254\350\256\276\347\275\256", Q_NULLPTR));
         groupBox_7->setTitle(QApplication::translate("MainWindow", "\345\207\272\345\216\202\350\256\276\347\275\256", Q_NULLPTR));
         label_4->setText(QApplication::translate("MainWindow", "SN \345\217\267\357\274\232", Q_NULLPTR));
@@ -1370,6 +1429,7 @@ public:
         menu_4->setTitle(QApplication::translate("MainWindow", "\350\257\255\350\250\200(language)", Q_NULLPTR));
         menu_3->setTitle(QApplication::translate("MainWindow", "\345\205\266\344\273\226", Q_NULLPTR));
         menu_5->setTitle(QApplication::translate("MainWindow", "\346\225\260\346\215\256\345\272\223", Q_NULLPTR));
+        menu_6->setTitle(QApplication::translate("MainWindow", "\345\270\256\345\212\251", Q_NULLPTR));
     } // retranslateUi
 
 };

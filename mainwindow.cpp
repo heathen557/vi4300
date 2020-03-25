@@ -102,6 +102,8 @@ void MainWindow::SerialSetting_Enable_false()
     ui->pixel_read_pushButton->setEnabled(false);
     ui->singleReg_read_pushButton->setEnabled(false);
     ui->singleReg_write_pushButton->setEnabled(false);
+    ui->pixel_time_pushButton->setEnabled(false);
+    ui->delayLine_pushButton->setEnabled(false);
 
 }
 
@@ -126,6 +128,8 @@ void MainWindow::SerialSetting_Enable_true()
     ui->pixel_read_pushButton->setEnabled(true);
     ui->singleReg_read_pushButton->setEnabled(true);
     ui->singleReg_write_pushButton->setEnabled(true);
+    ui->pixel_time_pushButton->setEnabled(true);
+    ui->delayLine_pushButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
@@ -204,6 +208,10 @@ void MainWindow::initConnect()
 
     //高反设置的串口数据
     connect(&highReactDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
+
+
+    //定时读取 pixel数据的定时器槽函数
+    connect(&readPixel_timer,SIGNAL(timeout()),this,SLOT(pixel_time_slot()));
 
 }
 
@@ -1834,6 +1842,49 @@ void MainWindow::on_pixel_read_pushButton_clicked()
     emit sendSerialSignal(cmdStr);
 }
 
+//pixel 定时读取
+void MainWindow::on_pixel_time_pushButton_clicked()
+{
+    int timeOffset;
+    int index = ui->pixel_timeOffset_comboBox->currentIndex();
+    if(0 ==index)
+    {
+        timeOffset = 100;
+    }else if(1 == index )
+    {
+        timeOffset = 200;
+    }else if(2 == index)
+    {
+        timeOffset = 500;
+    }else if(3 == index)
+    {
+        timeOffset = 1000;
+    }else if(4 == index)
+    {
+        timeOffset = 2000;
+    }
+
+    if(ui->pixel_time_pushButton->text() == QStringLiteral("pixel定时读取"))
+    {
+        pixel_time_slot();     //先发送一次
+        readPixel_timer.start(timeOffset);
+        ui->pixel_time_pushButton->setText(QStringLiteral("取消"));
+    }else
+    {
+        readPixel_timer.stop();
+        ui->pixel_time_pushButton->setText(QStringLiteral("pixel定时读取"));
+    }
+}
+
+//!
+//! \brief pixel_time_slot
+//!
+void MainWindow::pixel_time_slot()
+{
+    QString cmdStr = "5A 00 01 00 0F ";
+    emit sendSerialSignal(cmdStr);
+}
+
 
 
 //!
@@ -1888,5 +1939,32 @@ void MainWindow::on_singleReg_write_pushButton_clicked()
 
 }
 
+
+//!
+//! \brief MainWindow::on_delayLine_pushButton_clicked
+//!  delay line测试功能
+//!   5A 00 01 00 11
+void MainWindow::on_delayLine_pushButton_clicked()
+{
+    QString cmdStr = "5A 00 01 00 11 ";
+    emit sendSerialSignal(cmdStr);
+}
+
+
+//显示软件版本
+void MainWindow::on_about_action_triggered()
+{
+    about_dia.show();
+//    QString tmp1 =QStringLiteral("寄存器变量");
+//    QString tmp2 = "  ";
+//    QStringList list;
+//    list.append(tmp1);
+//    list.append(tmp2);
+//    list.append(tmp1);
+//    list.append(tmp2);
+//    list.append(tmp1);
+//    list.append(tmp2);
+//    showResultMsg_slot(list,0);
+}
 
 

@@ -622,6 +622,7 @@ void receSerial_msg::readDataSlot()
 
                        }
                        DistanceStr.append(currentSingleData);
+                       DistanceStr.append("  ");
                        showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
                        DistanceStr.clear();                   //发送完毕后清空字符队列
                    }
@@ -700,6 +701,46 @@ void receSerial_msg::readDataSlot()
                        DistanceStr.clear();
                    }
 
+               }
+
+
+               //读取Delay LINE信息
+               //5A 80 19 00 DDDD(24 BYTE)
+               if("80" == returnCmdStr)
+               {
+                   QString secCmd = single_Data.mid(8,2);
+                   if("11" == secCmd)
+                   {
+                       if(dataLen != 24*2)     //  0800 = 2048
+                       {
+                           qDebug()<<QStringLiteral("解析Delay Line数据出错, 这里的 dataLen = ")<<dataLen;
+                       }
+                       //  reg_int  :  testResult
+                       QString dataStr = single_Data.mid(10,dataLen);
+                       int reg_int = dataStr.mid(0,2).toInt(NULL,16);
+                       QString str1 = QStringLiteral("寄存器(十进制):") + QString::number(reg_int);
+                       int reg_val = dataStr.mid(2,2).toInt(NULL,16);
+                       QString str2 = QStringLiteral("      测试结果(十进制)：")+ QString::number(reg_val);
+                       str1.append(str2);
+                       DistanceStr.append(str1);
+
+                       // 测试结果值
+                       QString currentSingleData;
+                       QString tmpStr,resStr;
+                       int tmpValue;
+                       for(int i=0; i<8*4; i+=4 )
+                       {
+                           tmpStr = dataStr.mid(4+i,4);
+                           resStr = tmpStr.mid(2,2) + tmpStr.mid(0,2);
+                           tmpValue = resStr.toInt(NULL,16);
+                           currentSingleData.append(QString::number(tmpValue)).append("  ");
+
+                       }
+                       DistanceStr.append(currentSingleData);
+                       DistanceStr.append("  ");
+                       showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
+                       DistanceStr.clear();
+                   }
                }
 
 

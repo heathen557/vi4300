@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     historytof_dialog.cpp \
     devmanagement_dialog.cpp \
     pagewidget.cpp \
-    adddev_dialog.cpp
+    adddev_dialog.cpp \
+    aboutdialog.cpp
 
 HEADERS  += mainwindow.h \
     receserial_msg.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     historytof_dialog.h \
     devmanagement_dialog.h \
     pagewidget.h \
-    adddev_dialog.h
+    adddev_dialog.h \
+    aboutdialog.h
 
 FORMS    += mainwindow.ui \
     regisitersetdialog.ui \
@@ -57,7 +59,8 @@ FORMS    += mainwindow.ui \
     historytof_dialog.ui \
     devmanagement_dialog.ui \
     pagewidget.ui \
-    adddev_dialog.ui
+    adddev_dialog.ui \
+    aboutdialog.ui
 
 RESOURCES += \
     img.qrc

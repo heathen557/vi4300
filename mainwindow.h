@@ -21,6 +21,7 @@
 #include<QAction>
 #include<historytof_dialog.h>
 #include<devmanagement_dialog.h>
+#include"aboutdialog.h"
 
 
 namespace Ui {
@@ -137,6 +138,13 @@ public:
     HistoryTof_Dialog hisTof_dia;
     devManagement_Dialog devManagement_dia;
 
+
+
+    //读取pixel 定时器
+    QTimer readPixel_timer;
+
+
+    aboutDialog about_dia;
 private slots:
     void on_save_pushButton_clicked();
 
@@ -245,6 +253,14 @@ private slots:
     void on_casset_imageSave_pushButton_clicked();
 
     void on_casset_historgram_pushButton_clicked();
+
+    void on_pixel_time_pushButton_clicked();
+
+    void pixel_time_slot();
+
+    void on_about_action_triggered();
+
+    void on_delayLine_pushButton_clicked();
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close
