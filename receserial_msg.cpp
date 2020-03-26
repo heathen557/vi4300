@@ -717,10 +717,10 @@ void receSerial_msg::readDataSlot()
                        }
                        //  reg_int  :  testResult
                        QString dataStr = single_Data.mid(10,dataLen);
-                       int reg_int = dataStr.mid(0,2).toInt(NULL,16);
-                       QString str1 = QStringLiteral("寄存器(十进制):") + QString::number(reg_int);
-                       int reg_val = dataStr.mid(2,2).toInt(NULL,16);
-                       QString str2 = QStringLiteral("      测试结果(十进制)：")+ QString::number(reg_val);
+                       QString reg_int = dataStr.mid(0,2);
+                       QString str1 = QStringLiteral("寄存器(0x):") + reg_int;
+                       QString reg_val = dataStr.mid(2,2);
+                       QString str2 = QStringLiteral("   测试结果(0x)：")+ reg_val;
                        str1.append(str2);
                        DistanceStr.append(str1);
 
