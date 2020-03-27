@@ -153,6 +153,19 @@ void MainWindow::initUINum()
         }
     }
 
+
+    HistorgramTicks_4096.resize(historgram_label_num_4096);
+    HistorgramLabels_4096.resize(historgram_label_num_4096);
+    for(int i=0; i<historgram_label_num_4096; i++)
+    {
+        HistorgramTicks_4096[i] = i;
+        HistorgramLabels_4096[i] = "";
+        if(0 == i%200)         //相隔100个数据打一个标签
+        {
+            HistorgramLabels_4096[i] = QString::number(i);
+        }
+    }
+
 }
 
 
