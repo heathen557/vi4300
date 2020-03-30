@@ -9,14 +9,14 @@ RegisiterSetDialog::RegisiterSetDialog(QWidget *parent) :
 
 //    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tableWidget->setRowCount(100);
+    ui->tableWidget->setRowCount(150);
     ui->tableWidget->setColumnCount(2);
 //    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows); //整行选中
 //    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);   //禁止编辑
     ui->tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240,240,240)}"); //设置表头背景色
     ui->tableWidget->verticalHeader()->setStyleSheet("QHeaderView::section{background:rgb(240,240,240)}");
 
-    for(int i=0; i<100 ; i++)
+    for(int i=0; i<150 ; i++)
     {
         ui->tableWidget->setItem(i,0,&addressItem[i]);
         ui->tableWidget->setItem(i,1,&valueItem[i]);
@@ -36,7 +36,7 @@ RegisiterSetDialog::~RegisiterSetDialog()
 //清除控件内容
 void RegisiterSetDialog::clearItem()
 {
-    for(int i=0; i<100 ; i++)
+    for(int i=0; i<150 ; i++)
     {
         addressItem[i].setText("");
         valueItem[i].setText("");
@@ -82,7 +82,7 @@ void RegisiterSetDialog::on_loadLocal_pushButton_clicked()
     }
 
     QFile file(file_path);
-    QString line[100];
+    QString line[150];
 
     if (file.open(QIODevice::ReadOnly))
     {

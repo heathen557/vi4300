@@ -19,8 +19,8 @@ public:
     explicit RegisiterSetDialog(QWidget *parent = 0);
     ~RegisiterSetDialog();
 
-    QTableWidgetItem  addressItem[100];
-    QTableWidgetItem  valueItem[100];
+    QTableWidgetItem  addressItem[150];
+    QTableWidgetItem  valueItem[150];
 
     void changeEvent(QEvent *e);
 

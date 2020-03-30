@@ -8,6 +8,9 @@
 //设备类型 0x01 芯视界内部测试用，不对外开放  所以获取设备类型时是根据名称来获取，而不是根据其序号
 #define VisionICS_USE
 
+int read_pixel_flag;    //读取pixel的标识  0:4300  1：casset_package_1  2:casset_package_2
+
+
 
 Settings currentSettings;
 
@@ -17,13 +20,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    read_pixel_flag = 0;  //默认读取4300pixel信息
+
+    deviceType_str = "00";     //默认为00
+
     ui->groupBox_11->setVisible(false);
 
     initUILanguage();
     allCountNum = 0;
 
     m_menu  =  new  QMenu;
-    m_English  =  new  QAction(tr("English"),this);
+    m_English =  new  QAction(tr("English"),this);
     m_China  =  new  QAction(tr("中文"),this);
     m_menu->addAction(m_China);
     m_menu->addAction(m_English);
@@ -41,8 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<QVector<double>>("QVector<double>");   //注册函数
     qRegisterMetaType<QVector<QString>>("QVector<QString>");   //注册函数
 
-    ui->splitter->setStretchFactor(0,1);
-    ui->splitter->setStretchFactor(1,2);
+    ui->splitter->setStretchFactor(0,2);
+    ui->splitter->setStretchFactor(1,4);
     ui->splitter->setStretchFactor(2,5);
     ui->groupBox_2->setVisible(true);
 
@@ -104,6 +111,8 @@ void MainWindow::SerialSetting_Enable_false()
     ui->singleReg_write_pushButton->setEnabled(false);
     ui->pixel_time_pushButton->setEnabled(false);
     ui->delayLine_pushButton->setEnabled(false);
+    ui->CAS_pix1_pushButton->setEnabled(false);
+    ui->CAS_pix2_pushButton->setEnabled(false);
 
 }
 
@@ -130,6 +139,8 @@ void MainWindow::SerialSetting_Enable_true()
     ui->singleReg_write_pushButton->setEnabled(true);
     ui->pixel_time_pushButton->setEnabled(true);
     ui->delayLine_pushButton->setEnabled(true);
+    ui->CAS_pix1_pushButton->setEnabled(true);
+    ui->CAS_pix2_pushButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
@@ -175,11 +186,11 @@ void MainWindow::initUILanguage()
 {
 //    ui->groupBox_3->setTitle(QStringLiteral("串口设置"));
 
-    ui->deviceType_comboBox->addItem("VI4300_Master");
-#ifdef VisionICS_USE
-    ui->deviceType_comboBox->addItem("VI4300_Slave");
-#endif
-    ui->deviceType_comboBox->addItem("LDS");
+//    ui->deviceType_comboBox->addItem("VI4300_Master");
+//#ifdef VisionICS_USE
+//    ui->deviceType_comboBox->addItem("VI4300_Slave");
+//#endif
+//    ui->deviceType_comboBox->addItem("LDS");
 
 }
 
@@ -1105,7 +1116,6 @@ void MainWindow::on_stopMeasure_pushButton_clicked()
 //! 读取出厂设置 槽函数  5A 00 23 00 02 DDD..D XX
 void MainWindow::on_read_outFactory_pushButton_clicked()
 {
-
     //命令组帧 0X22 34
     QString data = QString("%1").arg(0,68,16,QLatin1Char('0'));
 
@@ -1161,24 +1171,11 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
 //    qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
 
     //设备类型
-    //  VI4300_Master =0x00;
-    //  VI4300_Slave = 0x01;
-    //  LDS = 0x02
-    QString deviceType_str = ui->deviceType_comboBox->currentText();
-    int TypeIndex = 0;
-    if("VI4300_Master" == deviceType_str)
-    {
-        TypeIndex = 0;
-    }else if("VI4300_Slave" == deviceType_str)
-    {
-        TypeIndex = 1;
-    }else if("LDS" == deviceType_str)
-    {
-        TypeIndex = 2;
-    }
 
-    QString deviceType = QString("%1").arg(TypeIndex,2,16,QLatin1Char('0'));
-    qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
+    QString deviceType_str = "00";
+    deviceType_str = deviceType_str + ui->deviceType_lineEdit->text();
+     QString deviceType = deviceType_str.right(2);
+     qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
 
 
     QString version_str = "0000";
@@ -1211,13 +1208,9 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
 
     emit sendSerialSignal(cmdStr);
 
-
-
     //清空lineEdit
     ui->SN_lineEdit->clear();
     ui->UUID_lineEdit->clear();
-
-
 }
 
 //!
@@ -1229,6 +1222,7 @@ void MainWindow::on_reStoreFactory_pushButton_clicked()
     QString cmdStr = "5A 01 02 00 03 00 ";
     emit sendSerialSignal(cmdStr);
 }
+
 
 QByteArray MainWindow::StringToByte(QString str)
 {
@@ -1443,8 +1437,13 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         ui->SN_lineEdit->setText(SN_str);
         ui->UUID_lineEdit->setText(UUID_str);
         ui->botelv_comboBox->setCurrentIndex(baudRateIndex);
+        ui->deviceType_lineEdit->setText(QString::number(deviceTypeIndex));
+//        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);  //VI4300_Slave（芯视界测试用，不对外开放）  0x01
 //        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
-        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);  //VI4300_Slave（芯视界测试用，不对外开放）  0x01
+
+
+
+
         ui->versionNum_lineEdit->setText(version_str);
 
         return;
@@ -1855,9 +1854,10 @@ void MainWindow::on_pixel_read_pushButton_clicked()
     emit sendSerialSignal(cmdStr);
 }
 
-//pixel 定时读取
+//4300   pixel 定时读取
 void MainWindow::on_pixel_time_pushButton_clicked()
 {
+    read_pixel_flag = 0;
     int timeOffset;
     int index = ui->pixel_timeOffset_comboBox->currentIndex();
     if(0 ==index)
@@ -1889,6 +1889,86 @@ void MainWindow::on_pixel_time_pushButton_clicked()
     }
 }
 
+
+
+//!
+//! \brief MainWindow::on_CAS_pix1_pushButton_clicked
+//!//caseet package_1读取  pixel
+void MainWindow::on_CAS_pix1_pushButton_clicked()
+{
+    read_pixel_flag = 1;
+
+    int timeOffset;
+    int index = ui->pixel_timeOffset_comboBox->currentIndex();
+    if(0 ==index)
+    {
+        timeOffset = 100;
+    }else if(1 == index )
+    {
+        timeOffset = 200;
+    }else if(2 == index)
+    {
+        timeOffset = 500;
+    }else if(3 == index)
+    {
+        timeOffset = 1000;
+    }else if(4 == index)
+    {
+        timeOffset = 2000;
+    }
+
+
+    if(ui->CAS_pix1_pushButton->text() == QStringLiteral("pix_1定时读"))
+    {
+        pixel_time_slot();     //先发送一次
+        readPixel_timer.start(timeOffset);
+        ui->CAS_pix1_pushButton->setText(QStringLiteral("取消"));
+    }else
+    {
+        readPixel_timer.stop();
+        ui->CAS_pix1_pushButton->setText(QStringLiteral("pix_1定时读"));
+    }
+}
+
+void MainWindow::on_CAS_pix2_pushButton_clicked()
+{
+    read_pixel_flag = 2;
+
+    int timeOffset;
+    int index = ui->pixel_timeOffset_comboBox->currentIndex();
+    if(0 ==index)
+    {
+        timeOffset = 100;
+    }else if(1 == index )
+    {
+        timeOffset = 200;
+    }else if(2 == index)
+    {
+        timeOffset = 500;
+    }else if(3 == index)
+    {
+        timeOffset = 1000;
+    }else if(4 == index)
+    {
+        timeOffset = 2000;
+    }
+
+
+    if(ui->CAS_pix2_pushButton->text() == QStringLiteral("pix_2定时读"))
+    {
+        pixel_time_slot();     //先发送一次
+        readPixel_timer.start(timeOffset);
+        ui->CAS_pix2_pushButton->setText(QStringLiteral("取消"));
+    }else
+    {
+        readPixel_timer.stop();
+        ui->CAS_pix2_pushButton->setText(QStringLiteral("pix_2定时读"));
+    }
+}
+
+
+
+
 //!
 //! \brief pixel_time_slot
 //!
@@ -1897,6 +1977,10 @@ void MainWindow::pixel_time_slot()
     QString cmdStr = "5A 00 01 00 0F ";
     emit sendSerialSignal(cmdStr);
 }
+
+
+
+
 
 
 
@@ -1979,5 +2063,9 @@ void MainWindow::on_about_action_triggered()
 //    list.append(tmp2);
 //    showResultMsg_slot(list,0);
 }
+
+
+
+
 
 

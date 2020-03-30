@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1249</width>
-    <height>788</height>
+    <width>1433</width>
+    <height>944</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>VI4300配置程序(v1.3)</string>
+   <string>VI4300配置程序(v1.4)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="img.qrc">
@@ -39,7 +39,7 @@
       <widget class="QToolBox" name="toolBox">
        <property name="minimumSize">
         <size>
-         <width>240</width>
+         <width>260</width>
          <height>0</height>
         </size>
        </property>
@@ -54,15 +54,15 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>240</width>
-          <height>609</height>
+          <width>260</width>
+          <height>765</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -72,7 +72,7 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
         <attribute name="label">
          <string>              基本设置</string>
         </attribute>
-        <layout class="QGridLayout" name="gridLayout_18" rowstretch="4,1,3,1,2">
+        <layout class="QGridLayout" name="gridLayout_18" rowstretch="3,1,3,1,3">
          <property name="topMargin">
           <number>2</number>
          </property>
@@ -253,21 +253,21 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QPushButton" name="rowData_pushButton">
                 <property name="text">
                  <string>RawData</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="2" column="1">
                <widget class="QPushButton" name="pixel_read_pushButton">
                 <property name="text">
                  <string>Pixel</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <spacer name="horizontalSpacer_10">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -280,10 +280,24 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 </property>
                </spacer>
               </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <widget class="QPushButton" name="delayLine_pushButton">
                 <property name="text">
                  <string>delay line</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="CAS_pix2_pushButton">
+                <property name="text">
+                 <string>pix_2定时读</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="CAS_pix1_pushButton">
+                <property name="text">
+                 <string>pix_1定时读</string>
                 </property>
                </widget>
               </item>
@@ -408,8 +422,8 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>240</width>
-          <height>609</height>
+          <width>260</width>
+          <height>765</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -534,9 +548,6 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
-                 <widget class="QComboBox" name="deviceType_comboBox"/>
-                </item>
                 <item row="4" column="0">
                  <widget class="QLabel" name="label_17">
                   <property name="text">
@@ -580,6 +591,9 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                    <string>恢复出厂设置</string>
                   </property>
                  </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLineEdit" name="deviceType_lineEdit"/>
                 </item>
                </layout>
               </item>
@@ -715,8 +729,8 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>240</width>
-          <height>609</height>
+          <width>260</width>
+          <height>765</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1444,7 +1458,7 @@ font: 9pt &quot;黑体&quot;;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1249</width>
+     <width>1433</width>
      <height>22</height>
     </rect>
    </property>

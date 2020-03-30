@@ -1,6 +1,8 @@
 ﻿#include "receserial_msg.h"
 
 extern Settings currentSettings;
+
+extern int read_pixel_flag;    //读取pixel的标识  0:4300  1：casset_package_1  2:casset_package_2
 receSerial_msg::receSerial_msg(QObject *parent) : QObject(parent)
 {
 
@@ -564,67 +566,212 @@ void receSerial_msg::readDataSlot()
                }
 
 
-               //读取 单Pixel模式peak值数据
+               //4300读取 单Pixel模式peak值数据
 //               1号     4号     7号   	10号  	13号	    16号
 //               2号     5号     8号	    11号	    14号	    17号
 //               3号     6号  	9号	    12号	    15号 	18号
+
+
+               //cassset_package_1
+//               0    4     8      12
+//               1    5     9      13
+//               2    6     10     14
+//               3    7     11     15
+
+
+               //CASSET__PACKAGE_2
+//               3    7     11     15
+//               2    6     10     14
+//               1    5     9      13
+//               0    4     8      12
+
 
                if("80" == returnCmdStr)
                {
                    QString secCmd = single_Data.mid(8,2);
                    if("0F" == secCmd)
                    {
-                       if(dataLen != 36*2)
+                       if(0 == read_pixel_flag)      //4300的协议解析
                        {
-                           qDebug()<<QStringLiteral("解析单Pixel模式peak值数据，长度出错, dataLen = ")<<dataLen;
+                           if(dataLen != 36*2)
+                           {
+                               qDebug()<<QStringLiteral("解析4300单Pixel模式peak值数据，长度出错, dataLen = ")<<dataLen;
+                           }
+
+                           vector<int> peak_vec;
+                           QString dataStr = single_Data.mid(10,dataLen);      //36个字节的数据
+                           for(int i=0; i<dataStr.length();i+=4)     //获取18个像素的值
+                           {
+                               QString data_str = dataStr.mid(i+2,2)+dataStr.mid(i,2);
+                               int peak_value = data_str.toInt(NULL,16);
+                               peak_vec.push_back(peak_value);
+
+                           }
+
+                           QString currentSingleData;
+
+                           //三行数据  分别写入到列表当中
+                           currentSingleData.clear();
+                           for(int i=0; i<18; i+=3)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=1; i<18; i+=3)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=2; i<18; i+=3)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           DistanceStr.append("  ");
+                           showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
+                           DistanceStr.clear();                   //发送完毕后清空字符队列
+                       }else if(1 == read_pixel_flag)      //casset_package_1的封装协议解析
+                       {
+                           if(dataLen != 30*2)
+                           {
+                               qDebug()<<QStringLiteral("解析casset_apckage_1单Pixel模式peak值数据，长度出错, dataLen = ")<<dataLen;
+                           }
+
+                           vector<int> peak_vec;
+                           QString dataStr = single_Data.mid(10,dataLen);      //30个字节的数据
+                           for(int i=0; i<dataStr.length();i+=4)             //获取16个像素的值
+                           {
+                               QString data_str = dataStr.mid(i+2,2)+dataStr.mid(i,2);
+                               int peak_value = data_str.toInt(NULL,16);
+                               peak_vec.push_back(peak_value);
+
+                           }
+
+                           QString currentSingleData;
+
+                           //三行数据  分别写入到列表当中
+                           currentSingleData.clear();
+                           for(int i=0; i<15; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=1; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=2; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=3; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           DistanceStr.append("  ");
+                           showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
+                           DistanceStr.clear();                   //发送完毕后清空字符队列
+                       }else if(2 == read_pixel_flag)      //casset_package_2的封装协议解析
+                       {
+                           if(dataLen != 30*2)
+                           {
+                               qDebug()<<QStringLiteral("解析casset_apckage_1单Pixel模式peak值数据，长度出错, dataLen = ")<<dataLen;
+                           }
+
+                           vector<int> peak_vec;
+                           QString dataStr = single_Data.mid(10,dataLen);      //30个字节的数据
+                           for(int i=0; i<dataStr.length();i+=4)             //获取16个像素的值
+                           {
+                               QString data_str = dataStr.mid(i+2,2)+dataStr.mid(i,2);
+                               int peak_value = data_str.toInt(NULL,16);
+                               peak_vec.push_back(peak_value);
+
+                           }
+
+                           QString currentSingleData;
+
+                           //三行数据  分别写入到列表当中
+                           currentSingleData.clear();
+                           for(int i=3; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=2; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=1; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           currentSingleData.clear();
+                           for(int i=0; i<16; i+=4)
+                           {
+                               int tmp_int = peak_vec[i];
+                               QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
+                               currentSingleData.append(tmp);
+                               currentSingleData.append("   ");
+
+                           }
+                           DistanceStr.append(currentSingleData);
+                           DistanceStr.append("  ");
+                           showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
+                           DistanceStr.clear();                   //发送完毕后清空字符队列
                        }
 
-                       vector<int> peak_vec;
-                       QString dataStr = single_Data.mid(10,dataLen);      //36个字节的数据
-                       for(int i=0; i<dataStr.length();i+=4)     //获取18个像素的值
-                       {
-                           QString data_str = dataStr.mid(i+2,2)+dataStr.mid(i,2);
-                           int peak_value = data_str.toInt(NULL,16);
-                           peak_vec.push_back(peak_value);
-
-                       }
-
-                       QString currentSingleData;
-
-                       //三行数据  分别写入到列表当中
-                       currentSingleData.clear();
-                       for(int i=0; i<18; i+=3)
-                       {
-                           int tmp_int = peak_vec[i];
-                           QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                           currentSingleData.append(tmp);
-                           currentSingleData.append("   ");
-
-                       }
-                       DistanceStr.append(currentSingleData);
-                       currentSingleData.clear();
-                       for(int i=1; i<18; i+=3)
-                       {
-                           int tmp_int = peak_vec[i];
-                           QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                           currentSingleData.append(tmp);
-                           currentSingleData.append("   ");
-
-                       }
-                       DistanceStr.append(currentSingleData);
-                       currentSingleData.clear();
-                       for(int i=2; i<18; i+=3)
-                       {
-                           int tmp_int = peak_vec[i];
-                           QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                           currentSingleData.append(tmp);
-                           currentSingleData.append("   ");
-
-                       }
-                       DistanceStr.append(currentSingleData);
-                       DistanceStr.append("  ");
-                       showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
-                       DistanceStr.clear();                   //发送完毕后清空字符队列
                    }
                }
 
@@ -711,7 +858,7 @@ void receSerial_msg::readDataSlot()
                    QString secCmd = single_Data.mid(8,2);
                    if("11" == secCmd)
                    {
-                       if(dataLen != 24*2)     //  0800 = 2048
+                       if(dataLen != 50*2)
                        {
                            qDebug()<<QStringLiteral("解析Delay Line数据出错, 这里的 dataLen = ")<<dataLen;
                        }
@@ -725,18 +872,29 @@ void receSerial_msg::readDataSlot()
                        DistanceStr.append(str1);
 
                        // 测试结果值
-                       QString currentSingleData;
-                       QString tmpStr,resStr;
-                       int tmpValue;
-                       for(int i=0; i<8*4; i+=4 )
+                       QString currentSingleData_tof;
+                       QString currentSingleData_peak;
+                       QString tmpStr_tof,resStr_tof,tmpStr_peak,resStr_peak;
+                       int tmpValue_tof,tmpValue_peak;
+                       for(int i=0; i<8*8; i+=8 )
                        {
-                           tmpStr = dataStr.mid(4+i,4);
-                           resStr = tmpStr.mid(2,2) + tmpStr.mid(0,2);
-                           tmpValue = resStr.toInt(NULL,16);
-                           currentSingleData.append(QString::number(tmpValue)).append("  ");
+                           tmpStr_tof = dataStr.mid(4+i,4);
+                           resStr_tof = tmpStr_tof.mid(2,2) + tmpStr_tof.mid(0,2);
+                           tmpValue_tof = resStr_tof.toInt(NULL,16);
+
+                           tmpStr_peak = dataStr.mid(4+i+4,4);
+                           resStr_peak = tmpStr_peak.mid(2,2)+ tmpStr_peak.mid(0,2);
+                           tmpValue_peak = resStr_peak.toInt(NULL,16);
+
+                           currentSingleData_tof.append(QString("%1").arg(tmpValue_tof,5,10,QChar(' '))).append("  ");
+                           currentSingleData_peak.append(QString("%1").arg(tmpValue_peak,5,10,QChar(' '))).append("  ");
+
+//                           currentSingleData_tof.append(QString::number(tmpValue_tof)).append("  ");
+//                           currentSingleData_peak.append(QString::number(tmpValue_peak)).append("  ");
 
                        }
-                       DistanceStr.append(currentSingleData);
+                       DistanceStr.append(currentSingleData_tof);
+                       DistanceStr.append(currentSingleData_peak);
                        DistanceStr.append("  ");
                        showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
                        DistanceStr.clear();

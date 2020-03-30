@@ -86,6 +86,8 @@ public:
     QPushButton *pixel_read_pushButton;
     QSpacerItem *horizontalSpacer_10;
     QPushButton *delayLine_pushButton;
+    QPushButton *CAS_pix2_pushButton;
+    QPushButton *CAS_pix1_pushButton;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout;
@@ -112,13 +114,13 @@ public:
     QLabel *label_18;
     QLineEdit *versionNum_lineEdit;
     QLabel *label_20;
-    QComboBox *deviceType_comboBox;
     QLabel *label_17;
     QSpacerItem *horizontalSpacer_8;
     QLineEdit *UUID_lineEdit;
     QPushButton *read_outFactory_pushButton;
     QPushButton *send_outFactory_pushButton;
     QPushButton *reStoreFactory_pushButton;
+    QLineEdit *deviceType_lineEdit;
     QSpacerItem *verticalSpacer;
     QGroupBox *groupBox_10;
     QGridLayout *gridLayout_3;
@@ -241,7 +243,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1249, 788);
+        MainWindow->resize(1433, 944);
         MainWindow->setContextMenuPolicy(Qt::DefaultContextMenu);
         QIcon icon;
         icon.addFile(QStringLiteral(":/new/image/images/icon_1.png"), QSize(), QIcon::Normal, QIcon::Off);
@@ -292,13 +294,13 @@ public:
         splitter->setOrientation(Qt::Horizontal);
         toolBox = new QToolBox(splitter);
         toolBox->setObjectName(QStringLiteral("toolBox"));
-        toolBox->setMinimumSize(QSize(240, 0));
+        toolBox->setMinimumSize(QSize(260, 0));
         toolBox->setMaximumSize(QSize(16777215, 16777215));
         toolBox->setStyleSheet(QLatin1String(".QToolBox{\n"
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 240, 609));
+        page->setGeometry(QRect(0, 0, 260, 765));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_18 = new QGridLayout(page);
@@ -437,21 +439,31 @@ public:
         rowData_pushButton = new QPushButton(groupBox_6);
         rowData_pushButton->setObjectName(QStringLiteral("rowData_pushButton"));
 
-        formLayout_3->setWidget(1, QFormLayout::LabelRole, rowData_pushButton);
+        formLayout_3->setWidget(2, QFormLayout::LabelRole, rowData_pushButton);
 
         pixel_read_pushButton = new QPushButton(groupBox_6);
         pixel_read_pushButton->setObjectName(QStringLiteral("pixel_read_pushButton"));
 
-        formLayout_3->setWidget(1, QFormLayout::FieldRole, pixel_read_pushButton);
+        formLayout_3->setWidget(2, QFormLayout::FieldRole, pixel_read_pushButton);
 
         horizontalSpacer_10 = new QSpacerItem(78, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        formLayout_3->setItem(2, QFormLayout::LabelRole, horizontalSpacer_10);
+        formLayout_3->setItem(3, QFormLayout::LabelRole, horizontalSpacer_10);
 
         delayLine_pushButton = new QPushButton(groupBox_6);
         delayLine_pushButton->setObjectName(QStringLiteral("delayLine_pushButton"));
 
-        formLayout_3->setWidget(2, QFormLayout::FieldRole, delayLine_pushButton);
+        formLayout_3->setWidget(3, QFormLayout::FieldRole, delayLine_pushButton);
+
+        CAS_pix2_pushButton = new QPushButton(groupBox_6);
+        CAS_pix2_pushButton->setObjectName(QStringLiteral("CAS_pix2_pushButton"));
+
+        formLayout_3->setWidget(1, QFormLayout::FieldRole, CAS_pix2_pushButton);
+
+        CAS_pix1_pushButton = new QPushButton(groupBox_6);
+        CAS_pix1_pushButton->setObjectName(QStringLiteral("CAS_pix1_pushButton"));
+
+        formLayout_3->setWidget(1, QFormLayout::LabelRole, CAS_pix1_pushButton);
 
 
         gridLayout_7->addLayout(formLayout_3, 0, 0, 1, 1);
@@ -532,15 +544,15 @@ public:
 
         gridLayout_18->addWidget(groupBox_8, 3, 0, 1, 1);
 
-        gridLayout_18->setRowStretch(0, 4);
+        gridLayout_18->setRowStretch(0, 3);
         gridLayout_18->setRowStretch(1, 1);
         gridLayout_18->setRowStretch(2, 3);
         gridLayout_18->setRowStretch(3, 1);
-        gridLayout_18->setRowStretch(4, 2);
+        gridLayout_18->setRowStretch(4, 3);
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 240, 609));
+        page_4->setGeometry(QRect(0, 0, 260, 765));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -594,11 +606,6 @@ public:
 
         formLayout_2->setWidget(3, QFormLayout::LabelRole, label_20);
 
-        deviceType_comboBox = new QComboBox(groupBox_7);
-        deviceType_comboBox->setObjectName(QStringLiteral("deviceType_comboBox"));
-
-        formLayout_2->setWidget(3, QFormLayout::FieldRole, deviceType_comboBox);
-
         label_17 = new QLabel(groupBox_7);
         label_17->setObjectName(QStringLiteral("label_17"));
 
@@ -627,6 +634,11 @@ public:
         reStoreFactory_pushButton->setObjectName(QStringLiteral("reStoreFactory_pushButton"));
 
         formLayout_2->setWidget(7, QFormLayout::SpanningRole, reStoreFactory_pushButton);
+
+        deviceType_lineEdit = new QLineEdit(groupBox_7);
+        deviceType_lineEdit->setObjectName(QStringLiteral("deviceType_lineEdit"));
+
+        formLayout_2->setWidget(3, QFormLayout::FieldRole, deviceType_lineEdit);
 
 
         gridLayout_11->addLayout(formLayout_2, 0, 0, 1, 1);
@@ -717,7 +729,7 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 240, 609));
+        page_5->setGeometry(QRect(0, 0, 260, 765));
         groupBox_9 = new QGroupBox(page_5);
         groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
         groupBox_9->setGeometry(QRect(9, 9, 230, 303));
@@ -1213,7 +1225,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1249, 22));
+        menuBar->setGeometry(QRect(0, 0, 1433, 22));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
@@ -1258,7 +1270,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(0);
+        toolBox->setCurrentIndex(1);
         pixel_timeOffset_comboBox->setCurrentIndex(2);
         stackedWidget->setCurrentIndex(1);
 
@@ -1268,7 +1280,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.3)", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.4)", Q_NULLPTR));
         actionMCU->setText(QApplication::translate("MainWindow", "MCU\345\215\207\347\272\247", Q_NULLPTR));
         Register_action->setText(QApplication::translate("MainWindow", "\345\257\204\345\255\230\345\231\250\351\205\215\347\275\256", Q_NULLPTR));
         actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));
@@ -1301,6 +1313,8 @@ public:
         rowData_pushButton->setText(QApplication::translate("MainWindow", "RawData", Q_NULLPTR));
         pixel_read_pushButton->setText(QApplication::translate("MainWindow", "Pixel", Q_NULLPTR));
         delayLine_pushButton->setText(QApplication::translate("MainWindow", "delay line", Q_NULLPTR));
+        CAS_pix2_pushButton->setText(QApplication::translate("MainWindow", "pix_2\345\256\232\346\227\266\350\257\273", Q_NULLPTR));
+        CAS_pix1_pushButton->setText(QApplication::translate("MainWindow", "pix_1\345\256\232\346\227\266\350\257\273", Q_NULLPTR));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "\347\273\223\346\236\234\346\230\276\347\244\272:", Q_NULLPTR));
         label_12->setText(QApplication::translate("MainWindow", "\345\275\223\345\211\215\350\267\235\347\246\273:(mm)", Q_NULLPTR));
         currentDistance11_label->setText(QApplication::translate("MainWindow", "0.00", Q_NULLPTR));

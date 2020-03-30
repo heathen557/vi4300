@@ -144,6 +144,8 @@ public:
     QTimer readPixel_timer;
 
 
+    QString deviceType_str;   //设备类型
+
     aboutDialog about_dia;
 private slots:
     void on_save_pushButton_clicked();
@@ -261,6 +263,11 @@ private slots:
     void on_about_action_triggered();
 
     void on_delayLine_pushButton_clicked();
+
+    void on_CAS_pix1_pushButton_clicked();
+
+    void on_CAS_pix2_pushButton_clicked();
+
 
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close

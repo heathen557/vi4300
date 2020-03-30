@@ -7340,6 +7340,11 @@ release\aboutdialog.obj: aboutdialog.cpp aboutdialog.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtGui\qinputmethod.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QButtonGroup \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qbuttongroup.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QGridLayout \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qgridlayout.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qlayout.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qlayoutitem.h \
+		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qboxlayout.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\QHeaderView \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qheaderview.h \
 		..\..\programInstall\QT580\5.8\msvc2015_64\include\QtWidgets\qabstractitemview.h \
