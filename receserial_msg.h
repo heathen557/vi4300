@@ -55,6 +55,8 @@ public:
 
     bool clearFlag;
 
+    int totallen;
+
 signals:
     void dealedData_signal(QString,vector<double>,vector<double>);     //当前的tof值 ; plotData ; statisticData
 
@@ -106,6 +108,10 @@ public slots:
     QString addCheck(QString);
 
     QByteArray StringToByte(QString str);      //将QString 转换为 Byte的槽函数
+
+    bool CRC16_KC_check(QByteArray array);
+
+    float pileUp_function(int peak);           //pileUp 校正
 
 
 };

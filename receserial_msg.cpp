@@ -89,7 +89,7 @@ void receSerial_msg::readDataSlot()
 //        return;
 
         m_buffer.append(strHex);
-        int totallen = m_buffer.size();
+         totallen = m_buffer.size();
 
         if(isTranslateFlag)    //转换成十进制的tof和peak进行显示解析
         {
@@ -98,10 +98,42 @@ void receSerial_msg::readDataSlot()
                 if(totallen <12)   //单个命令最少要有6个字节 所以长度为12       5A 03 00 01 3A XX
                     return;
 
+
+
+                /***********其他公司的协议************************/
+                int indexOf_A55A = m_buffer.indexOf("A55A",0);
+                if(indexOf_A55A>0)
+                {
+                    m_buffer = m_buffer.right(totallen-indexOf_A55A);    //去除多余的头部
+                    totallen = m_buffer.size();
+                    if(totallen<12)
+                        return;
+                   QByteArray tmpArray  = m_buffer.mid(0,12);
+                   if(true==CRC16_KC_check(tmpArray))
+                   {
+                       int tmpTof_other = tmpArray.mid(4,4).toInt(NULL,16);
+                       DistanceStr.append(QString::number(tmpTof_other));
+                       emit showResultMsg_signal(DistanceStr,1);
+                       DistanceStr.clear();                            //发送完数据清空链表
+
+
+                       m_buffer = m_buffer.right(totallen - 12);
+                       totallen = m_buffer.size();
+                   }else
+                   {
+                       qDebug()<<QStringLiteral("其他版本协议校验失败！")<<m_buffer;
+                       m_buffer = m_buffer.right(totallen-4);    //去除多余的头部
+                       totallen = m_buffer.size();
+                   }
+                }
+                /*********************************/
+
+
+
                int indexOf5A = m_buffer.indexOf("5A",0);
                if(indexOf5A < 0)  //没有找到5A
                {
-                   qDebug()<<QString::fromUtf8("接收数据有误，不存在5A")<<"index ="<<indexOf5A<<"buffer"<<m_buffer<<endl;
+                   qDebug()<<QStringLiteral("接收数据有误，不存在5A")<<"index ="<<indexOf5A<<"buffer"<<m_buffer<<endl;
                    return;
                }else if(indexOf5A>0)  //第一次的时候前面会有冗余数据，删掉
                {
@@ -111,6 +143,7 @@ void receSerial_msg::readDataSlot()
                        return;
                }
 
+               qDebug()<<"m_buffer = "<<m_buffer;
                //以下数据为5A打头数据
                //首先根据长度字段 来提取出整条数据，数据长度不足的话返回
                QString lenStr= m_buffer.mid(6,2) + m_buffer.mid(4,2);
@@ -385,6 +418,9 @@ void receSerial_msg::readDataSlot()
                            strTmp = dataStr.mid(i+14,2) + dataStr.mid(i+12,2);
                            currentSingleData.append(QString("%1").arg(strTmp.toInt(NULL,16),5,10,QLatin1Char(' '))).append("   ");
 
+
+
+
                            DistanceStr.append(currentSingleData);          //存放入链表中,供数据区显示，一行数据存储在一个QStringList文件当中，方便主界面的显示
 
 
@@ -573,10 +609,10 @@ void receSerial_msg::readDataSlot()
 
 
                //cassset_package_1
-//               0    4     8      12
-//               1    5     9      13
-//               2    6     10     14
-//               3    7     11     15
+//               0    4     8      12     4  0  12  8
+//               1    5     9      13     5  1  13  9
+//               2    6     10     14     6  2  14  10
+//               3    7     11     15     7  3  15  11
 
 
                //CASSET__PACKAGE_2
@@ -620,6 +656,7 @@ void receSerial_msg::readDataSlot()
                                currentSingleData.append("   ");
 
                            }
+
                            DistanceStr.append(currentSingleData);
                            currentSingleData.clear();
                            for(int i=1; i<18; i+=3)
@@ -665,44 +702,64 @@ void receSerial_msg::readDataSlot()
 
                            //三行数据  分别写入到列表当中
                            currentSingleData.clear();
+
+                           QString strTmp[4];
+                           int tmpIndex = 0;
                            for(int i=0; i<15; i+=4)
                            {
                                int tmp_int = peak_vec[i];
                                QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                               currentSingleData.append(tmp);
-                               currentSingleData.append("   ");
+                               strTmp[tmpIndex] = tmp+"   ";
+                               tmpIndex++;
+//                               currentSingleData.append(tmp);
+//                               currentSingleData.append("   ");
 
                            }
+                           currentSingleData.append(strTmp[1]).append(strTmp[0]).append(strTmp[3]).append(strTmp[2]);
                            DistanceStr.append(currentSingleData);
                            currentSingleData.clear();
+                           tmpIndex = 0;
                            for(int i=1; i<16; i+=4)
                            {
                                int tmp_int = peak_vec[i];
                                QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                               currentSingleData.append(tmp);
-                               currentSingleData.append("   ");
+                               strTmp[tmpIndex] = tmp+"   ";
+                               tmpIndex++;
+//                               currentSingleData.append(tmp);
+//                               currentSingleData.append("   ");
 
                            }
+                           currentSingleData.append(strTmp[1]).append(strTmp[0]).append(strTmp[3]).append(strTmp[2]);
                            DistanceStr.append(currentSingleData);
                            currentSingleData.clear();
+
+                           tmpIndex = 0;
                            for(int i=2; i<16; i+=4)
                            {
                                int tmp_int = peak_vec[i];
                                QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                               currentSingleData.append(tmp);
-                               currentSingleData.append("   ");
+                               strTmp[tmpIndex] = tmp+"   ";
+                               tmpIndex++;
+//                               currentSingleData.append(tmp);
+//                               currentSingleData.append("   ");
 
                            }
+                           currentSingleData.append(strTmp[1]).append(strTmp[0]).append(strTmp[3]).append(strTmp[2]);
                            DistanceStr.append(currentSingleData);
                            currentSingleData.clear();
+
+                           tmpIndex = 0;
                            for(int i=3; i<16; i+=4)
                            {
                                int tmp_int = peak_vec[i];
                                QString tmp = QString("%1").arg(tmp_int,5,10,QLatin1Char(' '));
-                               currentSingleData.append(tmp);
-                               currentSingleData.append("   ");
+                               strTmp[tmpIndex] = tmp+"   ";
+                               tmpIndex++;
+//                               currentSingleData.append(tmp);
+//                               currentSingleData.append("   ");
 
                            }
+                           currentSingleData.append(strTmp[1]).append(strTmp[0]).append(strTmp[3]).append(strTmp[2]);
                            DistanceStr.append(currentSingleData);
                            DistanceStr.append("  ");
                            showResultMsg_signal(DistanceStr,0);   //发送到主线程以供界面显示
@@ -961,6 +1018,8 @@ void receSerial_msg::sendSerialSlot(QString sendCmdStr)
     sendArray = StringToByte(wholeStr);  //转换成字节数据
     if(serial!=NULL && serial->isWritable())
     {
+        totallen = 0;
+        m_buffer.clear();
         serial->write(sendArray);            //串口发送字节数据
         serial->flush();                     //清空缓冲区
     }
@@ -1040,4 +1099,38 @@ QByteArray receSerial_msg::StringToByte(QString str)
 
 
 
+bool receSerial_msg::CRC16_KC_check(QByteArray array)
+{
+
+    uint8_t i, chChar;
+    quint16 wCRC= 0xFFFF;
+
+    int wDataLen= 4;
+    int index = 0;
+    while(wDataLen--)
+    {
+        wCRC ^= array.mid(index,2).toInt(NULL,16);
+
+        for (i = 0; i < 8; i++)
+        {
+            if (wCRC & 0x0001)
+                wCRC = (wCRC >> 1) ^ 0xA001;
+            else
+                wCRC >>= 1;
+        }
+        index+=2;
+    }
+
+    int check_1 = array.mid(8,2).toInt(NULL,16);
+    int check_2 = array.mid(10,2).toInt(NULL,16);
+    if((check_1 == wCRC%256) && (check_2==wCRC/256))
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+
+
+}
 

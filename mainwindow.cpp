@@ -145,12 +145,6 @@ void MainWindow::SerialSetting_Enable_true()
 
 void MainWindow::initUINum()
 {
-//    ui->botelv_comboBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
-//    ui->botelv_comboBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
-//    ui->botelv_comboBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
-//    ui->botelv_comboBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
-//    ui->botelv_comboBox->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
-
     HistorgramTicks_2048.resize(historgram_label_num_2048);
     HistorgramLabels_2048.resize(historgram_label_num_2048);
 
