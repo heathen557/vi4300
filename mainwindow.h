@@ -22,6 +22,8 @@
 #include<historytof_dialog.h>
 #include<devmanagement_dialog.h>
 #include"aboutdialog.h"
+#include"leastsquare_method.h"
+#include"autoserial_msg.h"
 
 
 namespace Ui {
@@ -62,6 +64,10 @@ public:
     calHistogram_obj  *calHis_obg;        //计算统计直方图的线程
 
     QThread *calHisThread;
+
+    leastSquare_method *leastSquare_obj;
+
+    QThread *leastSquareThread;
 
 
     bool isLinked;
@@ -147,6 +153,26 @@ public:
     QString deviceType_str;   //设备类型
 
     aboutDialog about_dia;
+
+
+
+
+    /******least square********/
+    vector<float> vecDistacne_10;
+    vector<float> vecPeak_10;
+
+    vector<float> vecDistacne_3;
+    vector<float> vecPeak_3;
+
+
+    /*********** autoTest *********************/
+    void initSerial_2();
+
+    autoSerial_msg *autoSerial_obj;
+    QThread *autoSerial_thread;
+
+    bool isAutoTest_flag;    //若是自动校准，复位成功后直接 开启校准   ；否则只是单纯的复位
+
 private slots:
     void on_save_pushButton_clicked();
 
@@ -248,6 +274,8 @@ private slots:
 
     void on_pixel_read_pushButton_clicked();
 
+    void AckSinglePixelPosition_slot(bool,QString);
+
     void on_singleReg_read_pushButton_clicked();
 
     void on_singleReg_write_pushButton_clicked();
@@ -269,12 +297,107 @@ private slots:
     void on_CAS_pix2_pushButton_clicked();
 
 
+    void on_checkBox_clicked();
+
+    void on_pileUp_checkBox_clicked();
+
+    void on_black_01_pushButton_clicked();
+
+    void on_white_01_pushButton_clicked();
+
+    void on_black_02_pushButton_clicked();
+
+    void on_white_02_pushButton_clicked();
+
+    void on_black_03_pushButton_clicked();
+
+    void on_white_03_pushButton_clicked();
+
+    void on_black_04_pushButton_clicked();
+
+    void on_white_04_pushButton_clicked();
+
+    void on_black_05_pushButton_clicked();
+
+    void on_white_05_pushButton_clicked();
+
+    void on_black_1_pushButton_clicked();
+
+    void on_white_1_pushButton_clicked();
+
+    void on_black_3_pushButton_clicked();
+
+    void on_white_3_pushButton_clicked();
+
+    void on_black_8_pushButton_clicked();
+
+    void on_white_8_pushButton_clicked();
+
+
+
+
+    /*******least square******/
+    void  sendLeastRes_slot(int index,float resTof,float resPeak);
+
+    void on_least_start_pushButton_clicked();
+
+    void send_leastResult_slot(float,float,float,float,float,float,float,float);
+
+    float calculate_offset(float a,float b,float c,float bias,float peak);  //用来计算正向的大小
+
+
+    void on_writeMCU_pushButton_clicked();
+
+    void on_newJiaohun_start_pushButton_clicked();
+
+    void on_newjiaozhun_end_pushButton_clicked();
+
+    void on_portScan_pushButton_2_clicked();
+
+    void on_openPort_pushButton_2_clicked();
+
+
+    /*********auto Test****************/
+    void returnLinkInfoAuto_slot(QString, bool);
+
+    void on_startAutoAdjust_pushButton_clicked();
+
+    void thePointArrived_slot(int ,QString );   //距离 颜色
+
+    void on_startlds_pushButton_clicked();
+
+    void on_fuwei_pushButton_clicked();
+
+    void fuwei_over_slot();
+
+    void on_readMCU_pushButton_clicked();
+
+    void on_startMove_pushButton_clicked();
+
+    void on_openOrClose_laser_pushButton_clicked();
+
 signals:
     void openOrCloseSerial_signal(bool);        //true:open   false：close
 
     void calHistogram_signal(vector<double>);   //begin histogram signal()
 
     void sendSerialSignal(QString);             //串口发送信号
+
+
+    /**************************/
+    void deal_receLeast_signal(vector<float>,vector<float>,vector<float>,vector<float>);
+
+    /**********auto test 相关************/
+    void openOrCloseSerialAuto_signal(bool);
+    void sendSerialAuto_Signal(QString);
+
+    void sendAdjustDistanceColor_signal(int ,QString);   //距离 颜色
+
+    void send_fuwei_signal();
+
+
+    /********/
+    void sendthePoint_signal(int );
 
 private:
     Ui::MainWindow *ui;

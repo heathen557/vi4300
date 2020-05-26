@@ -39,7 +39,7 @@
       <widget class="QToolBox" name="toolBox">
        <property name="minimumSize">
         <size>
-         <width>260</width>
+         <width>300</width>
          <height>0</height>
         </size>
        </property>
@@ -54,15 +54,15 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>260</width>
-          <height>765</height>
+          <width>300</width>
+          <height>713</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -89,79 +89,69 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
             <string>串口设置：</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">
-            <property name="topMargin">
-             <number>3</number>
-            </property>
-            <property name="bottomMargin">
-             <number>3</number>
-            </property>
             <item row="0" column="0">
-             <layout class="QFormLayout" name="formLayout">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>串口号：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="serialPortInfoListBox"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>波特率：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="baudRateBox"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>数据位：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="dataBitsBox"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>停止位：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QComboBox" name="stopBitsBox"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>校验位：</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QComboBox" name="parityBox"/>
-              </item>
-              <item row="5" column="0">
-               <widget class="QPushButton" name="portScan_pushButton">
-                <property name="text">
-                 <string>串口检测</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QPushButton" name="openPort_pushButton">
-                <property name="text">
-                 <string>Open</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>串口号：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="serialPortInfoListBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>波特率：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="baudRateBox"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>数据位：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="dataBitsBox"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>停止位：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="stopBitsBox"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>校验位：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="parityBox"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QPushButton" name="portScan_pushButton">
+              <property name="text">
+               <string>串口检测</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="openPort_pushButton">
+              <property name="text">
+               <string>Open</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -198,6 +188,13 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                <widget class="QPushButton" name="stopMeasure_pushButton">
                 <property name="text">
                  <string>停止</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="startlds_pushButton">
+                <property name="text">
+                 <string>startlds$</string>
                 </property>
                </widget>
               </item>
@@ -253,6 +250,20 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 </property>
                </widget>
               </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="CAS_pix1_pushButton">
+                <property name="text">
+                 <string>pix_1定时读</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="CAS_pix2_pushButton">
+                <property name="text">
+                 <string>pix_2定时读</string>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="0">
                <widget class="QPushButton" name="rowData_pushButton">
                 <property name="text">
@@ -267,19 +278,6 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <spacer name="horizontalSpacer_10">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>78</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="3" column="1">
                <widget class="QPushButton" name="delayLine_pushButton">
                 <property name="text">
@@ -287,17 +285,10 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="CAS_pix2_pushButton">
+              <item row="3" column="0">
+               <widget class="QPushButton" name="openOrClose_laser_pushButton">
                 <property name="text">
-                 <string>pix_2定时读</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="CAS_pix1_pushButton">
-                <property name="text">
-                 <string>pix_1定时读</string>
+                 <string>打开激光器</string>
                 </property>
                </widget>
               </item>
@@ -422,8 +413,8 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>260</width>
-          <height>765</height>
+          <width>300</width>
+          <height>713</height>
          </rect>
         </property>
         <property name="maximumSize">
@@ -649,6 +640,11 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
                   <string>原始LSB</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>温度校正的mm数据</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="0" column="2">
@@ -729,8 +725,8 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>260</width>
-          <height>765</height>
+          <width>300</width>
+          <height>713</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1067,6 +1063,766 @@ font: 11pt &quot;Times New Roman&quot;;}</string>
          </property>
          <property name="text">
           <string>高反校准</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_6">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>300</width>
+          <height>713</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>            自动校准窗口</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_22">
+         <item row="0" column="0" colspan="2">
+          <widget class="QGroupBox" name="groupBox_14">
+           <property name="styleSheet">
+            <string notr="true">.QGroupBox
+{font: 10pt &quot;Times New Roman&quot;;}</string>
+           </property>
+           <property name="title">
+            <string>串口设置：</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_21">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_43">
+              <property name="text">
+               <string>串口号：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="serialPortInfoListBox_2"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_45">
+              <property name="text">
+               <string>波特率：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="baudRateBox_2"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_47">
+              <property name="text">
+               <string>数据位：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="dataBitsBox_2"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_49">
+              <property name="text">
+               <string>停止位：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="stopBitsBox_2"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_50">
+              <property name="text">
+               <string>校验位：</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="parityBox_2"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QPushButton" name="portScan_pushButton_2">
+              <property name="text">
+               <string>串口检测</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="openPort_pushButton_2">
+              <property name="text">
+               <string>Open</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="spacing">
+            <number>1</number>
+           </property>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_19">
+               <property name="text">
+                <string>0.1m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_01_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_01_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black01_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_01_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_18" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_37">
+               <property name="text">
+                <string>0.2m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_02_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_02_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black02_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_02_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_19" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_41">
+               <property name="text">
+                <string>0.3m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_03_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_03_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black03_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_03_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_20" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_44">
+               <property name="text">
+                <string>0.4m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_04_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_04_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black04_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_04_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_21" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_46">
+               <property name="text">
+                <string>0.5m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_05_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_05_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black05_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_05_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_48">
+               <property name="text">
+                <string>1.0m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_1_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_1_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black1_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_1_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_23" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_51">
+               <property name="text">
+                <string>3.0m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_3_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_3_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black3_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_3_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_24" stretch="1,1,1,2,2">
+             <item>
+              <widget class="QLabel" name="label_54">
+               <property name="text">
+                <string>8.0m</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="black_8_pushButton">
+               <property name="text">
+                <string>黑</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="white_8_pushButton">
+               <property name="text">
+                <string>白</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="black8_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="white_8_label">
+               <property name="text">
+                <string>N</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QGroupBox" name="groupBox_13">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="title">
+            <string>校准参数：</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_17">
+            <property name="leftMargin">
+             <number>1</number>
+            </property>
+            <property name="rightMargin">
+             <number>1</number>
+            </property>
+            <property name="horizontalSpacing">
+             <number>3</number>
+            </property>
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_25">
+              <item>
+               <widget class="QLabel" name="label_25">
+                <property name="text">
+                 <string>A1：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="A1_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_36">
+                <property name="text">
+                 <string>B1：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="B1_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_39">
+                <property name="text">
+                 <string>C1：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="C1_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_26">
+              <item>
+               <widget class="QLabel" name="label_35">
+                <property name="text">
+                 <string>A2：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="A2_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_38">
+                <property name="text">
+                 <string>B2：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="B2_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_40">
+                <property name="text">
+                 <string>C2：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="C2_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="2" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout_27">
+              <item>
+               <widget class="QLabel" name="label_42">
+                <property name="text">
+                 <string>OFFSET:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="least_offset_label">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QTextEdit" name="res_textEdit"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QPushButton" name="startAutoAdjust_pushButton">
+           <property name="text">
+            <string>开启自动校正</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QPushButton" name="fuwei_pushButton">
+           <property name="text">
+            <string>复位</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page_7">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>300</width>
+          <height>713</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>读取MCU </string>
+        </attribute>
+        <widget class="QGroupBox" name="groupBox_15">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>20</y>
+           <width>261</width>
+           <height>121</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>GroupBox</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_23">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_52">
+            <property name="text">
+             <string>A1：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="read_a1_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_55">
+            <property name="text">
+             <string>B1：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLabel" name="read_b1_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_57">
+            <property name="text">
+             <string>C1：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QLabel" name="read_c1_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_63">
+            <property name="text">
+             <string>A2：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="read_a2_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_60">
+            <property name="text">
+             <string>B2：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLabel" name="read_b2_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QLabel" name="label_61">
+            <property name="text">
+             <string>C2：</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QLabel" name="read_c2_label">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QLabel" name="label_65">
+            <property name="text">
+             <string>OFFSET:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" colspan="2">
+           <widget class="QLabel" name="read_offset_label">
+            <property name="text">
+             <string>OFFSET:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_16">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>380</y>
+           <width>251</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>GroupBox</string>
+         </property>
+         <widget class="QLabel" name="label_53">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>50</y>
+            <width>91</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>指定位置(mm)：</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="sendPoint_lineEdit">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>50</y>
+            <width>81</width>
+            <height>20</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="startMove_pushButton">
+          <property name="geometry">
+           <rect>
+            <x>110</x>
+            <y>100</y>
+            <width>80</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>开始移动</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QTextEdit" name="readMCU_textEdit">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>150</y>
+           <width>261</width>
+           <height>181</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="readMCU_pushButton">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>340</y>
+           <width>75</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>读取</string>
          </property>
         </widget>
        </widget>

@@ -38,7 +38,7 @@ public:
 
     int progressNum;
 
-private slots:
+public slots:
     void on_openFile_pushButton_clicked();
 
     void on_pushButton_clicked();

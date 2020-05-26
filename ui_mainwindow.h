@@ -32,6 +32,7 @@
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolBox>
 #include <QtWidgets/QVBoxLayout>
@@ -58,7 +59,6 @@ public:
     QGridLayout *gridLayout_18;
     QGroupBox *groupBox_3;
     QGridLayout *gridLayout_4;
-    QFormLayout *formLayout;
     QLabel *label_10;
     QComboBox *serialPortInfoListBox;
     QLabel *label_8;
@@ -77,17 +77,18 @@ public:
     QPushButton *singleMeasure_pushButton;
     QPushButton *delayMeasure_pushButton;
     QPushButton *stopMeasure_pushButton;
+    QPushButton *startlds_pushButton;
     QGroupBox *groupBox_6;
     QGridLayout *gridLayout_7;
     QFormLayout *formLayout_3;
     QComboBox *pixel_timeOffset_comboBox;
     QPushButton *pixel_time_pushButton;
+    QPushButton *CAS_pix1_pushButton;
+    QPushButton *CAS_pix2_pushButton;
     QPushButton *rowData_pushButton;
     QPushButton *pixel_read_pushButton;
-    QSpacerItem *horizontalSpacer_10;
     QPushButton *delayLine_pushButton;
-    QPushButton *CAS_pix2_pushButton;
-    QPushButton *CAS_pix1_pushButton;
+    QPushButton *openOrClose_laser_pushButton;
     QGroupBox *groupBox_4;
     QGridLayout *gridLayout_5;
     QVBoxLayout *verticalLayout;
@@ -180,6 +181,116 @@ public:
     QLabel *label_33;
     QLineEdit *sunPower_read_lineEdit;
     QPushButton *gaofan_pushButton;
+    QWidget *page_6;
+    QGridLayout *gridLayout_22;
+    QGroupBox *groupBox_14;
+    QGridLayout *gridLayout_21;
+    QLabel *label_43;
+    QComboBox *serialPortInfoListBox_2;
+    QLabel *label_45;
+    QComboBox *baudRateBox_2;
+    QLabel *label_47;
+    QComboBox *dataBitsBox_2;
+    QLabel *label_49;
+    QComboBox *stopBitsBox_2;
+    QLabel *label_50;
+    QComboBox *parityBox_2;
+    QPushButton *portScan_pushButton_2;
+    QPushButton *openPort_pushButton_2;
+    QVBoxLayout *verticalLayout_2;
+    QHBoxLayout *horizontalLayout_17;
+    QLabel *label_19;
+    QPushButton *black_01_pushButton;
+    QPushButton *white_01_pushButton;
+    QLabel *black01_label;
+    QLabel *white_01_label;
+    QHBoxLayout *horizontalLayout_18;
+    QLabel *label_37;
+    QPushButton *black_02_pushButton;
+    QPushButton *white_02_pushButton;
+    QLabel *black02_label;
+    QLabel *white_02_label;
+    QHBoxLayout *horizontalLayout_19;
+    QLabel *label_41;
+    QPushButton *black_03_pushButton;
+    QPushButton *white_03_pushButton;
+    QLabel *black03_label;
+    QLabel *white_03_label;
+    QHBoxLayout *horizontalLayout_20;
+    QLabel *label_44;
+    QPushButton *black_04_pushButton;
+    QPushButton *white_04_pushButton;
+    QLabel *black04_label;
+    QLabel *white_04_label;
+    QHBoxLayout *horizontalLayout_21;
+    QLabel *label_46;
+    QPushButton *black_05_pushButton;
+    QPushButton *white_05_pushButton;
+    QLabel *black05_label;
+    QLabel *white_05_label;
+    QHBoxLayout *horizontalLayout_22;
+    QLabel *label_48;
+    QPushButton *black_1_pushButton;
+    QPushButton *white_1_pushButton;
+    QLabel *black1_label;
+    QLabel *white_1_label;
+    QHBoxLayout *horizontalLayout_23;
+    QLabel *label_51;
+    QPushButton *black_3_pushButton;
+    QPushButton *white_3_pushButton;
+    QLabel *black3_label;
+    QLabel *white_3_label;
+    QHBoxLayout *horizontalLayout_24;
+    QLabel *label_54;
+    QPushButton *black_8_pushButton;
+    QPushButton *white_8_pushButton;
+    QLabel *black8_label;
+    QLabel *white_8_label;
+    QGroupBox *groupBox_13;
+    QGridLayout *gridLayout_17;
+    QHBoxLayout *horizontalLayout_25;
+    QLabel *label_25;
+    QLabel *A1_label;
+    QLabel *label_36;
+    QLabel *B1_label;
+    QLabel *label_39;
+    QLabel *C1_label;
+    QHBoxLayout *horizontalLayout_26;
+    QLabel *label_35;
+    QLabel *A2_label;
+    QLabel *label_38;
+    QLabel *B2_label;
+    QLabel *label_40;
+    QLabel *C2_label;
+    QHBoxLayout *horizontalLayout_27;
+    QLabel *label_42;
+    QLabel *least_offset_label;
+    QTextEdit *res_textEdit;
+    QPushButton *startAutoAdjust_pushButton;
+    QPushButton *fuwei_pushButton;
+    QWidget *page_7;
+    QGroupBox *groupBox_15;
+    QGridLayout *gridLayout_23;
+    QLabel *label_52;
+    QLabel *read_a1_label;
+    QLabel *label_55;
+    QLabel *read_b1_label;
+    QLabel *label_57;
+    QLabel *read_c1_label;
+    QLabel *label_63;
+    QLabel *read_a2_label;
+    QLabel *label_60;
+    QLabel *read_b2_label;
+    QLabel *label_61;
+    QLabel *read_c2_label;
+    QLabel *label_65;
+    QLabel *read_offset_label;
+    QGroupBox *groupBox_16;
+    QLabel *label_53;
+    QLineEdit *sendPoint_lineEdit;
+    QPushButton *startMove_pushButton;
+    QTextEdit *readMCU_textEdit;
+    QPushButton *readMCU_pushButton;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
     QHBoxLayout *horizontalLayout;
@@ -294,13 +405,13 @@ public:
         splitter->setOrientation(Qt::Horizontal);
         toolBox = new QToolBox(splitter);
         toolBox->setObjectName(QStringLiteral("toolBox"));
-        toolBox->setMinimumSize(QSize(260, 0));
+        toolBox->setMinimumSize(QSize(300, 0));
         toolBox->setMaximumSize(QSize(16777215, 16777215));
         toolBox->setStyleSheet(QLatin1String(".QToolBox{\n"
 "font: 10pt \"Times New Roman\";}"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 260, 765));
+        page->setGeometry(QRect(0, 0, 300, 713));
         page->setStyleSheet(QLatin1String(".QWidget{\n"
 "font: 11pt \"Times New Roman\";}"));
         gridLayout_18 = new QGridLayout(page);
@@ -316,72 +427,65 @@ public:
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        gridLayout_4->setContentsMargins(-1, 3, -1, 3);
-        formLayout = new QFormLayout();
-        formLayout->setSpacing(6);
-        formLayout->setObjectName(QStringLiteral("formLayout"));
         label_10 = new QLabel(groupBox_3);
         label_10->setObjectName(QStringLiteral("label_10"));
 
-        formLayout->setWidget(0, QFormLayout::LabelRole, label_10);
+        gridLayout_4->addWidget(label_10, 0, 0, 1, 1);
 
         serialPortInfoListBox = new QComboBox(groupBox_3);
         serialPortInfoListBox->setObjectName(QStringLiteral("serialPortInfoListBox"));
 
-        formLayout->setWidget(0, QFormLayout::FieldRole, serialPortInfoListBox);
+        gridLayout_4->addWidget(serialPortInfoListBox, 0, 1, 1, 1);
 
         label_8 = new QLabel(groupBox_3);
         label_8->setObjectName(QStringLiteral("label_8"));
 
-        formLayout->setWidget(1, QFormLayout::LabelRole, label_8);
+        gridLayout_4->addWidget(label_8, 1, 0, 1, 1);
 
         baudRateBox = new QComboBox(groupBox_3);
         baudRateBox->setObjectName(QStringLiteral("baudRateBox"));
 
-        formLayout->setWidget(1, QFormLayout::FieldRole, baudRateBox);
+        gridLayout_4->addWidget(baudRateBox, 1, 1, 1, 1);
 
         label_11 = new QLabel(groupBox_3);
         label_11->setObjectName(QStringLiteral("label_11"));
 
-        formLayout->setWidget(2, QFormLayout::LabelRole, label_11);
+        gridLayout_4->addWidget(label_11, 2, 0, 1, 1);
 
         dataBitsBox = new QComboBox(groupBox_3);
         dataBitsBox->setObjectName(QStringLiteral("dataBitsBox"));
 
-        formLayout->setWidget(2, QFormLayout::FieldRole, dataBitsBox);
+        gridLayout_4->addWidget(dataBitsBox, 2, 1, 1, 1);
 
         label_7 = new QLabel(groupBox_3);
         label_7->setObjectName(QStringLiteral("label_7"));
 
-        formLayout->setWidget(3, QFormLayout::LabelRole, label_7);
+        gridLayout_4->addWidget(label_7, 3, 0, 1, 1);
 
         stopBitsBox = new QComboBox(groupBox_3);
         stopBitsBox->setObjectName(QStringLiteral("stopBitsBox"));
 
-        formLayout->setWidget(3, QFormLayout::FieldRole, stopBitsBox);
+        gridLayout_4->addWidget(stopBitsBox, 3, 1, 1, 1);
 
         label_9 = new QLabel(groupBox_3);
         label_9->setObjectName(QStringLiteral("label_9"));
 
-        formLayout->setWidget(4, QFormLayout::LabelRole, label_9);
+        gridLayout_4->addWidget(label_9, 4, 0, 1, 1);
 
         parityBox = new QComboBox(groupBox_3);
         parityBox->setObjectName(QStringLiteral("parityBox"));
 
-        formLayout->setWidget(4, QFormLayout::FieldRole, parityBox);
+        gridLayout_4->addWidget(parityBox, 4, 1, 1, 1);
 
         portScan_pushButton = new QPushButton(groupBox_3);
         portScan_pushButton->setObjectName(QStringLiteral("portScan_pushButton"));
 
-        formLayout->setWidget(5, QFormLayout::LabelRole, portScan_pushButton);
+        gridLayout_4->addWidget(portScan_pushButton, 5, 0, 1, 1);
 
         openPort_pushButton = new QPushButton(groupBox_3);
         openPort_pushButton->setObjectName(QStringLiteral("openPort_pushButton"));
 
-        formLayout->setWidget(5, QFormLayout::FieldRole, openPort_pushButton);
-
-
-        gridLayout_4->addLayout(formLayout, 0, 0, 1, 1);
+        gridLayout_4->addWidget(openPort_pushButton, 5, 1, 1, 1);
 
 
         gridLayout_18->addWidget(groupBox_3, 0, 0, 1, 1);
@@ -411,6 +515,11 @@ public:
 
         formLayout_5->setWidget(1, QFormLayout::FieldRole, stopMeasure_pushButton);
 
+        startlds_pushButton = new QPushButton(groupBox_5);
+        startlds_pushButton->setObjectName(QStringLiteral("startlds_pushButton"));
+
+        formLayout_5->setWidget(0, QFormLayout::FieldRole, startlds_pushButton);
+
 
         gridLayout_6->addLayout(formLayout_5, 0, 0, 1, 1);
 
@@ -436,6 +545,16 @@ public:
 
         formLayout_3->setWidget(0, QFormLayout::FieldRole, pixel_time_pushButton);
 
+        CAS_pix1_pushButton = new QPushButton(groupBox_6);
+        CAS_pix1_pushButton->setObjectName(QStringLiteral("CAS_pix1_pushButton"));
+
+        formLayout_3->setWidget(1, QFormLayout::LabelRole, CAS_pix1_pushButton);
+
+        CAS_pix2_pushButton = new QPushButton(groupBox_6);
+        CAS_pix2_pushButton->setObjectName(QStringLiteral("CAS_pix2_pushButton"));
+
+        formLayout_3->setWidget(1, QFormLayout::FieldRole, CAS_pix2_pushButton);
+
         rowData_pushButton = new QPushButton(groupBox_6);
         rowData_pushButton->setObjectName(QStringLiteral("rowData_pushButton"));
 
@@ -446,24 +565,15 @@ public:
 
         formLayout_3->setWidget(2, QFormLayout::FieldRole, pixel_read_pushButton);
 
-        horizontalSpacer_10 = new QSpacerItem(78, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        formLayout_3->setItem(3, QFormLayout::LabelRole, horizontalSpacer_10);
-
         delayLine_pushButton = new QPushButton(groupBox_6);
         delayLine_pushButton->setObjectName(QStringLiteral("delayLine_pushButton"));
 
         formLayout_3->setWidget(3, QFormLayout::FieldRole, delayLine_pushButton);
 
-        CAS_pix2_pushButton = new QPushButton(groupBox_6);
-        CAS_pix2_pushButton->setObjectName(QStringLiteral("CAS_pix2_pushButton"));
+        openOrClose_laser_pushButton = new QPushButton(groupBox_6);
+        openOrClose_laser_pushButton->setObjectName(QStringLiteral("openOrClose_laser_pushButton"));
 
-        formLayout_3->setWidget(1, QFormLayout::FieldRole, CAS_pix2_pushButton);
-
-        CAS_pix1_pushButton = new QPushButton(groupBox_6);
-        CAS_pix1_pushButton->setObjectName(QStringLiteral("CAS_pix1_pushButton"));
-
-        formLayout_3->setWidget(1, QFormLayout::LabelRole, CAS_pix1_pushButton);
+        formLayout_3->setWidget(3, QFormLayout::LabelRole, openOrClose_laser_pushButton);
 
 
         gridLayout_7->addLayout(formLayout_3, 0, 0, 1, 1);
@@ -552,7 +662,7 @@ public:
         toolBox->addItem(page, QString::fromUtf8("              \345\237\272\346\234\254\350\256\276\347\275\256"));
         page_4 = new QWidget();
         page_4->setObjectName(QStringLiteral("page_4"));
-        page_4->setGeometry(QRect(0, 0, 260, 765));
+        page_4->setGeometry(QRect(0, 0, 300, 713));
         page_4->setMaximumSize(QSize(16777215, 16777215));
         gridLayout_15 = new QGridLayout(page_4);
         gridLayout_15->setSpacing(6);
@@ -729,7 +839,7 @@ public:
         toolBox->addItem(page_4, QString::fromUtf8("              \350\256\276\345\244\207\351\205\215\347\275\256"));
         page_5 = new QWidget();
         page_5->setObjectName(QStringLiteral("page_5"));
-        page_5->setGeometry(QRect(0, 0, 260, 765));
+        page_5->setGeometry(QRect(0, 0, 300, 713));
         groupBox_9 = new QGroupBox(page_5);
         groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
         groupBox_9->setGeometry(QRect(9, 9, 230, 303));
@@ -948,6 +1058,593 @@ public:
         gaofan_pushButton->setObjectName(QStringLiteral("gaofan_pushButton"));
         gaofan_pushButton->setGeometry(QRect(20, 540, 201, 20));
         toolBox->addItem(page_5, QString::fromUtf8("              \350\256\276\345\244\207\346\240\241\345\207\206"));
+        page_6 = new QWidget();
+        page_6->setObjectName(QStringLiteral("page_6"));
+        page_6->setGeometry(QRect(0, 0, 300, 713));
+        gridLayout_22 = new QGridLayout(page_6);
+        gridLayout_22->setSpacing(6);
+        gridLayout_22->setContentsMargins(11, 11, 11, 11);
+        gridLayout_22->setObjectName(QStringLiteral("gridLayout_22"));
+        groupBox_14 = new QGroupBox(page_6);
+        groupBox_14->setObjectName(QStringLiteral("groupBox_14"));
+        groupBox_14->setStyleSheet(QLatin1String(".QGroupBox\n"
+"{font: 10pt \"Times New Roman\";}"));
+        gridLayout_21 = new QGridLayout(groupBox_14);
+        gridLayout_21->setSpacing(6);
+        gridLayout_21->setContentsMargins(11, 11, 11, 11);
+        gridLayout_21->setObjectName(QStringLiteral("gridLayout_21"));
+        label_43 = new QLabel(groupBox_14);
+        label_43->setObjectName(QStringLiteral("label_43"));
+
+        gridLayout_21->addWidget(label_43, 0, 0, 1, 1);
+
+        serialPortInfoListBox_2 = new QComboBox(groupBox_14);
+        serialPortInfoListBox_2->setObjectName(QStringLiteral("serialPortInfoListBox_2"));
+
+        gridLayout_21->addWidget(serialPortInfoListBox_2, 0, 1, 1, 1);
+
+        label_45 = new QLabel(groupBox_14);
+        label_45->setObjectName(QStringLiteral("label_45"));
+
+        gridLayout_21->addWidget(label_45, 1, 0, 1, 1);
+
+        baudRateBox_2 = new QComboBox(groupBox_14);
+        baudRateBox_2->setObjectName(QStringLiteral("baudRateBox_2"));
+
+        gridLayout_21->addWidget(baudRateBox_2, 1, 1, 1, 1);
+
+        label_47 = new QLabel(groupBox_14);
+        label_47->setObjectName(QStringLiteral("label_47"));
+
+        gridLayout_21->addWidget(label_47, 2, 0, 1, 1);
+
+        dataBitsBox_2 = new QComboBox(groupBox_14);
+        dataBitsBox_2->setObjectName(QStringLiteral("dataBitsBox_2"));
+
+        gridLayout_21->addWidget(dataBitsBox_2, 2, 1, 1, 1);
+
+        label_49 = new QLabel(groupBox_14);
+        label_49->setObjectName(QStringLiteral("label_49"));
+
+        gridLayout_21->addWidget(label_49, 3, 0, 1, 1);
+
+        stopBitsBox_2 = new QComboBox(groupBox_14);
+        stopBitsBox_2->setObjectName(QStringLiteral("stopBitsBox_2"));
+
+        gridLayout_21->addWidget(stopBitsBox_2, 3, 1, 1, 1);
+
+        label_50 = new QLabel(groupBox_14);
+        label_50->setObjectName(QStringLiteral("label_50"));
+
+        gridLayout_21->addWidget(label_50, 4, 0, 1, 1);
+
+        parityBox_2 = new QComboBox(groupBox_14);
+        parityBox_2->setObjectName(QStringLiteral("parityBox_2"));
+
+        gridLayout_21->addWidget(parityBox_2, 4, 1, 1, 1);
+
+        portScan_pushButton_2 = new QPushButton(groupBox_14);
+        portScan_pushButton_2->setObjectName(QStringLiteral("portScan_pushButton_2"));
+
+        gridLayout_21->addWidget(portScan_pushButton_2, 5, 0, 1, 1);
+
+        openPort_pushButton_2 = new QPushButton(groupBox_14);
+        openPort_pushButton_2->setObjectName(QStringLiteral("openPort_pushButton_2"));
+
+        gridLayout_21->addWidget(openPort_pushButton_2, 5, 1, 1, 1);
+
+
+        gridLayout_22->addWidget(groupBox_14, 0, 0, 1, 2);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setSpacing(1);
+        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        horizontalLayout_17 = new QHBoxLayout();
+        horizontalLayout_17->setSpacing(6);
+        horizontalLayout_17->setObjectName(QStringLiteral("horizontalLayout_17"));
+        label_19 = new QLabel(page_6);
+        label_19->setObjectName(QStringLiteral("label_19"));
+
+        horizontalLayout_17->addWidget(label_19);
+
+        black_01_pushButton = new QPushButton(page_6);
+        black_01_pushButton->setObjectName(QStringLiteral("black_01_pushButton"));
+
+        horizontalLayout_17->addWidget(black_01_pushButton);
+
+        white_01_pushButton = new QPushButton(page_6);
+        white_01_pushButton->setObjectName(QStringLiteral("white_01_pushButton"));
+
+        horizontalLayout_17->addWidget(white_01_pushButton);
+
+        black01_label = new QLabel(page_6);
+        black01_label->setObjectName(QStringLiteral("black01_label"));
+
+        horizontalLayout_17->addWidget(black01_label);
+
+        white_01_label = new QLabel(page_6);
+        white_01_label->setObjectName(QStringLiteral("white_01_label"));
+
+        horizontalLayout_17->addWidget(white_01_label);
+
+        horizontalLayout_17->setStretch(0, 1);
+        horizontalLayout_17->setStretch(1, 1);
+        horizontalLayout_17->setStretch(2, 1);
+        horizontalLayout_17->setStretch(3, 2);
+        horizontalLayout_17->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_17);
+
+        horizontalLayout_18 = new QHBoxLayout();
+        horizontalLayout_18->setSpacing(6);
+        horizontalLayout_18->setObjectName(QStringLiteral("horizontalLayout_18"));
+        label_37 = new QLabel(page_6);
+        label_37->setObjectName(QStringLiteral("label_37"));
+
+        horizontalLayout_18->addWidget(label_37);
+
+        black_02_pushButton = new QPushButton(page_6);
+        black_02_pushButton->setObjectName(QStringLiteral("black_02_pushButton"));
+
+        horizontalLayout_18->addWidget(black_02_pushButton);
+
+        white_02_pushButton = new QPushButton(page_6);
+        white_02_pushButton->setObjectName(QStringLiteral("white_02_pushButton"));
+
+        horizontalLayout_18->addWidget(white_02_pushButton);
+
+        black02_label = new QLabel(page_6);
+        black02_label->setObjectName(QStringLiteral("black02_label"));
+
+        horizontalLayout_18->addWidget(black02_label);
+
+        white_02_label = new QLabel(page_6);
+        white_02_label->setObjectName(QStringLiteral("white_02_label"));
+
+        horizontalLayout_18->addWidget(white_02_label);
+
+        horizontalLayout_18->setStretch(0, 1);
+        horizontalLayout_18->setStretch(1, 1);
+        horizontalLayout_18->setStretch(2, 1);
+        horizontalLayout_18->setStretch(3, 2);
+        horizontalLayout_18->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_18);
+
+        horizontalLayout_19 = new QHBoxLayout();
+        horizontalLayout_19->setSpacing(6);
+        horizontalLayout_19->setObjectName(QStringLiteral("horizontalLayout_19"));
+        label_41 = new QLabel(page_6);
+        label_41->setObjectName(QStringLiteral("label_41"));
+
+        horizontalLayout_19->addWidget(label_41);
+
+        black_03_pushButton = new QPushButton(page_6);
+        black_03_pushButton->setObjectName(QStringLiteral("black_03_pushButton"));
+
+        horizontalLayout_19->addWidget(black_03_pushButton);
+
+        white_03_pushButton = new QPushButton(page_6);
+        white_03_pushButton->setObjectName(QStringLiteral("white_03_pushButton"));
+
+        horizontalLayout_19->addWidget(white_03_pushButton);
+
+        black03_label = new QLabel(page_6);
+        black03_label->setObjectName(QStringLiteral("black03_label"));
+
+        horizontalLayout_19->addWidget(black03_label);
+
+        white_03_label = new QLabel(page_6);
+        white_03_label->setObjectName(QStringLiteral("white_03_label"));
+
+        horizontalLayout_19->addWidget(white_03_label);
+
+        horizontalLayout_19->setStretch(0, 1);
+        horizontalLayout_19->setStretch(1, 1);
+        horizontalLayout_19->setStretch(2, 1);
+        horizontalLayout_19->setStretch(3, 2);
+        horizontalLayout_19->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_19);
+
+        horizontalLayout_20 = new QHBoxLayout();
+        horizontalLayout_20->setSpacing(6);
+        horizontalLayout_20->setObjectName(QStringLiteral("horizontalLayout_20"));
+        label_44 = new QLabel(page_6);
+        label_44->setObjectName(QStringLiteral("label_44"));
+
+        horizontalLayout_20->addWidget(label_44);
+
+        black_04_pushButton = new QPushButton(page_6);
+        black_04_pushButton->setObjectName(QStringLiteral("black_04_pushButton"));
+
+        horizontalLayout_20->addWidget(black_04_pushButton);
+
+        white_04_pushButton = new QPushButton(page_6);
+        white_04_pushButton->setObjectName(QStringLiteral("white_04_pushButton"));
+
+        horizontalLayout_20->addWidget(white_04_pushButton);
+
+        black04_label = new QLabel(page_6);
+        black04_label->setObjectName(QStringLiteral("black04_label"));
+
+        horizontalLayout_20->addWidget(black04_label);
+
+        white_04_label = new QLabel(page_6);
+        white_04_label->setObjectName(QStringLiteral("white_04_label"));
+
+        horizontalLayout_20->addWidget(white_04_label);
+
+        horizontalLayout_20->setStretch(0, 1);
+        horizontalLayout_20->setStretch(1, 1);
+        horizontalLayout_20->setStretch(2, 1);
+        horizontalLayout_20->setStretch(3, 2);
+        horizontalLayout_20->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_20);
+
+        horizontalLayout_21 = new QHBoxLayout();
+        horizontalLayout_21->setSpacing(6);
+        horizontalLayout_21->setObjectName(QStringLiteral("horizontalLayout_21"));
+        label_46 = new QLabel(page_6);
+        label_46->setObjectName(QStringLiteral("label_46"));
+
+        horizontalLayout_21->addWidget(label_46);
+
+        black_05_pushButton = new QPushButton(page_6);
+        black_05_pushButton->setObjectName(QStringLiteral("black_05_pushButton"));
+
+        horizontalLayout_21->addWidget(black_05_pushButton);
+
+        white_05_pushButton = new QPushButton(page_6);
+        white_05_pushButton->setObjectName(QStringLiteral("white_05_pushButton"));
+
+        horizontalLayout_21->addWidget(white_05_pushButton);
+
+        black05_label = new QLabel(page_6);
+        black05_label->setObjectName(QStringLiteral("black05_label"));
+
+        horizontalLayout_21->addWidget(black05_label);
+
+        white_05_label = new QLabel(page_6);
+        white_05_label->setObjectName(QStringLiteral("white_05_label"));
+
+        horizontalLayout_21->addWidget(white_05_label);
+
+        horizontalLayout_21->setStretch(0, 1);
+        horizontalLayout_21->setStretch(1, 1);
+        horizontalLayout_21->setStretch(2, 1);
+        horizontalLayout_21->setStretch(3, 2);
+        horizontalLayout_21->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_21);
+
+        horizontalLayout_22 = new QHBoxLayout();
+        horizontalLayout_22->setSpacing(6);
+        horizontalLayout_22->setObjectName(QStringLiteral("horizontalLayout_22"));
+        label_48 = new QLabel(page_6);
+        label_48->setObjectName(QStringLiteral("label_48"));
+
+        horizontalLayout_22->addWidget(label_48);
+
+        black_1_pushButton = new QPushButton(page_6);
+        black_1_pushButton->setObjectName(QStringLiteral("black_1_pushButton"));
+
+        horizontalLayout_22->addWidget(black_1_pushButton);
+
+        white_1_pushButton = new QPushButton(page_6);
+        white_1_pushButton->setObjectName(QStringLiteral("white_1_pushButton"));
+
+        horizontalLayout_22->addWidget(white_1_pushButton);
+
+        black1_label = new QLabel(page_6);
+        black1_label->setObjectName(QStringLiteral("black1_label"));
+
+        horizontalLayout_22->addWidget(black1_label);
+
+        white_1_label = new QLabel(page_6);
+        white_1_label->setObjectName(QStringLiteral("white_1_label"));
+
+        horizontalLayout_22->addWidget(white_1_label);
+
+        horizontalLayout_22->setStretch(0, 1);
+        horizontalLayout_22->setStretch(1, 1);
+        horizontalLayout_22->setStretch(2, 1);
+        horizontalLayout_22->setStretch(3, 2);
+        horizontalLayout_22->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_22);
+
+        horizontalLayout_23 = new QHBoxLayout();
+        horizontalLayout_23->setSpacing(6);
+        horizontalLayout_23->setObjectName(QStringLiteral("horizontalLayout_23"));
+        label_51 = new QLabel(page_6);
+        label_51->setObjectName(QStringLiteral("label_51"));
+
+        horizontalLayout_23->addWidget(label_51);
+
+        black_3_pushButton = new QPushButton(page_6);
+        black_3_pushButton->setObjectName(QStringLiteral("black_3_pushButton"));
+
+        horizontalLayout_23->addWidget(black_3_pushButton);
+
+        white_3_pushButton = new QPushButton(page_6);
+        white_3_pushButton->setObjectName(QStringLiteral("white_3_pushButton"));
+
+        horizontalLayout_23->addWidget(white_3_pushButton);
+
+        black3_label = new QLabel(page_6);
+        black3_label->setObjectName(QStringLiteral("black3_label"));
+
+        horizontalLayout_23->addWidget(black3_label);
+
+        white_3_label = new QLabel(page_6);
+        white_3_label->setObjectName(QStringLiteral("white_3_label"));
+
+        horizontalLayout_23->addWidget(white_3_label);
+
+        horizontalLayout_23->setStretch(0, 1);
+        horizontalLayout_23->setStretch(1, 1);
+        horizontalLayout_23->setStretch(2, 1);
+        horizontalLayout_23->setStretch(3, 2);
+        horizontalLayout_23->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_23);
+
+        horizontalLayout_24 = new QHBoxLayout();
+        horizontalLayout_24->setSpacing(6);
+        horizontalLayout_24->setObjectName(QStringLiteral("horizontalLayout_24"));
+        label_54 = new QLabel(page_6);
+        label_54->setObjectName(QStringLiteral("label_54"));
+
+        horizontalLayout_24->addWidget(label_54);
+
+        black_8_pushButton = new QPushButton(page_6);
+        black_8_pushButton->setObjectName(QStringLiteral("black_8_pushButton"));
+
+        horizontalLayout_24->addWidget(black_8_pushButton);
+
+        white_8_pushButton = new QPushButton(page_6);
+        white_8_pushButton->setObjectName(QStringLiteral("white_8_pushButton"));
+
+        horizontalLayout_24->addWidget(white_8_pushButton);
+
+        black8_label = new QLabel(page_6);
+        black8_label->setObjectName(QStringLiteral("black8_label"));
+
+        horizontalLayout_24->addWidget(black8_label);
+
+        white_8_label = new QLabel(page_6);
+        white_8_label->setObjectName(QStringLiteral("white_8_label"));
+
+        horizontalLayout_24->addWidget(white_8_label);
+
+        horizontalLayout_24->setStretch(0, 1);
+        horizontalLayout_24->setStretch(1, 1);
+        horizontalLayout_24->setStretch(2, 1);
+        horizontalLayout_24->setStretch(3, 2);
+        horizontalLayout_24->setStretch(4, 2);
+
+        verticalLayout_2->addLayout(horizontalLayout_24);
+
+
+        gridLayout_22->addLayout(verticalLayout_2, 1, 0, 1, 2);
+
+        groupBox_13 = new QGroupBox(page_6);
+        groupBox_13->setObjectName(QStringLiteral("groupBox_13"));
+        groupBox_13->setMaximumSize(QSize(16777215, 16777215));
+        gridLayout_17 = new QGridLayout(groupBox_13);
+        gridLayout_17->setSpacing(6);
+        gridLayout_17->setContentsMargins(11, 11, 11, 11);
+        gridLayout_17->setObjectName(QStringLiteral("gridLayout_17"));
+        gridLayout_17->setHorizontalSpacing(3);
+        gridLayout_17->setContentsMargins(1, -1, 1, -1);
+        horizontalLayout_25 = new QHBoxLayout();
+        horizontalLayout_25->setSpacing(6);
+        horizontalLayout_25->setObjectName(QStringLiteral("horizontalLayout_25"));
+        label_25 = new QLabel(groupBox_13);
+        label_25->setObjectName(QStringLiteral("label_25"));
+
+        horizontalLayout_25->addWidget(label_25);
+
+        A1_label = new QLabel(groupBox_13);
+        A1_label->setObjectName(QStringLiteral("A1_label"));
+
+        horizontalLayout_25->addWidget(A1_label);
+
+        label_36 = new QLabel(groupBox_13);
+        label_36->setObjectName(QStringLiteral("label_36"));
+
+        horizontalLayout_25->addWidget(label_36);
+
+        B1_label = new QLabel(groupBox_13);
+        B1_label->setObjectName(QStringLiteral("B1_label"));
+
+        horizontalLayout_25->addWidget(B1_label);
+
+        label_39 = new QLabel(groupBox_13);
+        label_39->setObjectName(QStringLiteral("label_39"));
+
+        horizontalLayout_25->addWidget(label_39);
+
+        C1_label = new QLabel(groupBox_13);
+        C1_label->setObjectName(QStringLiteral("C1_label"));
+
+        horizontalLayout_25->addWidget(C1_label);
+
+
+        gridLayout_17->addLayout(horizontalLayout_25, 0, 0, 1, 1);
+
+        horizontalLayout_26 = new QHBoxLayout();
+        horizontalLayout_26->setSpacing(6);
+        horizontalLayout_26->setObjectName(QStringLiteral("horizontalLayout_26"));
+        label_35 = new QLabel(groupBox_13);
+        label_35->setObjectName(QStringLiteral("label_35"));
+
+        horizontalLayout_26->addWidget(label_35);
+
+        A2_label = new QLabel(groupBox_13);
+        A2_label->setObjectName(QStringLiteral("A2_label"));
+
+        horizontalLayout_26->addWidget(A2_label);
+
+        label_38 = new QLabel(groupBox_13);
+        label_38->setObjectName(QStringLiteral("label_38"));
+
+        horizontalLayout_26->addWidget(label_38);
+
+        B2_label = new QLabel(groupBox_13);
+        B2_label->setObjectName(QStringLiteral("B2_label"));
+
+        horizontalLayout_26->addWidget(B2_label);
+
+        label_40 = new QLabel(groupBox_13);
+        label_40->setObjectName(QStringLiteral("label_40"));
+
+        horizontalLayout_26->addWidget(label_40);
+
+        C2_label = new QLabel(groupBox_13);
+        C2_label->setObjectName(QStringLiteral("C2_label"));
+
+        horizontalLayout_26->addWidget(C2_label);
+
+
+        gridLayout_17->addLayout(horizontalLayout_26, 1, 0, 1, 1);
+
+        horizontalLayout_27 = new QHBoxLayout();
+        horizontalLayout_27->setSpacing(6);
+        horizontalLayout_27->setObjectName(QStringLiteral("horizontalLayout_27"));
+        label_42 = new QLabel(groupBox_13);
+        label_42->setObjectName(QStringLiteral("label_42"));
+
+        horizontalLayout_27->addWidget(label_42);
+
+        least_offset_label = new QLabel(groupBox_13);
+        least_offset_label->setObjectName(QStringLiteral("least_offset_label"));
+
+        horizontalLayout_27->addWidget(least_offset_label);
+
+
+        gridLayout_17->addLayout(horizontalLayout_27, 2, 0, 1, 1);
+
+
+        gridLayout_22->addWidget(groupBox_13, 2, 0, 1, 2);
+
+        res_textEdit = new QTextEdit(page_6);
+        res_textEdit->setObjectName(QStringLiteral("res_textEdit"));
+
+        gridLayout_22->addWidget(res_textEdit, 3, 0, 1, 2);
+
+        startAutoAdjust_pushButton = new QPushButton(page_6);
+        startAutoAdjust_pushButton->setObjectName(QStringLiteral("startAutoAdjust_pushButton"));
+
+        gridLayout_22->addWidget(startAutoAdjust_pushButton, 4, 0, 1, 1);
+
+        fuwei_pushButton = new QPushButton(page_6);
+        fuwei_pushButton->setObjectName(QStringLiteral("fuwei_pushButton"));
+
+        gridLayout_22->addWidget(fuwei_pushButton, 4, 1, 1, 1);
+
+        toolBox->addItem(page_6, QString::fromUtf8("            \350\207\252\345\212\250\346\240\241\345\207\206\347\252\227\345\217\243"));
+        page_7 = new QWidget();
+        page_7->setObjectName(QStringLiteral("page_7"));
+        page_7->setGeometry(QRect(0, 0, 300, 713));
+        groupBox_15 = new QGroupBox(page_7);
+        groupBox_15->setObjectName(QStringLiteral("groupBox_15"));
+        groupBox_15->setGeometry(QRect(20, 20, 261, 121));
+        gridLayout_23 = new QGridLayout(groupBox_15);
+        gridLayout_23->setSpacing(6);
+        gridLayout_23->setContentsMargins(11, 11, 11, 11);
+        gridLayout_23->setObjectName(QStringLiteral("gridLayout_23"));
+        label_52 = new QLabel(groupBox_15);
+        label_52->setObjectName(QStringLiteral("label_52"));
+
+        gridLayout_23->addWidget(label_52, 0, 0, 1, 1);
+
+        read_a1_label = new QLabel(groupBox_15);
+        read_a1_label->setObjectName(QStringLiteral("read_a1_label"));
+
+        gridLayout_23->addWidget(read_a1_label, 0, 1, 1, 1);
+
+        label_55 = new QLabel(groupBox_15);
+        label_55->setObjectName(QStringLiteral("label_55"));
+
+        gridLayout_23->addWidget(label_55, 0, 2, 1, 1);
+
+        read_b1_label = new QLabel(groupBox_15);
+        read_b1_label->setObjectName(QStringLiteral("read_b1_label"));
+
+        gridLayout_23->addWidget(read_b1_label, 0, 3, 1, 1);
+
+        label_57 = new QLabel(groupBox_15);
+        label_57->setObjectName(QStringLiteral("label_57"));
+
+        gridLayout_23->addWidget(label_57, 0, 4, 1, 1);
+
+        read_c1_label = new QLabel(groupBox_15);
+        read_c1_label->setObjectName(QStringLiteral("read_c1_label"));
+
+        gridLayout_23->addWidget(read_c1_label, 0, 5, 1, 1);
+
+        label_63 = new QLabel(groupBox_15);
+        label_63->setObjectName(QStringLiteral("label_63"));
+
+        gridLayout_23->addWidget(label_63, 1, 0, 1, 1);
+
+        read_a2_label = new QLabel(groupBox_15);
+        read_a2_label->setObjectName(QStringLiteral("read_a2_label"));
+
+        gridLayout_23->addWidget(read_a2_label, 1, 1, 1, 1);
+
+        label_60 = new QLabel(groupBox_15);
+        label_60->setObjectName(QStringLiteral("label_60"));
+
+        gridLayout_23->addWidget(label_60, 1, 2, 1, 1);
+
+        read_b2_label = new QLabel(groupBox_15);
+        read_b2_label->setObjectName(QStringLiteral("read_b2_label"));
+
+        gridLayout_23->addWidget(read_b2_label, 1, 3, 1, 1);
+
+        label_61 = new QLabel(groupBox_15);
+        label_61->setObjectName(QStringLiteral("label_61"));
+
+        gridLayout_23->addWidget(label_61, 1, 4, 1, 1);
+
+        read_c2_label = new QLabel(groupBox_15);
+        read_c2_label->setObjectName(QStringLiteral("read_c2_label"));
+
+        gridLayout_23->addWidget(read_c2_label, 1, 5, 1, 1);
+
+        label_65 = new QLabel(groupBox_15);
+        label_65->setObjectName(QStringLiteral("label_65"));
+
+        gridLayout_23->addWidget(label_65, 2, 0, 1, 2);
+
+        read_offset_label = new QLabel(groupBox_15);
+        read_offset_label->setObjectName(QStringLiteral("read_offset_label"));
+
+        gridLayout_23->addWidget(read_offset_label, 2, 2, 1, 2);
+
+        groupBox_16 = new QGroupBox(page_7);
+        groupBox_16->setObjectName(QStringLiteral("groupBox_16"));
+        groupBox_16->setGeometry(QRect(20, 380, 251, 141));
+        label_53 = new QLabel(groupBox_16);
+        label_53->setObjectName(QStringLiteral("label_53"));
+        label_53->setGeometry(QRect(30, 50, 91, 16));
+        sendPoint_lineEdit = new QLineEdit(groupBox_16);
+        sendPoint_lineEdit->setObjectName(QStringLiteral("sendPoint_lineEdit"));
+        sendPoint_lineEdit->setGeometry(QRect(120, 50, 81, 20));
+        startMove_pushButton = new QPushButton(groupBox_16);
+        startMove_pushButton->setObjectName(QStringLiteral("startMove_pushButton"));
+        startMove_pushButton->setGeometry(QRect(110, 100, 80, 20));
+        readMCU_textEdit = new QTextEdit(page_7);
+        readMCU_textEdit->setObjectName(QStringLiteral("readMCU_textEdit"));
+        readMCU_textEdit->setGeometry(QRect(20, 150, 261, 181));
+        readMCU_pushButton = new QPushButton(page_7);
+        readMCU_pushButton->setObjectName(QStringLiteral("readMCU_pushButton"));
+        readMCU_pushButton->setGeometry(QRect(20, 340, 75, 20));
+        toolBox->addItem(page_7, QString::fromUtf8("\350\257\273\345\217\226MCU "));
         splitter->addWidget(toolBox);
         groupBox = new QGroupBox(splitter);
         groupBox->setObjectName(QStringLiteral("groupBox"));
@@ -1270,7 +1967,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(1);
+        toolBox->setCurrentIndex(0);
         pixel_timeOffset_comboBox->setCurrentIndex(2);
         stackedWidget->setCurrentIndex(1);
 
@@ -1300,6 +1997,7 @@ public:
         singleMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\215\225\346\254\241\346\265\213\351\207\217", Q_NULLPTR));
         delayMeasure_pushButton->setText(QApplication::translate("MainWindow", "\350\277\236\347\273\255\346\265\213\351\207\217", Q_NULLPTR));
         stopMeasure_pushButton->setText(QApplication::translate("MainWindow", "\345\201\234\346\255\242", Q_NULLPTR));
+        startlds_pushButton->setText(QApplication::translate("MainWindow", "startlds$", Q_NULLPTR));
         groupBox_6->setTitle(QApplication::translate("MainWindow", "\346\225\260\346\215\256\350\257\273\345\217\226\357\274\232", Q_NULLPTR));
         pixel_timeOffset_comboBox->clear();
         pixel_timeOffset_comboBox->insertItems(0, QStringList()
@@ -1310,11 +2008,12 @@ public:
          << QApplication::translate("MainWindow", "2000ms", Q_NULLPTR)
         );
         pixel_time_pushButton->setText(QApplication::translate("MainWindow", "pixel\345\256\232\346\227\266\350\257\273\345\217\226", Q_NULLPTR));
+        CAS_pix1_pushButton->setText(QApplication::translate("MainWindow", "pix_1\345\256\232\346\227\266\350\257\273", Q_NULLPTR));
+        CAS_pix2_pushButton->setText(QApplication::translate("MainWindow", "pix_2\345\256\232\346\227\266\350\257\273", Q_NULLPTR));
         rowData_pushButton->setText(QApplication::translate("MainWindow", "RawData", Q_NULLPTR));
         pixel_read_pushButton->setText(QApplication::translate("MainWindow", "Pixel", Q_NULLPTR));
         delayLine_pushButton->setText(QApplication::translate("MainWindow", "delay line", Q_NULLPTR));
-        CAS_pix2_pushButton->setText(QApplication::translate("MainWindow", "pix_2\345\256\232\346\227\266\350\257\273", Q_NULLPTR));
-        CAS_pix1_pushButton->setText(QApplication::translate("MainWindow", "pix_1\345\256\232\346\227\266\350\257\273", Q_NULLPTR));
+        openOrClose_laser_pushButton->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\346\277\200\345\205\211\345\231\250", Q_NULLPTR));
         groupBox_4->setTitle(QApplication::translate("MainWindow", "\347\273\223\346\236\234\346\230\276\347\244\272:", Q_NULLPTR));
         label_12->setText(QApplication::translate("MainWindow", "\345\275\223\345\211\215\350\267\235\347\246\273:(mm)", Q_NULLPTR));
         currentDistance11_label->setText(QApplication::translate("MainWindow", "0.00", Q_NULLPTR));
@@ -1356,6 +2055,7 @@ public:
          << QString()
          << QApplication::translate("MainWindow", "\347\234\237\345\256\236\350\267\235\347\246\273", Q_NULLPTR)
          << QApplication::translate("MainWindow", "\345\216\237\345\247\213LSB", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "\346\270\251\345\272\246\346\240\241\346\255\243\347\232\204mm\346\225\260\346\215\256", Q_NULLPTR)
         );
         groupBox_12->setTitle(QApplication::translate("MainWindow", "\345\215\225\344\270\252\345\257\204\345\255\230\345\231\250\350\257\273\345\206\231\357\274\232", Q_NULLPTR));
         label_27->setText(QApplication::translate("MainWindow", "\345\234\260\345\235\200(0x)\357\274\232", Q_NULLPTR));
@@ -1412,6 +2112,92 @@ public:
         label_33->setText(QApplication::translate("MainWindow", "\346\212\227\351\230\263\345\205\211\345\274\272\345\272\246\357\274\232", Q_NULLPTR));
         gaofan_pushButton->setText(QApplication::translate("MainWindow", "\351\253\230\345\217\215\346\240\241\345\207\206", Q_NULLPTR));
         toolBox->setItemText(toolBox->indexOf(page_5), QApplication::translate("MainWindow", "              \350\256\276\345\244\207\346\240\241\345\207\206", Q_NULLPTR));
+        groupBox_14->setTitle(QApplication::translate("MainWindow", "\344\270\262\345\217\243\350\256\276\347\275\256\357\274\232", Q_NULLPTR));
+        label_43->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\345\217\267\357\274\232", Q_NULLPTR));
+        label_45->setText(QApplication::translate("MainWindow", "\346\263\242\347\211\271\347\216\207\357\274\232", Q_NULLPTR));
+        label_47->setText(QApplication::translate("MainWindow", "\346\225\260\346\215\256\344\275\215\357\274\232", Q_NULLPTR));
+        label_49->setText(QApplication::translate("MainWindow", "\345\201\234\346\255\242\344\275\215\357\274\232", Q_NULLPTR));
+        label_50->setText(QApplication::translate("MainWindow", "\346\240\241\351\252\214\344\275\215\357\274\232", Q_NULLPTR));
+        portScan_pushButton_2->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\346\243\200\346\265\213", Q_NULLPTR));
+        openPort_pushButton_2->setText(QApplication::translate("MainWindow", "Open", Q_NULLPTR));
+        label_19->setText(QApplication::translate("MainWindow", "0.1m", Q_NULLPTR));
+        black_01_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_01_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black01_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_01_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_37->setText(QApplication::translate("MainWindow", "0.2m", Q_NULLPTR));
+        black_02_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_02_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black02_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_02_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_41->setText(QApplication::translate("MainWindow", "0.3m", Q_NULLPTR));
+        black_03_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_03_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black03_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_03_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_44->setText(QApplication::translate("MainWindow", "0.4m", Q_NULLPTR));
+        black_04_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_04_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black04_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_04_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_46->setText(QApplication::translate("MainWindow", "0.5m", Q_NULLPTR));
+        black_05_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_05_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black05_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_05_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_48->setText(QApplication::translate("MainWindow", "1.0m", Q_NULLPTR));
+        black_1_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_1_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black1_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_1_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_51->setText(QApplication::translate("MainWindow", "3.0m", Q_NULLPTR));
+        black_3_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_3_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black3_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_3_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        label_54->setText(QApplication::translate("MainWindow", "8.0m", Q_NULLPTR));
+        black_8_pushButton->setText(QApplication::translate("MainWindow", "\351\273\221", Q_NULLPTR));
+        white_8_pushButton->setText(QApplication::translate("MainWindow", "\347\231\275", Q_NULLPTR));
+        black8_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        white_8_label->setText(QApplication::translate("MainWindow", "N", Q_NULLPTR));
+        groupBox_13->setTitle(QApplication::translate("MainWindow", "\346\240\241\345\207\206\345\217\202\346\225\260\357\274\232", Q_NULLPTR));
+        label_25->setText(QApplication::translate("MainWindow", "A1\357\274\232", Q_NULLPTR));
+        A1_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        label_36->setText(QApplication::translate("MainWindow", "B1\357\274\232", Q_NULLPTR));
+        B1_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        label_39->setText(QApplication::translate("MainWindow", "C1\357\274\232", Q_NULLPTR));
+        C1_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        label_35->setText(QApplication::translate("MainWindow", "A2\357\274\232", Q_NULLPTR));
+        A2_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        label_38->setText(QApplication::translate("MainWindow", "B2\357\274\232", Q_NULLPTR));
+        B2_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        label_40->setText(QApplication::translate("MainWindow", "C2\357\274\232", Q_NULLPTR));
+        C2_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        label_42->setText(QApplication::translate("MainWindow", "OFFSET:", Q_NULLPTR));
+        least_offset_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));
+        startAutoAdjust_pushButton->setText(QApplication::translate("MainWindow", "\345\274\200\345\220\257\350\207\252\345\212\250\346\240\241\346\255\243", Q_NULLPTR));
+        fuwei_pushButton->setText(QApplication::translate("MainWindow", "\345\244\215\344\275\215", Q_NULLPTR));
+        toolBox->setItemText(toolBox->indexOf(page_6), QApplication::translate("MainWindow", "            \350\207\252\345\212\250\346\240\241\345\207\206\347\252\227\345\217\243", Q_NULLPTR));
+        groupBox_15->setTitle(QApplication::translate("MainWindow", "GroupBox", Q_NULLPTR));
+        label_52->setText(QApplication::translate("MainWindow", "A1\357\274\232", Q_NULLPTR));
+        read_a1_label->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_55->setText(QApplication::translate("MainWindow", "B1\357\274\232", Q_NULLPTR));
+        read_b1_label->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_57->setText(QApplication::translate("MainWindow", "C1\357\274\232", Q_NULLPTR));
+        read_c1_label->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_63->setText(QApplication::translate("MainWindow", "A2\357\274\232", Q_NULLPTR));
+        read_a2_label->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_60->setText(QApplication::translate("MainWindow", "B2\357\274\232", Q_NULLPTR));
+        read_b2_label->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_61->setText(QApplication::translate("MainWindow", "C2\357\274\232", Q_NULLPTR));
+        read_c2_label->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        label_65->setText(QApplication::translate("MainWindow", "OFFSET:", Q_NULLPTR));
+        read_offset_label->setText(QApplication::translate("MainWindow", "OFFSET:", Q_NULLPTR));
+        groupBox_16->setTitle(QApplication::translate("MainWindow", "GroupBox", Q_NULLPTR));
+        label_53->setText(QApplication::translate("MainWindow", "\346\214\207\345\256\232\344\275\215\347\275\256(mm)\357\274\232", Q_NULLPTR));
+        startMove_pushButton->setText(QApplication::translate("MainWindow", "\345\274\200\345\247\213\347\247\273\345\212\250", Q_NULLPTR));
+        readMCU_pushButton->setText(QApplication::translate("MainWindow", "\350\257\273\345\217\226", Q_NULLPTR));
+        toolBox->setItemText(toolBox->indexOf(page_7), QApplication::translate("MainWindow", "\350\257\273\345\217\226MCU ", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("MainWindow", "\347\273\223\346\236\234\350\256\260\345\275\225", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\345\267\262\350\256\260\345\275\225\346\225\260\346\215\256:", Q_NULLPTR));
         HistoryData_label->setText(QApplication::translate("MainWindow", "0", Q_NULLPTR));

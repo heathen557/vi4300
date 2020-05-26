@@ -8,8 +8,11 @@ QT       += core gui serialport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-TARGET = VI4300
+TARGET = VI4300_0526
 TEMPLATE = app
+
+
+INCLUDEPATH+=eigen20200426
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -36,7 +39,10 @@ SOURCES += main.cpp\
     devmanagement_dialog.cpp \
     pagewidget.cpp \
     adddev_dialog.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    leastsquare_method.cpp \
+    autoserial_msg.cpp \
+    globaldata.cpp
 
 HEADERS  += mainwindow.h \
     receserial_msg.h \
@@ -50,7 +56,10 @@ HEADERS  += mainwindow.h \
     devmanagement_dialog.h \
     pagewidget.h \
     adddev_dialog.h \
-    aboutdialog.h
+    aboutdialog.h \
+    leastsquare_method.h \
+    autoserial_msg.h \
+    globaldata.h
 
 FORMS    += mainwindow.ui \
     regisitersetdialog.ui \

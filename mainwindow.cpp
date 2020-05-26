@@ -13,6 +13,7 @@ int read_pixel_flag;    //读取pixel的标识  0:4300  1：casset_package_1  2:
 
 
 Settings currentSettings;
+Settings currentSettings_auto;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -34,15 +35,16 @@ MainWindow::MainWindow(QWidget *parent) :
     m_China  =  new  QAction(tr("中文"),this);
     m_menu->addAction(m_China);
     m_menu->addAction(m_English);
-//    m_pTitleBar->m_pBtnMenu->setMenu(m_menu);
+    //    m_pTitleBar->m_pBtnMenu->setMenu(m_menu);
 
 
 
 
 
-//    ui->groupBox_5->setEnabled(false);
-    ui->ResultHistory_textEdit->document()->setMaximumBlockCount(200000);    //最多显示10000行，滑动存储  10w
+    //    ui->groupBox_5->setEnabled(false);
+    ui->ResultHistory_textEdit->document()->setMaximumBlockCount(5000);    //最多显示10000行，滑动存储  10w
 
+    qRegisterMetaType<vector<float>>("vector<float>");   //注册函数
     qRegisterMetaType<vector<double>>("vector<double>");   //注册函数
     qRegisterMetaType<vector<int>>("vector<int>");       //注册函数
     qRegisterMetaType<QVector<double>>("QVector<double>");   //注册函数
@@ -56,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->timeInnterval_label->setEnabled(false);
     ui->timeInnterval_lineEdit->setEnabled(false);
 
-    receSerial_Obj = new receSerial_msg;;
+    receSerial_Obj = new receSerial_msg;
     receSerialThread = new QThread;
     receSerial_Obj->moveToThread(receSerialThread);
     receSerialThread->start();
@@ -66,6 +68,18 @@ MainWindow::MainWindow(QWidget *parent) :
     calHisThread = new QThread;
     calHis_obg->moveToThread(calHisThread);
     calHisThread->start();
+
+    leastSquare_obj  = new leastSquare_method();
+    leastSquareThread = new QThread();
+    leastSquare_obj->moveToThread(leastSquareThread);
+    leastSquareThread->start();
+
+
+    autoSerial_obj = new autoSerial_msg();
+    autoSerial_thread = new QThread();
+    autoSerial_obj->moveToThread(autoSerial_thread);
+    autoSerial_thread->start();
+
 
     isLinked = false;
     isTranslateFlag = true;
@@ -85,12 +99,51 @@ MainWindow::MainWindow(QWidget *parent) :
     saveHist_index = 1;
     isSaveHistData_flag = false;
 
+
+
+
+
+    /*************************/
+    vecDistacne_10.resize(10);
+    vecPeak_10.resize(10);
+
+    vecDistacne_3.resize(6);
+    vecPeak_3.resize(6);
+
+
+
+    /*******autoTest***************/
+    initSerial_2();
+
+    isAutoTest_flag = false;
+
+
+    //    ui->label_44->setVisible(false);
+    //    ui->black04_label->setVisible(false);
+    //    ui->white_04_label->setVisible(false);
+    //    ui->black_04_pushButton->setVisible(false);
+    //    ui->white_04_pushButton->setVisible(false);
+
+    //    ui->label_46->setVisible(false);
+    //    ui->black05_label->setVisible(false);
+    //    ui->white_05_label->setVisible(false);
+    //    ui->black_05_pushButton->setVisible(false);
+    //    ui->white_05_pushButton->setVisible(false);
+
+    //    ui->black1_label->setVisible(false);
+    //    ui->black_1_pushButton->setVisible(false);
+    //    ui->black3_label->setVisible(false);
+    //    ui->black_3_pushButton->setVisible(false);
+    //    ui->black8_label->setVisible(false);
+    //    ui->black_8_pushButton->setVisible(false);
+
+
 }
 
 //关闭所有串口相关的按键
 void MainWindow::SerialSetting_Enable_false()
 {
-//    ui->groupBox_5->setEnabled(false);
+    //    ui->groupBox_5->setEnabled(false);
 
     ui->groupBox_8->setEnabled(false);
     ui->actionMCU->setEnabled(false);
@@ -113,13 +166,14 @@ void MainWindow::SerialSetting_Enable_false()
     ui->delayLine_pushButton->setEnabled(false);
     ui->CAS_pix1_pushButton->setEnabled(false);
     ui->CAS_pix2_pushButton->setEnabled(false);
+    ui->openOrClose_laser_pushButton->setEnabled(false);
 
 }
 
 //打开所有串口相关的按键
 void MainWindow::SerialSetting_Enable_true()
 {
-//    ui->groupBox_5->setEnabled(true);
+    //    ui->groupBox_5->setEnabled(true);
     ui->groupBox_8->setEnabled(true);
     ui->actionMCU->setEnabled(true);
     ui->Register_action->setEnabled(true);
@@ -141,6 +195,7 @@ void MainWindow::SerialSetting_Enable_true()
     ui->delayLine_pushButton->setEnabled(true);
     ui->CAS_pix1_pushButton->setEnabled(true);
     ui->CAS_pix2_pushButton->setEnabled(true);
+    ui->openOrClose_laser_pushButton->setEnabled(true);
 }
 
 void MainWindow::initUINum()
@@ -178,13 +233,13 @@ void MainWindow::initUINum()
 //语言的初始化
 void MainWindow::initUILanguage()
 {
-//    ui->groupBox_3->setTitle(QStringLiteral("串口设置"));
+    //    ui->groupBox_3->setTitle(QStringLiteral("串口设置"));
 
-//    ui->deviceType_comboBox->addItem("VI4300_Master");
-//#ifdef VisionICS_USE
-//    ui->deviceType_comboBox->addItem("VI4300_Slave");
-//#endif
-//    ui->deviceType_comboBox->addItem("LDS");
+    //    ui->deviceType_comboBox->addItem("VI4300_Master");
+    //#ifdef VisionICS_USE
+    //    ui->deviceType_comboBox->addItem("VI4300_Slave");
+    //#endif
+    //    ui->deviceType_comboBox->addItem("LDS");
 
 }
 
@@ -214,7 +269,7 @@ void MainWindow::initConnect()
 
     //MCU 升级相关
     connect(&McuUpgradeDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
-    connect(receSerial_Obj,SIGNAL(AckCmdUpgrade_signal(QString,QString)),&McuUpgradeDia,SLOT(AckCmdUpgrade_signal(QString,QString)));
+    connect(receSerial_Obj,&receSerial_msg::AckCmdUpgrade_signal,&McuUpgradeDia,&McuUpgradeDialog::AckCmdUpgrade_signal);
 
     //寄存器读写相关
     connect(&registerDia,SIGNAL(sendSerialSignal(QString)),receSerial_Obj,SLOT(sendSerialSlot(QString)));
@@ -230,6 +285,26 @@ void MainWindow::initConnect()
 
     //定时读取 pixel数据的定时器槽函数
     connect(&readPixel_timer,SIGNAL(timeout()),this,SLOT(pixel_time_slot()));
+    connect(receSerial_Obj,&receSerial_msg::AckSinglePixelPosition_signal,this,&MainWindow::AckSinglePixelPosition_slot);
+
+
+
+    //least square
+    connect(receSerial_Obj,&receSerial_msg::sendLeastRes_signal,this,&MainWindow::sendLeastRes_slot);
+    connect(this,&MainWindow::deal_receLeast_signal,leastSquare_obj,&leastSquare_method::deal_receLeast_slot);
+    connect(leastSquare_obj,&leastSquare_method::send_leastResult_signal,this,&MainWindow::send_leastResult_slot);
+
+
+    //auto Test
+    connect(this,&MainWindow::openOrCloseSerialAuto_signal,autoSerial_obj,&autoSerial_msg::openOrCloseSerialAuto_slot);
+    connect(autoSerial_obj,&autoSerial_msg::returnLinkInfoAuto_signal,this,&MainWindow::returnLinkInfoAuto_slot);
+    connect(this,&MainWindow::sendSerialAuto_Signal,autoSerial_obj,&autoSerial_msg::sendSerialAutoSlot);
+    connect(this,&MainWindow::sendAdjustDistanceColor_signal,autoSerial_obj,&autoSerial_msg::sendAdjustDistanceColor_slot);
+    connect(autoSerial_obj,&autoSerial_msg::thePointArrived_signal,this,&MainWindow::thePointArrived_slot);
+    connect(this,&MainWindow::send_fuwei_signal,autoSerial_obj,&autoSerial_msg::send_fuwei_slot);
+    connect(autoSerial_obj,&autoSerial_msg::fuwei_over_signal,this,&MainWindow::fuwei_over_slot);
+
+    connect(this,&MainWindow::sendthePoint_signal,autoSerial_obj,&autoSerial_msg::sendthePoint_slot);
 
 }
 
@@ -243,7 +318,7 @@ void MainWindow::initStatisticUI()
     gradient.setColorAt(0.38, QColor(200, 105, 105));//红色
     gradient.setColorAt(1, QColor(70, 70, 70));//黑色
     //tof统计相关
-//    ui->TOF_widget->setBackground(QBrush(gradient));//设置图表背景（用画刷设置）
+    //    ui->TOF_widget->setBackground(QBrush(gradient));//设置图表背景（用画刷设置）
     ui->TOF_widget->setInteractions(QCP::iRangeDrag|QCP::iRangeZoom| QCP::iSelectAxes |
                                     QCP::iSelectLegend | QCP::iSelectPlottables);
 
@@ -254,7 +329,7 @@ void MainWindow::initStatisticUI()
     ui->TOF_widget->addGraph();
     ui->TOF_widget->graph(0)->setName(QStringLiteral("TOF"));
 
-//Histgram统计相关
+    //Histgram统计相关
     regen = new QCPBars(ui->Histogram_widget->xAxis, ui->Histogram_widget->yAxis);
     regen->setAntialiased(false);
     regen->setStackingGap(2);
@@ -276,18 +351,18 @@ void MainWindow::initStatisticUI()
     // prepare y axis: //设置y轴
     ui->Histogram_widget->yAxis->setRange(0, 800);
     ui->Histogram_widget->yAxis->setPadding(5); // a bit more space to the left border 设置左边留空间
-//    ui->Histogram_widget->yAxis->setLabel("Power Consumption in\nKilowatts per Capita (2007)");
+    //    ui->Histogram_widget->yAxis->setLabel("Power Consumption in\nKilowatts per Capita (2007)");
     ui->Histogram_widget->yAxis->setBasePen(QPen(Qt::black));
     ui->Histogram_widget->yAxis->setTickPen(QPen(Qt::black));
     ui->Histogram_widget->yAxis->setSubTickPen(QPen(Qt::black));//设置SubTick颜色，SubTick指的是轴上的
-//刻度线
+    //刻度线
     ui->Histogram_widget->yAxis->grid()->setSubGridVisible(true);
     ui->Histogram_widget->yAxis->setTickLabelColor(Qt::black);//设置标记标签颜色（y轴标记标签）
     ui->Histogram_widget->yAxis->setLabelColor(Qt::black);//设置标签颜色（y轴右边标签）
     ui->Histogram_widget->yAxis->grid()->setPen(QPen(QColor(130, 130, 130), 0, Qt::SolidLine));
     ui->Histogram_widget->yAxis->grid()->setSubGridPen(QPen(QColor(130, 130, 130), 0, Qt::DotLine));
     // setup legend: 设置标签
-//    ui->Histogram_widget->legend->setVisible(true);
+    //    ui->Histogram_widget->legend->setVisible(true);
     ui->Histogram_widget->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignHCenter);
     ui->Histogram_widget->legend->setBrush(QColor(255, 255, 255, 100));
     ui->Histogram_widget->legend->setBorderPen(Qt::NoPen);
@@ -320,18 +395,18 @@ void MainWindow::initStatisticUI()
     // prepare y axis: //设置y轴
     ui->casset_historgrm_widget->yAxis->setRange(0, 800);
     ui->casset_historgrm_widget->yAxis->setPadding(5); // a bit more space to the left border 设置左边留空间
-//    ui->Histogram_widget->yAxis->setLabel("Power Consumption in\nKilowatts per Capita (2007)");
+    //    ui->Histogram_widget->yAxis->setLabel("Power Consumption in\nKilowatts per Capita (2007)");
     ui->casset_historgrm_widget->yAxis->setBasePen(QPen(Qt::black));
     ui->casset_historgrm_widget->yAxis->setTickPen(QPen(Qt::black));
     ui->casset_historgrm_widget->yAxis->setSubTickPen(QPen(Qt::black));//设置SubTick颜色，SubTick指的是轴上的
-//刻度线
+    //刻度线
     ui->casset_historgrm_widget->yAxis->grid()->setSubGridVisible(true);
     ui->casset_historgrm_widget->yAxis->setTickLabelColor(Qt::black);//设置标记标签颜色（y轴标记标签）
     ui->casset_historgrm_widget->yAxis->setLabelColor(Qt::black);//设置标签颜色（y轴右边标签）
     ui->casset_historgrm_widget->yAxis->grid()->setPen(QPen(QColor(130, 130, 130), 0, Qt::SolidLine));
     ui->casset_historgrm_widget->yAxis->grid()->setSubGridPen(QPen(QColor(130, 130, 130), 0, Qt::DotLine));
     // setup legend: 设置标签
-//    ui->Histogram_widget->legend->setVisible(true);
+    //    ui->Histogram_widget->legend->setVisible(true);
     ui->casset_historgrm_widget->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignHCenter);
     ui->casset_historgrm_widget->legend->setBrush(QColor(255, 255, 255, 100));
     ui->casset_historgrm_widget->legend->setBorderPen(Qt::NoPen);
@@ -343,7 +418,7 @@ void MainWindow::initStatisticUI()
 
 void MainWindow::beginTimer()
 {
-    showTimer.start(90);
+    showTimer.start(100);
     oneSecondTimer.start(1000);
 }
 
@@ -372,34 +447,23 @@ void MainWindow::on_portScan_pushButton_clicked()
 //串口初始化
 void MainWindow::initSerial()
 {
-    QFile file("setting.ini");
-    QByteArray temp("\r\n");
-    QString line[20];
 
-    if (file.open(QIODevice::ReadOnly))
-    {
-        QTextStream in(&file);
-        int i = 0;
-        while (!in.atEnd())
-        {
-            line[i] = in.readLine();
-            i++;
-        }
-        file.close();
-    }
-    int numSeri_ = line[0].toInt();       //串口号
-    int baudRateBox_ = line[1].toInt();   //波特率
+    QSettings configSetting("setting.ini",QSettings::IniFormat);
+    int numSeri_ = configSetting.value("serial1/serialNum").toInt();         //串口号
+    int baudRateBox_ = configSetting.value("serial1/baudRateNum").toInt();  //波特率
 
 
-//    QStringList comList;//串口号
-//    comList.clear();
-//    comList<<"COM1"<<"COM2"<<"COM3"<<"COM4"<<"COM5"<<"COM6"
-//          <<"COM7"<<"COM8"<<"COM9"<<"COM10"<<"COM11"<<"COM12"
-//         <<"COM13"<<"COM14"<<"COM15"<<"COM16"<<"COM17"<<"COM18"
-//        <<"COM19"<<"COM20"<<"COM21"<<"COM22"<<"COM23"<<"COM24"
-//       <<"COM25"<<"COM26"<<"COM27"<<"COM28"<<"COM28"<<"COM29"<<"COM30";
 
-//    ui->serialPortInfoListBox->setCurrentIndex(numSeri_);
+
+    //    QStringList comList;//串口号
+    //    comList.clear();
+    //    comList<<"COM1"<<"COM2"<<"COM3"<<"COM4"<<"COM5"<<"COM6"
+    //          <<"COM7"<<"COM8"<<"COM9"<<"COM10"<<"COM11"<<"COM12"
+    //         <<"COM13"<<"COM14"<<"COM15"<<"COM16"<<"COM17"<<"COM18"
+    //        <<"COM19"<<"COM20"<<"COM21"<<"COM22"<<"COM23"<<"COM24"
+    //       <<"COM25"<<"COM26"<<"COM27"<<"COM28"<<"COM28"<<"COM29"<<"COM30";
+
+    //    ui->serialPortInfoListBox->setCurrentIndex(numSeri_);
 
     int num = 0;
     QStringList m_serialPortName;
@@ -478,7 +542,7 @@ void MainWindow::on_openPort_pushButton_clicked()
                     ui->stopBitsBox->itemData(ui->stopBitsBox->currentIndex()).toInt());
         currentSettings.stringStopBits = ui->stopBitsBox->currentText();
 
-//         qDebug()<<"name="<<currentSettings.name<<" baudRate ="<<currentSettings.baudRate<<" dataBits="<<currentSettings.dataBits<<" parity="<<currentSettings.parity<<" stopBits="<<currentSettings.stopBits<<" flowCon"<<currentSettings.flowControl;
+        //         qDebug()<<"name="<<currentSettings.name<<" baudRate ="<<currentSettings.baudRate<<" dataBits="<<currentSettings.dataBits<<" parity="<<currentSettings.parity<<" stopBits="<<currentSettings.stopBits<<" flowCon"<<currentSettings.flowControl;
 
 
         emit openOrCloseSerial_signal(true);
@@ -486,37 +550,13 @@ void MainWindow::on_openPort_pushButton_clicked()
         qDebug()<<"name="<<currentSettings.name<<" baudRate ="<<currentSettings.baudRate<<" dataBits="<<currentSettings.dataBits<<" parity="<<currentSettings.parity<<" stopBits="<<currentSettings.stopBits<<" flowCon"<<currentSettings.flowControl;
 
 
-        QFile file("setting.ini");
-        QByteArray temp("\r\n");
-        QString line[20];
-
-        if (file.open(QIODevice::ReadOnly))
-        {
-            QTextStream in(&file);
-            int i = 0;
-            while (!in.atEnd())
-            {
-                line[i] = in.readLine();
-                i++;
-            }
-            file.close();
-        }
 
         int seriNum = ui->serialPortInfoListBox->currentIndex();
         int baudBox = ui->baudRateBox->currentIndex();
 
-
-        if(file.open(QIODevice::WriteOnly))
-        {
-            QByteArray writeData;
-            writeData = QString::number(seriNum).toLatin1()+ temp + QString::number(baudBox).toLatin1()+temp+\
-                    line[2].toLatin1()+ temp +line[3].toLatin1()+ temp+ line[4].toLatin1()+ temp +line[5].toLatin1();
-            if (-1 == file.write(writeData))
-            {
-                qDebug()<<"ERROR";
-            }
-            file.close();
-        }
+        QSettings configSetting("setting.ini", QSettings::IniFormat);
+        configSetting.setValue("serial1/serialNum",seriNum);          //串口号
+        configSetting.setValue("serial1/baudRateNum",baudBox);       //波特率
 
     }
     else
@@ -534,15 +574,15 @@ void MainWindow::returnLinkInfo_slot(QString str, bool flag)
     {
         if(true == flag)
         {
-             isLinked = true;
-             ui->serialPortInfoListBox->setEnabled(false);
-             ui->baudRateBox->setEnabled(false);
-             ui->dataBitsBox->setEnabled(false);
-             ui->parityBox->setEnabled(false);
-             ui->stopBitsBox->setEnabled(false);
-             ui->openPort_pushButton->setText("Close");
-             beginTimer();
-             SerialSetting_Enable_true();
+            isLinked = true;
+            ui->serialPortInfoListBox->setEnabled(false);
+            ui->baudRateBox->setEnabled(false);
+            ui->dataBitsBox->setEnabled(false);
+            ui->parityBox->setEnabled(false);
+            ui->stopBitsBox->setEnabled(false);
+            ui->openPort_pushButton->setText("Close");
+            beginTimer();
+            SerialSetting_Enable_true();
         }else
         {
             QMessageBox::critical(this, QStringLiteral("告警"), QStringLiteral("打开串口失败！"));
@@ -607,9 +647,13 @@ void MainWindow::dealedData_slot(QString currTof,vector<double> plotData, vector
 void MainWindow::showTimerSlot()
 {
     //text_BOX上面的数据显示   分为显示解析后的TOF数据 或者16进制的数据  ;看是否需要判断 isTranslateFlag
-    for(int i=0 ;i<DistanceStr.length();i++ )
+
+    int len = DistanceStr.length();
+    len = len>50?50:len;
+    for(int i=0 ;i<len;i++ )
     {
-        ui->ResultHistory_textEdit->appendPlainText(DistanceStr[i]);
+//        ui->ResultHistory_textEdit->appendPlainText(DistanceStr[i]);
+        ui->ResultHistory_textEdit->appendHtml(DistanceStr[i]);
     }
     DistanceStr.clear();    //清空暂存的变量
     ui->HistoryData_label->setText(QString::number(allCountNum));   //显示记录条数
@@ -618,10 +662,10 @@ void MainWindow::showTimerSlot()
 
     //显示当前的距离
     ui->currentDistance11_label->setText(DistanceStrCurrent);
-//    ui->currentDistance11_label->setText("12.369");
+    //    ui->currentDistance11_label->setText("12.369");
 
     //计算tof的均值
-    int len = StatisticData_vector.size();
+    len = StatisticData_vector.size();
     if(len<1)
         return;
     DistanceMean = std::accumulate(std::begin(StatisticData_vector),std::end(StatisticData_vector),0.0)/len;
@@ -630,8 +674,8 @@ void MainWindow::showTimerSlot()
     //计算tof的方差
     float tofAccum = 0.0;
     std::for_each (std::begin(StatisticData_vector), std::end(StatisticData_vector), [&](const double d) {
-            tofAccum  += (d-DistanceMean)*(d-DistanceMean);
-        });
+        tofAccum  += (d-DistanceMean)*(d-DistanceMean);
+    });
     DistanceStd = sqrt(tofAccum/(len-1));
     ui->std_label->setText(QString::number(DistanceStd));
 
@@ -712,7 +756,7 @@ void MainWindow::showResultMsg_slot(QStringList DisStr, int pointNum)
 //每秒钟刷新的槽函数
 void MainWindow::oneSecondTimer_slot()
 {
-//    int dps = Count_num - Count_num_lastSec;
+    //    int dps = Count_num - Count_num_lastSec;
     int dps = Count_num;
     if(dps > 0)
     {
@@ -721,7 +765,7 @@ void MainWindow::oneSecondTimer_slot()
     {
         ui->DPS_label->setText("0");
     }
-//    Count_num_lastSec = Count_num;
+    //    Count_num_lastSec = Count_num;
     Count_num = 0;
 
 
@@ -869,9 +913,9 @@ void MainWindow::on_plot_comboBox_currentIndexChanged(int index)
 //!  请求RowData的数据 5A 00 01 10 0A DD..DD
 void MainWindow::on_rowData_pushButton_clicked()
 {
-//    QString strData = QString("%1").arg(2,4096*2,16,QLatin1Char('0'));
+    //    QString strData = QString("%1").arg(2,4096*2,16,QLatin1Char('0'));
     QString cmdStr = "5A 00 01 00 0A ";
-//    cmdStr.append(strData);
+    //    cmdStr.append(strData);
     emit sendSerialSignal(cmdStr);
 }
 
@@ -879,7 +923,7 @@ void MainWindow::on_rowData_pushButton_clicked()
 //show plot
 void MainWindow::on_plotSet_on_radioButton_clicked()
 {
-    plotShowTimer.start(20);
+    plotShowTimer.start(30);
     plot_Mode = true;
     ui->groupBox_2->setVisible(true);
 
@@ -919,7 +963,7 @@ void MainWindow::plotShowTimer_slot()
             }
             labelMax = PlotData_vector.size();
 
-//            qDebug()<<"valueMin = "<<valueMin<<"   valueMax="<<valueMax;
+            //            qDebug()<<"valueMin = "<<valueMin<<"   valueMax="<<valueMax;
 
             ui->TOF_widget->xAxis->setRange(0,labelMax);
             ui->TOF_widget->yAxis->setRange(valueMin-1,valueMax+1);
@@ -932,9 +976,9 @@ void MainWindow::plotShowTimer_slot()
         //  5A 00 01 08 09 DD..DDDDD  XX
         else if(1 == plot_type)    //  VI4300显示直方图的信息      将这里改成发送请求 直方图的数据
         {
-//            QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
+            //            QString strData = QString("%1").arg(2,2048*2,16,QLatin1Char('0'));
             QString cmdStr = "5A 00 02 00 09 00";
-//            cmdStr.append(strData);
+            //            cmdStr.append(strData);
             emit sendSerialSignal(cmdStr);
         }
         else if(2 == plot_type)    //CASSSET 显示直方图信息  请求直方图的数据
@@ -951,7 +995,7 @@ void MainWindow::plotShowTimer_slot()
 // 4300 显示统计直方图放的槽函数
 void MainWindow::toShowHistogram_slot(QVector<double> numData,int yMax)
 {
-//    qDebug()<<" xTicks = "<<xTicks;
+    //    qDebug()<<" xTicks = "<<xTicks;
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
     textTicker->setTicks(HistorgramTicks_2048, HistorgramLabels_2048);
     ui->Histogram_widget->xAxis->setTicker(textTicker);
@@ -970,7 +1014,7 @@ void MainWindow::toShowHistogram_slot(QVector<double> numData,int yMax)
 //!   cassset   4096个点的
 void MainWindow::toShowHistogram_4096_slot(QVector<double> numData,int yMax)
 {
-//    qDebug()<<" xTicks = "<<xTicks;
+    //    qDebug()<<" xTicks = "<<xTicks;
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
     textTicker->setTicks(HistorgramTicks_4096, HistorgramLabels_4096);
     ui->casset_historgrm_widget->xAxis->setTicker(textTicker);
@@ -998,7 +1042,7 @@ void MainWindow::on_savePicture_pushButton_clicked()
     fileDialog->setGeometry(10,30,300,200);//设置文件对话框的显示位置
     fileDialog->setDirectory(".");//设置文件对话框打开时初始打开的位置
     QStringList mimeTypeFilters;
-//    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
+    //    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
     mimeTypeFilters<<"bmp(*.bmp)|*.bmp"<<"JPEG(*.jpg)|*.jpg"<<"Png(*.png)|*.png"<<"PDF(*.pdf)|*.pdf";
     fileDialog->setNameFilters(mimeTypeFilters);
 
@@ -1156,44 +1200,44 @@ void MainWindow::on_send_outFactory_pushButton_clicked()
     UUID_str = str.right(24);
     qDebug()<<" UUID_str = "<<UUID_str<<" len="<<UUID_str.size();
 
-//    //波特率
+    //    //波特率
     QString banuRateStr = QString("%1").arg(ui->botelv_comboBox->currentIndex(),2,16,QLatin1Char('0'));
     qDebug()<<" baudRateStr = "<<banuRateStr<<" len="<<banuRateStr.size();
 
-//    //采集频率
-//    QString caiji_str = QString("%1").arg(ui->CAIJI_frequency_comboBox->currentIndex(),2,16,QLatin1Char('0'));
-//    qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
+    //    //采集频率
+    //    QString caiji_str = QString("%1").arg(ui->CAIJI_frequency_comboBox->currentIndex(),2,16,QLatin1Char('0'));
+    //    qDebug()<<" caiji_str = "<<caiji_str<<" len="<<caiji_str.length();
 
     //设备类型
 
     QString deviceType_str = "00";
     deviceType_str = deviceType_str + ui->deviceType_lineEdit->text();
-     QString deviceType = deviceType_str.right(2);
-     qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
+    QString deviceType = deviceType_str.right(2);
+    qDebug()<<" deviceType = "<<deviceType<<" len="<<deviceType.length();
 
 
     QString version_str = "0000";
 
 
-//    //最大量程(单位 ：mm)
-//    int measurement_range = ui->Range_lineEdit->text().toInt();
-//    QString measurement_range_str_tmp = QString("%1").arg(measurement_range,4,16,QLatin1Char('0'));
-//    QString measurement_range_str = measurement_range_str_tmp.mid(2,2) + measurement_range_str_tmp.mid(0,2);
-//    qDebug()<<"measurement_range_str = "<<measurement_range_str;
+    //    //最大量程(单位 ：mm)
+    //    int measurement_range = ui->Range_lineEdit->text().toInt();
+    //    QString measurement_range_str_tmp = QString("%1").arg(measurement_range,4,16,QLatin1Char('0'));
+    //    QString measurement_range_str = measurement_range_str_tmp.mid(2,2) + measurement_range_str_tmp.mid(0,2);
+    //    qDebug()<<"measurement_range_str = "<<measurement_range_str;
 
 
     //预留数据
     QString YuLiu_str = QString("%1").arg(0,28,16,QLatin1Char('0'));
-//    QString YuLiu_num = ui->YULIU_lineEdit->text();
-//    QString YuLiu_str = YuLiu_num.replace(" ","");
-//    if(YuLiu_str.length()>26)
-//    {
-//        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("预留数据过长，请重新输入！"));
-//        return;
-//    }
-//    str = "00000000000000000000000000000000" + YuLiu_str;
-//    YuLiu_str = str.right(26);
-//    qDebug()<<" YuLiu_str = "<<YuLiu_str<<" len="<<YuLiu_str.length();
+    //    QString YuLiu_num = ui->YULIU_lineEdit->text();
+    //    QString YuLiu_str = YuLiu_num.replace(" ","");
+    //    if(YuLiu_str.length()>26)
+    //    {
+    //        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("预留数据过长，请重新输入！"));
+    //        return;
+    //    }
+    //    str = "00000000000000000000000000000000" + YuLiu_str;
+    //    YuLiu_str = str.right(26);
+    //    qDebug()<<" YuLiu_str = "<<YuLiu_str<<" len="<<YuLiu_str.length();
 
 
     //命令组帧
@@ -1225,7 +1269,7 @@ QByteArray MainWindow::StringToByte(QString str)
     str = str.replace(" ","");    //去掉空格键
     int len=str.size();
     for(int i=0;i<len;i+=2){
-         byte_arr.append(char(str.mid(i,2).toUShort(&ok,16)));
+        byte_arr.append(char(str.mid(i,2).toUShort(&ok,16)));
     }
 
     return byte_arr;
@@ -1276,7 +1320,7 @@ QString MainWindow::floatToQString(float fVal)
         }
     }
     strHex = strHex.toUpper();
-//    qDebug()<<QStringLiteral("把float型数据解析为QString 为：")<<strHex<<"   len="<< strHex.length()/3<<endl;
+    //    qDebug()<<QStringLiteral("把float型数据解析为QString 为：")<<strHex<<"   len="<< strHex.length()/3<<endl;
     return strHex;
 }
 
@@ -1288,7 +1332,7 @@ QString MainWindow::floatToQString(float fVal)
 void MainWindow::on_calibration_read_pushButton_clicked()
 {
     //命令组帧
-//    QString cmdStr = "5A 00 0B 00 04 ";
+    //    QString cmdStr = "5A 00 0B 00 04 ";
     QString cmdStr = "5A 00 01 00 04";
     emit sendSerialSignal(cmdStr);
 }
@@ -1393,6 +1437,10 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
         //命令组帧
         QString cmdStr = "5A 01 02 00 06 01";
         emit sendSerialSignal(cmdStr);
+    }else if(3 == index)    //2020-04-26 新增
+    {
+        QString cmdStr = "5A 01 02 00 06 02";
+        emit sendSerialSignal(cmdStr);
     }
 }
 
@@ -1408,6 +1456,7 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 //!                             参数1：“8004”：读取 距离offset校准信息  参数2 6个字节第一种校准，10个字节第二种校准
 //!                             参数1：“800D”：读取单个寄存器      参数2:4个字节 前两个字节为地址，后两个字节为值
 //!                             参数1："810D":写入单个寄存器成功   参数2：暂无
+//!                             参数1：“8012”：写入最小二乘法校准成功
 void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
 {
     if("8102" ==returnCmdStr )
@@ -1423,17 +1472,17 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         int deviceTypeIndex = cmdAck.mid(34,2).toInt(NULL,16);
         QString version_str = cmdAck.mid(36,4);
 
-//        QString range_str = cmdAck.mid(38,4);
-//        QString range_tmp = range_str.mid(2,2)+ range_str.mid(0,2);
-//        int range_int = range_tmp.toInt(NULL,16);
-//        QString YuLiuStr = cmdAck.mid(42,26);
+        //        QString range_str = cmdAck.mid(38,4);
+        //        QString range_tmp = range_str.mid(2,2)+ range_str.mid(0,2);
+        //        int range_int = range_tmp.toInt(NULL,16);
+        //        QString YuLiuStr = cmdAck.mid(42,26);
 
         ui->SN_lineEdit->setText(SN_str);
         ui->UUID_lineEdit->setText(UUID_str);
         ui->botelv_comboBox->setCurrentIndex(baudRateIndex);
         ui->deviceType_lineEdit->setText(QString::number(deviceTypeIndex));
-//        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);  //VI4300_Slave（芯视界测试用，不对外开放）  0x01
-//        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
+        //        ui->deviceType_comboBox->setCurrentIndex(deviceTypeIndex);  //VI4300_Slave（芯视界测试用，不对外开放）  0x01
+        //        ui->CAIJI_frequency_comboBox->setCurrentIndex(caijiIndex);
 
 
 
@@ -1510,41 +1559,41 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
 
         }else if(48 == ackCmdLen)   //新增协议 03.24
         {
-//            int realDis = ui->realDisFactory_lineEdit->text().toInt();
+            //            int realDis = ui->realDisFactory_lineEdit->text().toInt();
 
-//            float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
-//            int k1_num = int (K1 *1000);      //转化为10进制,扩大1000以后的数值
+            //            float K1 = ui->K1_lineEdit->text().toFloat() ;      //十进制的float数字
+            //            int k1_num = int (K1 *1000);      //转化为10进制,扩大1000以后的数值
 
-//        //    QString K1Str = floatToQString(K1);
+            //        //    QString K1Str = floatToQString(K1);
 
-//            QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));   //真实距离
-//            QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
+            //            QString realDisStrTmp = QString("%1").arg(realDis,4,16,QLatin1Char('0'));   //真实距离
+            //            QString realDisStr = realDisStrTmp.mid(2,2) + realDisStrTmp.mid(0,2);
 
-//            QString k1Tmp = QString("%1").arg(k1_num,8,16,QLatin1Char('0'));
-//            QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);  //K1
-//        //    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
+            //            QString k1Tmp = QString("%1").arg(k1_num,8,16,QLatin1Char('0'));
+            //            QString K1Str = k1Tmp.mid(6,2) +k1Tmp.mid(4,2) +k1Tmp.mid(2,2) +k1Tmp.mid(0,2);  //K1
+            //        //    qDebug()<<"ki_num="<<k1_num<<"  k1Tmp="<<k1Tmp;
 
 
-//            int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
-//            QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));  //温度校正系数
+            //            int tempture_coefficient = ui->tempture_k_lineEdit->text().toInt();
+            //            QString tempture_coeff_str = QString("%1").arg(tempture_coefficient,2,16,QLatin1Char('0'));  //温度校正系数
 
-//            int sunPower_index = ui->sunPower_set_comboBox->currentIndex();
-//            QString sunPower_str = QString("%1").arg(sunPower_index,2,16,QLatin1Char('0'));   //抗阳光强度
+            //            int sunPower_index = ui->sunPower_set_comboBox->currentIndex();
+            //            QString sunPower_str = QString("%1").arg(sunPower_index,2,16,QLatin1Char('0'));   //抗阳光强度
 
-//            int maxValue = ui->offset_maxValue_lineEdit->text().toInt();
-//            QString maxValueTmp = QString("%1").arg(maxValue,8,16,QLatin1Char('0'));
-//            QString maxValueStr = maxValueTmp.mid(6,2) +maxValueTmp.mid(4,2) +maxValueTmp.mid(2,2) +maxValueTmp.mid(0,2);  //最大量程
+            //            int maxValue = ui->offset_maxValue_lineEdit->text().toInt();
+            //            QString maxValueTmp = QString("%1").arg(maxValue,8,16,QLatin1Char('0'));
+            //            QString maxValueStr = maxValueTmp.mid(6,2) +maxValueTmp.mid(4,2) +maxValueTmp.mid(2,2) +maxValueTmp.mid(0,2);  //最大量程
 
-//            int filter_select = ui->filter_comboBox->currentIndex();
-//            QString filter_str = QString("%1").arg(filter_select,2,16,QLatin1Char('0'));   //滤波方式
+            //            int filter_select = ui->filter_comboBox->currentIndex();
+            //            QString filter_str = QString("%1").arg(filter_select,2,16,QLatin1Char('0'));   //滤波方式
 
-//            int caiji_int = ui->offset_caiji_comboBox->currentIndex();
-//            QString caiji_str =  QString("%1").arg(caiji_int,2,16,QLatin1Char('0'));   //采集频率
+            //            int caiji_int = ui->offset_caiji_comboBox->currentIndex();
+            //            QString caiji_str =  QString("%1").arg(caiji_int,2,16,QLatin1Char('0'));   //采集频率
 
-//            int peak_offset = ui->peakOffset_lineEdit->text().toInt();
-//            QString peakOffset_str = QString("%1").arg(peak_offset,2,16,QLatin1Char('0'));   //peak阈值
+            //            int peak_offset = ui->peakOffset_lineEdit->text().toInt();
+            //            QString peakOffset_str = QString("%1").arg(peak_offset,2,16,QLatin1Char('0'));   //peak阈值
 
-//            QString yuliu_str = QString("%1").arg(0,18,16,QLatin1Char('0'));   //peak阈值
+            //            QString yuliu_str = QString("%1").arg(0,18,16,QLatin1Char('0'));   //peak阈值
 
             //距离
             QString strDis = cmdAck.mid(2,2) + cmdAck.mid(0,2);
@@ -1596,6 +1645,90 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
         QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("寄存器写入成功！"));
         return;
     }
+    else if("8112" == returnCmdStr)
+    {
+        QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("校准系数写入成功！"));
+        return;
+    }else if("8012" == returnCmdStr)
+    {
+        ui->readMCU_textEdit->clear();
+        for(int i=0; i<cmdAck.size(); i+=8)
+        {
+            QString offsetStr = cmdAck.mid(i,8);
+            QString offsetRes = offsetStr.mid(6,2) +offsetStr.mid(4,2) +offsetStr.mid(2,2) +offsetStr.mid(0,2);
+            QByteArray ba = QByteArray::fromHex(offsetRes.toLatin1());
+            qint32 tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+            QString tmp32Str = QString::number(tmp32);
+            ui->readMCU_textEdit->append(tmp32Str);
+
+        }
+
+
+
+        //        QString offsetStr = cmdAck.mid(0,8);
+        //        QString offsetRes = offsetStr.mid(6,2) +offsetStr.mid(4,2) +offsetStr.mid(2,2) +offsetStr.mid(0,2);
+
+        //        QByteArray ba = QByteArray::fromHex(offsetRes.toLatin1());
+        //        qint32 tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_offset_label->setText(QString::number(tmp32));
+
+
+
+        //        QString a1Str = cmdAck.mid(8,8);
+        //        QString a1StrRes = a1Str.mid(6,2)+a1Str.mid(4,2)+a1Str.mid(2,2)+a1Str.mid(0,2);
+        //         ba = QByteArray::fromHex(a1StrRes.toLatin1());
+        //         tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_a1_label->setText(QString::number(tmp32));
+
+
+        //        QString b1Str = cmdAck.mid(16,8);
+        //        QString b1StrRes = b1Str.mid(6,2)+b1Str.mid(4,2)+b1Str.mid(2,2)+b1Str.mid(0,2);
+        //         ba = QByteArray::fromHex(b1StrRes.toLatin1());
+        //         tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_b1_label->setText(QString::number(tmp32));
+
+        //        QString c1Str = cmdAck.mid(24,8);
+        //        QString c1StrRes = c1Str.mid(6,2)+c1Str.mid(4,2)+c1Str.mid(2,2)+c1Str.mid(0,2);
+        //         ba = QByteArray::fromHex(c1StrRes.toLatin1());
+        //         tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_c1_label->setText(QString::number(tmp32));
+
+        //        QString a2Str = cmdAck.mid(32,8);
+        //        QString a2StrRes = a2Str.mid(6,2)+a2Str.mid(4,2)+a2Str.mid(2,2)+a2Str.mid(0,2);
+        //         ba = QByteArray::fromHex(a2StrRes.toLatin1());
+        //         tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_a2_label->setText(QString::number(tmp32));
+
+        //        QString b2Str = cmdAck.mid(40,8);
+        //        QString b2StrRes = b2Str.mid(6,2)+b2Str.mid(4,2)+b2Str.mid(2,2)+b2Str.mid(0,2);
+        //         ba = QByteArray::fromHex(b2StrRes.toLatin1());
+        //         tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_b2_label->setText(QString::number(tmp32));
+
+        //        QString c2Str = cmdAck.mid(48,8);
+        //        QString c2StrRes = c2Str.mid(6,2)+c2Str.mid(4,2)+c2Str.mid(2,2)+c2Str.mid(0,2);
+        //         ba = QByteArray::fromHex(c2StrRes.toLatin1());
+        //         tmp32 = qint32(ba.toHex().toUInt(nullptr,16));//12
+        //        ui->read_c2_label->setText(QString::number(tmp32));
+    }else if("8113" == returnCmdStr)                            //
+    {
+        qDebug()<<"8113 new jiaozhun start";
+
+        emit send_fuwei_signal();
+
+//        QString colorStr = "black";      //black  or white
+//        emit sendAdjustDistanceColor_signal(100 ,colorStr);           //  0.1mm 处开始校准
+
+    }else if("8114" == returnCmdStr)
+    {
+        if("01" == cmdAck)
+        {
+            QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("激光器已经打开！"));
+        }else
+        {
+            QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("激光器已经关闭！"));
+        }
+    }
 
 }
 
@@ -1606,11 +1739,11 @@ void MainWindow::AckCmdMain_slot(QString returnCmdStr,QString cmdAck)
 //! 语言切换：英文
 void MainWindow::on_actionEnglish_triggered()
 {
-//    if(translator.load("translate/myApp_EN.qm"))
-//    {
-//        qApp->installTranslator(&translator);
-//        qDebug()<<"translator  load success";
-//    }
+    //    if(translator.load("translate/myApp_EN.qm"))
+    //    {
+    //        qApp->installTranslator(&translator);
+    //        qDebug()<<"translator  load success";
+    //    }
 
 
     if(translator.load(":/language/translate/myApp_EN.qm"))
@@ -1630,7 +1763,7 @@ void MainWindow::on_actionEnglish_triggered()
 void MainWindow::on_action_china_triggered()
 {
     if(translator.load("resources/tr_zh_nouse.qm"))
-    qApp->installTranslator(&translator);
+        qApp->installTranslator(&translator);
 }
 
 //!
@@ -1689,7 +1822,7 @@ void MainWindow::on_savePicture_his_pushButton_clicked()
     fileDialog->setGeometry(10,30,300,200);//设置文件对话框的显示位置
     fileDialog->setDirectory(".");//设置文件对话框打开时初始打开的位置
     QStringList mimeTypeFilters;
-//    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
+    //    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
     mimeTypeFilters<<"bmp(*.bmp)|*.bmp"<<"JPEG(*.jpg)|*.jpg"<<"Png(*.png)|*.png"<<"PDF(*.pdf)|*.pdf";
     fileDialog->setNameFilters(mimeTypeFilters);
 
@@ -1732,8 +1865,8 @@ void MainWindow::on_HistogramData_pushButton_clicked()
         QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
         if(file_path.isEmpty())
         {
-           qDebug()<<QStringLiteral("没有选择路径")<<endl;
-           QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
+            qDebug()<<QStringLiteral("没有选择路径")<<endl;
+            QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
             return;
         }
         else
@@ -1774,7 +1907,7 @@ void MainWindow::on_casset_imageSave_pushButton_clicked()
     fileDialog->setGeometry(10,30,300,200);//设置文件对话框的显示位置
     fileDialog->setDirectory(".");//设置文件对话框打开时初始打开的位置
     QStringList mimeTypeFilters;
-//    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
+    //    mimeTypeFilters <<"(*.bmp)|*.bmp|JPEG(*.jpg)|*.jpg;|Png(*.png)|*.png" ;
     mimeTypeFilters<<"bmp(*.bmp)|*.bmp"<<"JPEG(*.jpg)|*.jpg"<<"Png(*.png)|*.png"<<"PDF(*.pdf)|*.pdf";
     fileDialog->setNameFilters(mimeTypeFilters);
 
@@ -1816,8 +1949,8 @@ void MainWindow::on_casset_historgram_pushButton_clicked()
         QString file_path = QFileDialog::getExistingDirectory(this,QStringLiteral("请选择文件保存路径..."),"./");
         if(file_path.isEmpty())
         {
-           qDebug()<<QStringLiteral("没有选择路径")<<endl;
-           QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
+            qDebug()<<QStringLiteral("没有选择路径")<<endl;
+            QMessageBox::information(NULL,QStringLiteral("告警"),QStringLiteral("保存路径不能为空"));
             return;
         }
         else
@@ -1847,6 +1980,21 @@ void MainWindow::on_pixel_read_pushButton_clicked()
     QString cmdStr = "5A 00 01 00 0F ";
     emit sendSerialSignal(cmdStr);
 }
+
+//!
+//! \brief AckSinglePixelPosition_signal
+//!读取单pixel的返回信息
+//!
+void MainWindow::AckSinglePixelPosition_slot(bool flag,QString msg)
+{
+    if(!flag)
+    {
+        QMessageBox::warning(NULL,QStringLiteral("提示"),msg);
+    }
+}
+
+
+
 
 //4300   pixel 定时读取
 void MainWindow::on_pixel_time_pushButton_clicked()
@@ -1996,7 +2144,7 @@ void MainWindow::on_singleReg_read_pushButton_clicked()
 
     QString cmdStr = "5A 00 03 00 0D ";
     cmdStr.append(single_addr).append(single_value);
-    emit sendSerialSignal(cmdStr);    
+    emit sendSerialSignal(cmdStr);
 }
 
 
@@ -2046,20 +2194,1390 @@ void MainWindow::on_delayLine_pushButton_clicked()
 void MainWindow::on_about_action_triggered()
 {
     about_dia.show();
-//    QString tmp1 =QStringLiteral("寄存器变量");
-//    QString tmp2 = "  ";
-//    QStringList list;
-//    list.append(tmp1);
-//    list.append(tmp2);
-//    list.append(tmp1);
-//    list.append(tmp2);
-//    list.append(tmp1);
-//    list.append(tmp2);
-//    showResultMsg_slot(list,0);
+    //    QString tmp1 =QStringLiteral("寄存器变量");
+    //    QString tmp2 = "  ";
+    //    QStringList list;
+    //    list.append(tmp1);
+    //    list.append(tmp2);
+    //    list.append(tmp1);
+    //    list.append(tmp2);
+    //    list.append(tmp1);
+    //    list.append(tmp2);
+    //    showResultMsg_slot(list,0);
 }
 
 
 
 
+
+
+
+void MainWindow::on_checkBox_clicked()
+{
+
+}
+
+void MainWindow::on_pileUp_checkBox_clicked()
+{
+    //    bool flag =ui->pileUp_checkBox->isChecked();
+    //    qDebug()<<"flag = "<<flag;
+    //    if(ui->pileUp_checkBox->isChecked())
+    //    {
+    //        receSerial_Obj->is_pileUp_flag = true;
+    //    }else
+    //    {
+    //        receSerial_Obj->is_pileUp_flag = false;
+    //    }
+}
+
+
+
+
+
+
+//!
+//! \brief MainWindow::on_black_01_pushButton_clicked
+//!
+void MainWindow::on_black_01_pushButton_clicked()
+{
+    qDebug()<<"MainWindow::on_black_01_pushButton_clicked()";
+    int index = 1;
+    receSerial_Obj->least_index = 1;
+
+}
+//!
+//! \brief MainWindow::on_white_01_pushButton_clicked
+//!
+void MainWindow::on_white_01_pushButton_clicked()
+{
+    qDebug()<<"MainWindow::on_white_01_pushButton_clicked()";
+    receSerial_Obj->least_index = 2;
+}
+
+void MainWindow::on_black_02_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 3;
+}
+
+void MainWindow::on_white_02_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 4;
+}
+
+void MainWindow::on_black_03_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 5;
+}
+
+void MainWindow::on_white_03_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 6;
+}
+
+void MainWindow::on_black_04_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 7;
+}
+
+void MainWindow::on_white_04_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 8;
+}
+
+void MainWindow::on_black_05_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 9;
+}
+
+void MainWindow::on_white_05_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 10;
+}
+
+void MainWindow::on_black_1_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 11;
+}
+
+void MainWindow::on_white_1_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 12;
+}
+
+void MainWindow::on_black_3_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 13;
+}
+
+void MainWindow::on_white_3_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 14;
+}
+
+void MainWindow::on_black_8_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 15;
+}
+
+void MainWindow::on_white_8_pushButton_clicked()
+{
+    receSerial_Obj->least_index = 16;
+}
+
+
+///**********/
+//void MainWindow::sendLeastRes_slot(int index,float resTof,float resPeak)   //index 1-10  0.1-0.5     //  11/12 1m   13/14 3m  15/16 8m
+//{
+//    qDebug()<<"index ="<<index<<"  resTof="<<resTof<<"  resPeak="<<resPeak;
+
+//    index = index -1;
+//    float distance = 0;
+//    int tmpIndex = index/2;
+
+//    if(0 == tmpIndex)
+//    {
+//        distance = 0.1*1000;
+//        if(0 == index)
+//            ui->black01_label->setText(QString::number(resTof));
+//        else if(1 == index)
+//            ui->white_01_label->setText(QString::number(resTof));
+
+
+//    }else if(1 == tmpIndex)
+//    {
+//        distance = 0.2*1000;
+//        if(2 == index)
+//            ui->black02_label->setText(QString::number(resTof));
+//        else if(3 == index)
+//            ui->white_02_label->setText(QString::number(resTof));
+//    }else if(2 == tmpIndex)
+//    {
+//         distance = 0.3*1000;
+//         if(4 == index)
+//             ui->black03_label->setText(QString::number(resTof));
+//         else if(5 == index)
+//             ui->white_03_label->setText(QString::number(resTof));
+//    }else if(3 == tmpIndex)
+//    {
+//        distance = 0.4*1000;
+//        if(6 == index)
+//            ui->black04_label->setText(QString::number(resTof));
+//        else if(7 == index)
+//            ui->white_04_label->setText(QString::number(resTof));
+//    }else if(4 == tmpIndex)
+//    {
+//        distance = 0.5*1000;
+//        if(8 == index)
+//            ui->black05_label->setText(QString::number(resTof));
+//        else if(9 == index)
+//            ui->white_05_label->setText(QString::number(resTof));
+
+//    }else if(5 == tmpIndex)
+//    {
+//        distance = 1*1000;
+//        if(10 == index)
+//            ui->black1_label->setText(QString::number(resTof));
+//        else if(11 == index)
+//            ui->white_1_label->setText(QString::number(resTof));
+
+//    }else if(6 == tmpIndex)
+//    {
+//        distance = 3*1000;
+//        if(12 == index)
+//            ui->black3_label->setText(QString::number(resTof));
+//        else if(13 == index)
+//            ui->white_3_label->setText(QString::number(resTof));
+
+//    }else if(7 == tmpIndex)
+//    {
+//        distance = 8*1000;
+//        if(14 == index)
+//            ui->black8_label->setText(QString::number(resTof));
+//        else if(15 == index)
+//            ui->white_8_label->setText(QString::number(resTof));
+//    }
+
+//    if(index<10)
+//    {
+
+////        vecDistacne_10[index] = resTof * 15.55-distance;
+//        vecDistacne_10[index] = resTof - distance;
+//        vecPeak_10[index] = resPeak;
+//    }
+
+//    if(index>9)
+//    {
+////        vecDistacne_3[index-10] = resTof * 15.55 -distance;
+//        vecDistacne_3[index-10] = resTof;
+//        vecPeak_3[index-10] = resPeak;
+//    }
+
+//}
+
+
+
+///**********/
+//void MainWindow::sendLeastRes_slot(int index,float resTof,float resPeak)   //index 1-10  0.1-0.5     //  11/12 1m   13/14 3m  15/16 8m
+//{
+//    qDebug()<<"index ="<<index<<"  resTof="<<resTof<<"  resPeak="<<resPeak;
+
+//    index = index -1;
+//    float distance = 0;
+//    int tmpIndex = index/2;
+
+//    if(0 == tmpIndex)
+//    {
+//        distance = 0.1*1000;
+//        if(0 == index)
+//        {
+//            ui->black01_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+
+//        }else if(1 == index)
+//        {
+//            ui->white_01_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }
+
+//    }else if(1 == tmpIndex)
+//    {
+//        distance = 0.2*1000;
+//        if(2 == index)
+//        {
+//            ui->black02_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }else if(3 == index)
+//        {
+//            ui->white_02_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }
+//    }else if(2 == tmpIndex)
+//    {
+//         distance = 0.3*1000;
+//         if(4 == index)
+//         {
+//             ui->black03_label->setText(QString::number(resTof));
+//             vecDistacne_10[index] = resTof - distance;
+//             vecPeak_10[index] = resPeak;
+//         }else if(5 == index)
+//         {
+//             ui->white_03_label->setText(QString::number(resTof));
+//             vecDistacne_10[index] = resTof - distance;
+//             vecPeak_10[index] = resPeak;
+//         }
+//    }else if(3 == tmpIndex)
+//    {
+//        distance = 0.4*1000;
+//        if(6 == index)
+//        {
+//            ui->black04_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }else if(7 == index)
+//        {
+//            ui->white_04_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }
+//    }else if(4 == tmpIndex)
+//    {
+//        distance = 0.5*1000;
+//        if(8 == index)
+//        {
+//            ui->black05_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }else if(9 == index)
+//        {
+//            ui->white_05_label->setText(QString::number(resTof));
+//            vecDistacne_10[index] = resTof - distance;
+//            vecPeak_10[index] = resPeak;
+//        }
+//    }else if(5 == tmpIndex)
+//    {
+//        distance = 1*1000;
+//        if(10 == index)
+//        {
+//            ui->black1_label->setText(QString::number(resTof));
+//            vecDistacne_3[index-10] = resTof;
+//            vecPeak_3[index-10] = resPeak;
+//        }else if(11 == index)
+//        {
+//            ui->white_1_label->setText(QString::number(resTof));
+//            vecDistacne_3[index-10] = resTof;
+//            vecPeak_3[index-10] = resPeak;
+//        }
+
+//    }else if(6 == tmpIndex)
+//    {
+//        distance = 3*1000;
+//        if(12 == index)
+//        {
+//            ui->black3_label->setText(QString::number(resTof));
+//            vecDistacne_3[index-10] = resTof;
+//            vecPeak_3[index-10] = resPeak;
+//        }else if(13 == index)
+//        {
+//            ui->white_3_label->setText(QString::number(resTof));
+//            vecDistacne_3[index-10] = resTof;
+//            vecPeak_3[index-10] = resPeak;
+//        }
+//    }else if(7 == tmpIndex)
+//    {
+//        distance = 8*1000;
+//        if(14 == index)
+//        {
+//            ui->black8_label->setText(QString::number(resTof));
+//            vecDistacne_3[index-10] = resTof;
+//            vecPeak_3[index-10] = resPeak;
+//        }else if(15 == index)
+//        {
+//            ui->white_8_label->setText(QString::number(resTof));
+//            vecDistacne_3[index-10] = resTof;
+//            vecPeak_3[index-10] = resPeak;
+//        }
+//    }
+
+//    if(index<10)
+//    {
+
+//        vecDistacne_10[index] = resTof - distance;
+//        vecPeak_10[index] = resPeak;
+//    }
+
+//    if(index>9)
+//    {
+//        vecDistacne_3[index-10] = resTof;
+//        vecPeak_3[index-10] = resPeak;
+//    }
+
+//}
+
+
+
+//!
+//! \brief MainWindow::on_least_start_pushButton_clicked
+//!开始获取校准参数
+void MainWindow::on_least_start_pushButton_clicked()
+{
+    //test测试用
+
+    //    vecDistacne_3[0]= 81.69170534;
+    //    vecDistacne_3[1]= 94.77060973;
+    //    vecDistacne_3[2]= 161.9516649;
+    //    vecDistacne_3[3]= 233.1377188;
+    //    vecDistacne_3[4]= 252.6338028;
+    //    vecDistacne_3[5]= 278.9988512;
+    //    vecPeak_3[0]= 2923.829069;
+    //    vecPeak_3[1]= 2952.83558;
+    //    vecPeak_3[2]= 2878.108178;
+    //    vecPeak_3[3]= 2854.249;
+    //    vecPeak_3[4]= 2862.5385;
+    //    vecPeak_3[5]= 2878.4896;
+
+
+
+
+
+
+    //        vecPeak_10[0]= 92.1168;
+    //        vecPeak_10[1]= 99.7712;
+    //        vecPeak_10[2]= 125.9418;
+    //        vecPeak_10[3]= 175.406;
+    //        vecPeak_10[4]= 197.5086;
+    //        vecPeak_10[5]= 288.727;
+    //        vecPeak_10[6]=  306.831;
+    //        vecPeak_10[7]= 322.5948;
+    //        vecPeak_10[8]= 351.7264;
+    //        vecPeak_10[9]= 362.522;
+
+    //        vecDistacne_10[0]= 5337.9494;
+    //        vecDistacne_10[1]= 5340.3418;
+    //        vecDistacne_10[2]= 5326.4112;
+    //        vecDistacne_10[3]= 5312.6182;
+    //        vecDistacne_10[4]= 5300.452;
+    //        vecDistacne_10[5]= 5282.048;
+    //        vecDistacne_10[6]= 5288;
+    //        vecDistacne_10[7]= 5275;
+    //        vecDistacne_10[8]= 5275.3184;
+    //        vecDistacne_10[9]= 5273.9184;
+
+
+    //        vecDistacne_3[1]= 3809.77;
+
+    //        vecDistacne_3[3]= 5797.47;
+
+    //        vecDistacne_3[5]= 10796;
+
+
+    //    on_newJiaohun_start_pushButton_clicked();   //开始校准
+
+
+    emit deal_receLeast_signal(vecDistacne_10,vecPeak_10,vecDistacne_3,vecPeak_3);
+
+}
+
+//!
+//! \brief MainWindow::send_leastResult_slot
+//!获取到的校准参数
+void MainWindow::send_leastResult_slot(float a1,float b1,float a2,float b2,float a3,float b3,float a4,float b4)
+{
+    ui->res_textEdit->clear();
+    QString showStr;
+
+    //三个tof阈值
+    float tof_threshold[3];
+    float max = 0;
+    for(int i=0;i<6; i++)   //100-300
+    {
+        if(vecDistacne_10[i]>max)
+            max = vecDistacne_10[i];
+    }
+    tof_threshold[0] = max;
+
+    max = 0;
+    for(int i=4; i<10; i++)   //300-500
+    {
+        if(vecDistacne_10[i]>max)
+            max = vecDistacne_10[i];
+    }
+    tof_threshold[1] = max;
+
+    max = 0;
+    for(int i=8; i<10; i++)   //500-1000
+    {
+        if(vecDistacne_10[i]>max)
+            max = vecDistacne_10[i];
+    }
+    for(int i=0;i<2;i++)    //500-1000
+    {
+        if(vecDistacne_3[i]>max)
+            max = vecDistacne_3[i];
+    }
+    tof_threshold[2] = max;
+
+    for(int i=0; i<3;i++)
+    {
+        showStr = "tof_threshold"+QString::number(i) + " = "+QString::number(tof_threshold[i]);
+        ui->res_textEdit->append(showStr);
+
+    }
+
+    //四个peak阈值
+    float peak_threshold[4];
+    float min_peak=10000;
+    for(int i=0;i<6; i++)  //100-300  1
+    {
+        if(vecPeak_10[i]<min_peak)
+            min_peak = vecPeak_10[i];
+    }
+    peak_threshold[0] = min_peak-10;
+
+    min_peak=10000;  //300-500  2
+    for(int i=4; i<10; i++)
+    {
+        if(vecPeak_10[i]<min_peak)
+            min_peak = vecPeak_10[i];
+    }
+    peak_threshold[1] = min_peak-10;
+
+    min_peak=10000;  //500-1000 3
+    for(int i=8;i<10;i++)
+    {
+        if(vecPeak_10[i]<min_peak)
+            min_peak = vecPeak_10[i];
+    }
+    for(int i=0; i<2; i++)
+    {
+        if(vecPeak_3[i]<min_peak)
+            min_peak = vecPeak_3[i];
+    }
+    peak_threshold[2] = min_peak-10;
+
+    min_peak=10000;  //500-1000 3
+    for(int i=0; i<6; i++)
+    {
+        if(vecPeak_3[i]<min_peak)
+            min_peak = vecPeak_3[i];
+    }
+    peak_threshold[3] = min_peak-10;
+
+    for(int i=0; i<4; i++)
+    {
+        showStr = "peak_threshold"+QString::number(i) + " = "+QString::number(peak_threshold[i]);
+        ui->res_textEdit->append(showStr);
+    }
+
+    // 系数部分
+    float expand_a[4];
+    float expand_b[4];
+
+    expand_a[0] =1000 * a1;
+    expand_b[0] =1000 * b1;
+    expand_a[1] =1000 * a2;
+    expand_b[1] =1000 * b2;
+    expand_a[2] =1000 * a3;
+    expand_b[2] =1000 * b3;
+    expand_a[3] =1000 * a4;
+    expand_b[3] =1000 * b4;
+
+
+    for(int i=0; i<4; i++)
+    {
+        int value = expand_a[i];
+        showStr = "A"+QString::number(i)+" = "+ QString::number(value);
+        ui->res_textEdit->append(showStr);
+
+        value = expand_b[i];
+        showStr = "B"+QString::number(i)+" = " + QString::number(value);
+        ui->res_textEdit->append(showStr);
+    }
+
+
+
+
+    //数据转换  1
+    QString tofOffsetStr[3];
+    QString tofResOffsetStr[3];
+    for(int i=0; i<3; i++)
+    {
+        int value = tof_threshold[i];
+        tofOffsetStr[i] = QString("%1").arg(value,16,16,QLatin1Char('0'));
+        tofOffsetStr[i] = tofOffsetStr[i].right(8);
+        tofResOffsetStr[i] = tofOffsetStr[i].mid(6,2) +tofOffsetStr[i].mid(4,2) +tofOffsetStr[i].mid(2,2) +tofOffsetStr[i].mid(0,2);
+    }
+
+
+    //2
+    QString peakOffsetStr[4];
+    QString peakResOffsetStr[4];
+    for(int i=0; i<4; i++)
+    {
+        int value = peak_threshold[i];
+        peakOffsetStr[i] = QString("%1").arg(value,16,16,QLatin1Char('0'));
+        peakOffsetStr[i] =  peakOffsetStr[i].right(8);
+        peakResOffsetStr[i] = peakOffsetStr[i].mid(6,2) +peakOffsetStr[i].mid(4,2) +peakOffsetStr[i].mid(2,2) +peakOffsetStr[i].mid(0,2);
+
+    }
+
+
+
+    //3
+    QString aStr[4];
+    QString bStr[4];
+    QString AresStr[4];
+    QString BresStr[4];
+    for(int i=0;i<4;i++)
+    {
+        int value = expand_a[i];
+        aStr[i] = QString("%1").arg(value,16,16,QLatin1Char('0'));
+        aStr[i] = aStr[i].right(8);
+        AresStr[i] = aStr[i].mid(6,2) +aStr[i].mid(4,2) +aStr[i].mid(2,2) +aStr[i].mid(0,2);
+
+        value = expand_b[i];
+        bStr[i] = QString("%1").arg(value,16,16,QLatin1Char('0'));
+        bStr[i]  = bStr[i] .right(8);
+        BresStr[i] = bStr[i].mid(6,2) +bStr[i].mid(4,2) +bStr[i].mid(2,2) +bStr[i].mid(0,2);
+    }
+
+
+
+    //写入MCU
+    QString cmdStr = "5A 01 3D 00 12 ";
+    for(int i=0; i<3;i++)
+    {
+        cmdStr.append(tofResOffsetStr[i]);
+    }
+
+    for(int i=0; i<4; i++)
+    {
+        cmdStr.append(peakResOffsetStr[i]);
+    }
+
+
+    for(int i=0; i<4; i++)
+    {
+        cmdStr.append(AresStr[i]);
+        cmdStr.append(BresStr[i]);
+    }
+    emit sendSerialSignal(cmdStr);
+
+
+
+}
+
+
+//!
+//! \brief MainWindow::calculate_offset
+//! \param a
+//! \param b
+//! \param c
+//! \param bias
+//! \param peak
+//! \return
+//!
+float MainWindow::calculate_offset(float a,float b,float c,float bias,float peak)
+{
+    float I = a/(peak+b) +c;
+    float y = I - bias;
+    return y;
+}
+
+// 5A 00 31 00 12
+void MainWindow::on_writeMCU_pushButton_clicked()
+{
+    int a1 = ui->A1_label->text().toFloat();
+    int b1 = ui->B1_label->text().toFloat();
+    int c1 = ui->C1_label->text().toFloat();
+    int a2 = ui->A2_label->text().toFloat();
+    int b2 = ui->B2_label->text().toFloat();
+    int c2 = ui->C2_label->text().toFloat();
+    int offset = ui->least_offset_label->text().toFloat();
+
+
+    qDebug()<<"b1 = "<<b1<<ui->B1_label->text();
+
+    QString a1Str = QString("%1").arg(a1,16,16,QLatin1Char('0'));
+    QString b1Str = QString("%1").arg(b1,16,16,QLatin1Char('0'));
+    QString c1Str = QString("%1").arg(c1,16,16,QLatin1Char('0'));
+    QString a2Str = QString("%1").arg(a2,16,16,QLatin1Char('0'));
+    QString b2Str = QString("%1").arg(b2,16,16,QLatin1Char('0'));
+    QString c2Str = QString("%1").arg(c2,16,16,QLatin1Char('0'));
+    QString offsetStr = QString("%1").arg(offset,16,16,QLatin1Char('0'));
+
+    //    a1Str = a1Str.right(8);
+    //    b1Str = b1Str.right(8)
+    a1Str = a1Str.right(8);
+    b1Str = b1Str.right(8);
+    c1Str = c1Str.right(8);
+    a2Str = a2Str.right(8);
+    b2Str = b2Str.right(8);
+    c2Str = c2Str.right(8);
+    offsetStr = offsetStr.right(8);
+
+    qDebug()<<a1Str;
+    qDebug()<<b1Str;
+    qDebug()<<c1Str;
+    qDebug()<<a2Str;
+    qDebug()<<b2Str;
+    qDebug()<<c2Str;
+    qDebug()<<offsetStr;
+
+    QString A1str = a1Str.mid(6,2) +a1Str.mid(4,2) +a1Str.mid(2,2) +a1Str.mid(0,2);
+    QString B1str = b1Str.mid(6,2) +b1Str.mid(4,2) +b1Str.mid(2,2) +b1Str.mid(0,2);
+    QString C1str = c1Str.mid(6,2) +c1Str.mid(4,2) +c1Str.mid(2,2) +c1Str.mid(0,2);
+    QString A2str = a2Str.mid(6,2) +a2Str.mid(4,2) +a2Str.mid(2,2) +a2Str.mid(0,2);
+    QString B2str = b2Str.mid(6,2) +b2Str.mid(4,2) +b2Str.mid(2,2) +b2Str.mid(0,2);
+    QString C2str = c2Str.mid(6,2) +c2Str.mid(4,2) +c2Str.mid(2,2) +c2Str.mid(0,2);
+    QString off_str = offsetStr.mid(6,2) +offsetStr.mid(4,2) +offsetStr.mid(2,2) +offsetStr.mid(0,2);
+
+    QString yuliuStr = QString("%1").arg(0,40,16,QLatin1Char('0'));
+
+
+
+
+    /**************************************************************/
+    //总共分为七段  14个系数
+    for(int i=0; i<10; i++)
+    {
+        qDebug()<<"i="<<i<<"  vecDistacne_10="<<vecDistacne_10[i];
+    }
+    for(int i=0;i<6; i++)
+    {
+        qDebug()<<"i="<<i<<"  vecDistacne_3="<<vecDistacne_3[i];
+    }
+
+    float a[5];
+    float b[5];
+    a[0] =(200-100.0)/((vecDistacne_10[3])-(vecDistacne_10[1]));
+    b[0] =(200 - a[0]*vecDistacne_10[3]);
+
+    a[1] =(300-200.0)/(vecDistacne_10[5]-vecDistacne_10[3]);
+    b[1] =(300 - a[1]*vecDistacne_10[5]);
+
+    a[2] =(400-300.0)/(vecDistacne_10[7]-vecDistacne_10[5]);
+    b[2] =(400 - a[2]*vecDistacne_10[7]);
+
+    a[3] =(500-400.0)/(vecDistacne_10[9]-vecDistacne_10[7]);
+    b[3] =(500 - a[3]*vecDistacne_10[9]);
+
+
+    a[4] =(1000 - 500.0)/(vecDistacne_3[1]-vecDistacne_10[9]);
+    b[4] =(1000 - a[4]*vecDistacne_3[1]);
+    for(int i=0; i<5; i++)
+    {
+        a[i] = 1000 * a[i];
+        b[i] = 1000 * b[i];
+    }
+
+
+
+
+
+
+    int myOffset[5];
+
+    myOffset[0] = vecDistacne_10[3];
+    myOffset[1] = vecDistacne_10[5];
+    myOffset[2] = vecDistacne_10[7];
+    myOffset[3] = vecDistacne_10[9];
+    myOffset[4] = vecDistacne_3[1];
+
+
+
+    ui->res_textEdit->clear();
+
+    //显示
+    QString strTmp;
+    for(int i=0; i<5;i++)
+    {
+        strTmp = "a"+QString::number(i)+" =" +QString::number(a[i]);
+        ui->res_textEdit->append(strTmp);
+        strTmp = "b"+QString::number(i)+" =" +QString::number(b[i]);
+        ui->res_textEdit->append(strTmp);
+    }
+
+    for(int i=0;i<5;i++)
+    {
+        strTmp = "offset"+QString::number(i)+" = "+QString::number(myOffset[i]);
+        ui->res_textEdit->append(strTmp);
+    }
+
+
+    //数据转换
+    QString aStr[5];
+    QString bStr[5];
+    QString AresStr[5];
+    QString BresStr[5];
+    for(int i=0;i<5;i++)
+    {
+        int value = a[i];
+        aStr[i] = QString("%1").arg(value,16,16,QLatin1Char('0'));
+        aStr[i] = aStr[i].right(8);
+        AresStr[i] = aStr[i].mid(6,2) +aStr[i].mid(4,2) +aStr[i].mid(2,2) +aStr[i].mid(0,2);
+
+        value = b[i];
+        bStr[i] = QString("%1").arg(value,16,16,QLatin1Char('0'));
+        bStr[i]  = bStr[i] .right(8);
+        BresStr[i] = bStr[i].mid(6,2) +bStr[i].mid(4,2) +bStr[i].mid(2,2) +bStr[i].mid(0,2);
+    }
+
+    QString offsetTmp[5];
+    QString resOffsetStr[5];
+    for(int i=0;i<5;i++)
+    {
+        offsetTmp[i] = QString("%1").arg(myOffset[i],16,16,QLatin1Char('0'));
+        offsetTmp[i] = offsetTmp[i].right(8);
+        resOffsetStr[i] = offsetTmp[i].mid(6,2) +offsetTmp[i].mid(4,2) +offsetTmp[i].mid(2,2) +offsetTmp[i].mid(0,2);
+    }
+
+
+
+
+    //    QString yuliuStr = QString("%1").arg(0,40,16,QLatin1Char('0'));
+
+    QString cmdStr = "5A 01 45 00 12 ";
+
+    for(int i=0; i<5;i++)
+    {
+        cmdStr.append(resOffsetStr[i]);
+    }
+
+    for(int i=0; i<5; i++)
+    {
+        cmdStr.append(AresStr[i]);
+        cmdStr.append(BresStr[i]);
+    }
+
+    cmdStr.append(A2str);
+    cmdStr.append(B2str);
+
+
+
+    emit sendSerialSignal(cmdStr);
+
+
+}
+
+
+
+
+/********************************自动测试相关**********************************************/
+/******************************************************************************/
+//!
+//! \brief MainWindow::on_portScan_pushButton_2_clicked
+//!
+void MainWindow::on_portScan_pushButton_2_clicked()
+{
+    QStringList m_serialPortName;
+    foreach(const QSerialPortInfo &info,QSerialPortInfo::availablePorts())
+    {
+        m_serialPortName << info.portName();
+        qDebug()<<"serialPortName:"<<info.portName();
+    }
+    ui->serialPortInfoListBox_2->clear();
+    ui->serialPortInfoListBox_2->addItems(m_serialPortName);
+    QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("可用端口检测完毕！"));
+}
+
+//串口初始化
+void MainWindow::initSerial_2()
+{
+
+    QSettings configSetting("setting.ini",QSettings::IniFormat);
+    int numSeri_ = configSetting.value("serial2/serialNum").toInt();         //串口号
+    int baudRateBox_ = configSetting.value("serial2/baudRateNum").toInt();  //波特率
+    int dataBitNum_ = configSetting.value("serial2/dataBitNum").toInt();
+    int stopBitNum_ = configSetting.value("serial2/stopBitNum").toInt();
+    int checkNum_ = configSetting.value("serial2/checkNum").toInt();
+
+
+    int num = 0;
+    QStringList m_serialPortName;
+    foreach(const QSerialPortInfo &info,QSerialPortInfo::availablePorts())
+    {
+        num++;
+        m_serialPortName << info.portName();
+        qDebug()<<"serialPortName:"<<info.portName();
+    }
+    ui->serialPortInfoListBox_2->clear();
+    ui->serialPortInfoListBox_2->addItems(m_serialPortName);
+    if(numSeri_>num)
+        ui->serialPortInfoListBox_2->setCurrentIndex(0);
+    else
+        ui->serialPortInfoListBox_2->setCurrentIndex(numSeri_);
+
+
+
+    ui->baudRateBox_2->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
+    ui->baudRateBox_2->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
+    ui->baudRateBox_2->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
+    ui->baudRateBox_2->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
+    ui->baudRateBox_2->addItem(QStringLiteral("230400"), QSerialPort::Baud230400);
+    ui->baudRateBox_2->addItem(QStringLiteral("256000"), QSerialPort::Baud256000);
+    ui->baudRateBox_2->addItem(QStringLiteral("460800"), QSerialPort::Baud460800);
+
+    ui->baudRateBox_2->addItem(tr("Custom"));
+    ui->baudRateBox_2->setCurrentIndex(baudRateBox_);
+
+    ui->dataBitsBox_2->addItem(QStringLiteral("5"), QSerialPort::Data5);
+    ui->dataBitsBox_2->addItem(QStringLiteral("6"), QSerialPort::Data6);
+    ui->dataBitsBox_2->addItem(QStringLiteral("7"), QSerialPort::Data7);
+    ui->dataBitsBox_2->addItem(QStringLiteral("8"), QSerialPort::Data8);
+    ui->dataBitsBox_2->setCurrentIndex(3);
+
+    ui->parityBox_2->addItem(tr("None"), QSerialPort::NoParity);
+    ui->parityBox_2->addItem(tr("Even"), QSerialPort::EvenParity);
+    ui->parityBox_2->addItem(tr("Odd"), QSerialPort::OddParity);
+    ui->parityBox_2->addItem(tr("Mark"), QSerialPort::MarkParity);
+    ui->parityBox_2->addItem(tr("Space"), QSerialPort::SpaceParity);
+
+    ui->stopBitsBox_2->addItem(QStringLiteral("1"), QSerialPort::OneStop);
+#ifdef Q_OS_WIN
+    ui->stopBitsBox_2->addItem(tr("1.5"), QSerialPort::OneAndHalfStop);
+#endif
+    ui->stopBitsBox_2->addItem(QStringLiteral("2"), QSerialPort::TwoStop);
+
+
+    ui->dataBitsBox_2->setCurrentIndex(dataBitNum_);
+    ui->stopBitsBox_2->setCurrentIndex(stopBitNum_);
+    ui->parityBox_2->setCurrentIndex(checkNum_);
+}
+
+
+//!
+//! \brief MainWindow::on_openPort_pushButton_2_clicked
+//!   打开串口
+void MainWindow::on_openPort_pushButton_2_clicked()
+{
+    if(ui->openPort_pushButton_2->text() == "Open")
+    {
+        currentSettings_auto.name = ui->serialPortInfoListBox_2->currentText();
+
+        if (ui->baudRateBox_2->currentIndex() == 4) {
+            currentSettings_auto.baudRate = ui->baudRateBox_2->currentText().toInt();
+        } else {
+            currentSettings_auto.baudRate = static_cast<QSerialPort::BaudRate>(
+                        ui->baudRateBox_2->itemData(ui->baudRateBox_2->currentIndex()).toInt());
+        }
+
+
+        qDebug()<<" currentIndex ="<<ui->baudRateBox_2->currentIndex() <<" currentSettings.baudRate = "<<currentSettings_auto.baudRate;
+        currentSettings_auto.stringBaudRate = QString::number(currentSettings_auto.baudRate);
+
+        currentSettings_auto.dataBits = static_cast<QSerialPort::DataBits>(
+                    ui->dataBitsBox_2->itemData(ui->dataBitsBox_2->currentIndex()).toInt());
+        currentSettings_auto.stringDataBits = ui->dataBitsBox_2->currentText();
+
+        currentSettings_auto.parity = static_cast<QSerialPort::Parity>(
+                    ui->parityBox_2->itemData(ui->parityBox_2->currentIndex()).toInt());
+        currentSettings_auto.stringParity = ui->parityBox_2->currentText();
+
+        currentSettings_auto.stopBits = static_cast<QSerialPort::StopBits>(
+                    ui->stopBitsBox_2->itemData(ui->stopBitsBox_2->currentIndex()).toInt());
+        currentSettings_auto.stringStopBits = ui->stopBitsBox_2->currentText();
+
+        //         qDebug()<<"name="<<currentSettings.name<<" baudRate ="<<currentSettings.baudRate<<" dataBits="<<currentSettings.dataBits<<" parity="<<currentSettings.parity<<" stopBits="<<currentSettings.stopBits<<" flowCon"<<currentSettings.flowControl;
+
+
+        emit openOrCloseSerialAuto_signal(true);
+
+        qDebug()<<"name="<<currentSettings.name<<" baudRate ="<<currentSettings.baudRate<<" dataBits="<<currentSettings.dataBits<<" parity="<<currentSettings.parity<<" stopBits="<<currentSettings.stopBits<<" flowCon"<<currentSettings.flowControl;
+
+
+        int seriNum = ui->serialPortInfoListBox_2->currentIndex();
+        int baudBox = ui->baudRateBox_2->currentIndex();
+        int dataBitNum = ui->dataBitsBox_2->currentIndex();
+        int stopBitNum = ui->stopBitsBox_2->currentIndex();
+        int checkNum = ui->parityBox_2->currentIndex();
+
+        QSettings configSetting("setting.ini", QSettings::IniFormat);
+        configSetting.setValue("serial2/serialNum",seriNum);          //串口号
+        configSetting.setValue("serial2/baudRateNum",baudBox);       //波特率
+        configSetting.setValue("serial2/dataBitNum",dataBitNum);
+        configSetting.setValue("serial2/stopBitNum",stopBitNum);
+        configSetting.setValue("serial2/checkNum",checkNum);
+
+
+    }
+    else
+    {
+        emit openOrCloseSerialAuto_signal(false);
+
+    }
+}
+
+/**
+*@date 2020-04-30
+*@brief:  返回串口的连接信息
+*/
+void MainWindow::returnLinkInfoAuto_slot(QString str, bool flag)
+{
+    if("open" == str)
+    {
+        if(true == flag)
+        {
+            isLinked = true;
+            ui->serialPortInfoListBox_2->setEnabled(false);
+            ui->baudRateBox_2->setEnabled(false);
+            ui->dataBitsBox_2->setEnabled(false);
+            ui->parityBox_2->setEnabled(false);
+            ui->stopBitsBox_2->setEnabled(false);
+            ui->openPort_pushButton_2->setText("Close");
+        }else
+        {
+            QMessageBox::critical(this, QStringLiteral("告警"), QStringLiteral("打开串口失败！"));
+        }
+    }else
+    {
+        if(true == flag)
+        {
+            isLinked = false;
+            ui->openPort_pushButton_2->setText("Open");
+            ui->serialPortInfoListBox_2->setEnabled(true);
+            ui->baudRateBox_2->setEnabled(true);
+            ui->dataBitsBox_2->setEnabled(true);
+            ui->parityBox_2->setEnabled(true);
+            ui->stopBitsBox_2->setEnabled(true);
+        }else
+        {
+            QMessageBox::critical(this, QStringLiteral("告警"), QStringLiteral("关闭串口失败！"));
+        }
+    }
+}
+
+//自动校准总体思路：
+//  1、先发送 0.1m 黑 给串口线程；  串口线程发送给滑轨，等待滑轨到位； 滑轨到位后发送给主线程，主线程提示用户放置黑板； 用户放置黑板后 开启采集数据； 采集结束后,进入下一步采集
+
+/**
+*@date 2020-04-30
+*@brief: 开启自动校准
+* 1 、 向MCU发送开启校准的命令，接收到 返回命令之后，发送开启复位的命令
+* 2 、 接收到复位成功的命令以后，判断isAutoTest_flag,如果为True 则发送自动校准后续命令
+*/
+void MainWindow::on_startAutoAdjust_pushButton_clicked()           //采集的数据 包括 0.1m 0.2m 0.3m 黑白    1、3、8m白色
+{
+    isAutoTest_flag = true;
+
+    on_newJiaohun_start_pushButton_clicked();       //回复在1713行
+
+//        QString colorStr = "black";      //black  or white
+//        emit sendAdjustDistanceColor_signal(100 ,colorStr);           //  0.1mm 处开始校准
+
+}
+
+//
+void MainWindow::on_newJiaohun_start_pushButton_clicked()
+{
+    QString cmdStr = "5A 00 02 00 13 01 ";
+    emit sendSerialSignal(cmdStr);
+}
+
+void MainWindow::on_newjiaozhun_end_pushButton_clicked()
+{
+    QString cmdStr = "5A 00 02 00 13 00 ";
+    emit sendSerialSignal(cmdStr);
+}
+
+
+void MainWindow::on_startlds_pushButton_clicked()
+{
+    QByteArray sendArray="startlds$";
+    receSerial_Obj->serial->write(sendArray);
+
+}
+
+void MainWindow::on_fuwei_pushButton_clicked()
+{
+    isAutoTest_flag = false; //不开启自动校准
+
+//    isAutoTest_flag = true; //不开启自动校准
+
+    emit send_fuwei_signal();
+}
+
+void MainWindow::fuwei_over_slot()
+{
+    if(isAutoTest_flag)   //自动校准模式,复位完成后 则开启自动校准
+    {
+        QString colorStr = "black";      //black  or white
+        emit sendAdjustDistanceColor_signal(100 ,colorStr);           //  0.1mm 处开始校准
+
+    }else
+    {
+         QMessageBox::information(NULL,QStringLiteral("提示"),QStringLiteral("复位完成"));    //单纯的复位
+    }
+
+
+}
+
+
+//readMCU
+void MainWindow::on_readMCU_pushButton_clicked()
+{
+    QString cmdStr = "5A 00 01 00 12";
+    emit sendSerialSignal(cmdStr);
+}
+
+
+//
+void MainWindow::on_startMove_pushButton_clicked()
+{
+    int distance = ui->sendPoint_lineEdit->text().toInt();
+    emit sendthePoint_signal(distance);
+}
+
+
+//!
+//! \brief MainWindow::on_openOrClose_laser_pushButton_clicked
+//!打开或者关闭激光器
+//!
+//! 5A 01 02 00 14 01/00
+void MainWindow::on_openOrClose_laser_pushButton_clicked()
+{
+    if(ui->openOrClose_laser_pushButton->text() == QStringLiteral("打开激光器"))
+    {
+        ui->openOrClose_laser_pushButton->setText(QStringLiteral("关闭激光器"));
+        QString cmdStr = "5A 01 02 00 14 01";
+        emit sendSerialSignal(cmdStr);
+
+    }else
+    {
+        QString cmdStr = "5A 01 02 00 14 00";
+        emit sendSerialSignal(cmdStr);
+        ui->openOrClose_laser_pushButton->setText(QStringLiteral("打开激光器"));
+    }
+}
+
+
+
+//! \brief MainWindow::thePointArrived_slot
+//! \param distance  距离(mm)
+//! \param colorStr   颜色
+//! 1、告知用户换（黑、白）板
+//! 2、开始采集
+//! 3、进行下一次采集
+void MainWindow::thePointArrived_slot(int distance ,QString colorStr)
+{
+
+    if((100==distance && "black"==colorStr) || (100==distance && "white"==colorStr))
+    {
+        QString strMsg = QStringLiteral("现在校准距离：") + QString::number(distance)+"mm,";
+        if("black" == colorStr)
+        {
+            strMsg += QStringLiteral("请放置黑色标定板！");
+        }else if("white" == colorStr)
+        {
+            strMsg += QStringLiteral("请放置白色标定板! ");
+        }
+        QMessageBox::information(NULL,QStringLiteral("提示"),strMsg);
+    }
+
+
+
+
+    if(distance<600)   //前面一段的校准
+    {
+        if(100==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 1;
+        }else if(100==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 2;
+        }else if(200==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 3;
+        }else if(200==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 4;
+        }else if(300==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 5;
+        }else if(300==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 6;
+        }else if(400==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 7;
+        }else if(400==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 8;
+        }else if(500==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 9;
+        }else if(500==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 10;
+        }
+    }else  //后面第二段的校准
+    {
+        if(1000==distance && colorStr == "black")
+        {
+            receSerial_Obj->least_index = 11;
+        }else if(1000==distance && colorStr=="white" )
+        {
+            receSerial_Obj->least_index = 12;
+        }else if(3000==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 13;
+        }
+        else if(3000==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 14;
+        }else if(8000==distance && colorStr=="black")
+        {
+            receSerial_Obj->least_index = 15;
+        }
+        else if(8000==distance && colorStr=="white")
+        {
+            receSerial_Obj->least_index = 16;
+        }
+    }
+}
+
+
+
+
+/**********/
+void MainWindow::sendLeastRes_slot(int index,float resTof,float resPeak)   //index 1-10  0.1-0.5     //  11/12 1m   13/14 3m  15/16 8m
+{
+    qDebug()<<"index ="<<index<<"  resTof="<<resTof<<"  resPeak="<<resPeak;
+
+    index = index -1;
+    float distance = 0;
+    int tmpIndex = index/2;
+
+    if(0 == tmpIndex)
+    {
+        distance = 0.1*1000;
+        if(0 == index)
+        {
+            ui->black01_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(200 ,colorStr);           //  0.1mm 处开始校准
+
+        }else if(1 == index)
+        {
+            ui->white_01_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+//            qDebug()<<QStringLiteral("所有数据已经接受完成，下一步计算参数");
+//            on_least_start_pushButton_clicked();
+
+
+            QString colorStr = "white";      //black  or white
+            emit sendAdjustDistanceColor_signal(200 ,colorStr);           //  0.1mm 处开始校准
+        }
+
+    }else if(1 == tmpIndex)
+    {
+        distance = 0.2*1000;
+        if(2 == index)
+        {
+            ui->black02_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(300 ,colorStr);           //  0.1mm 处开始校准
+        }else if(3 == index)
+        {
+            ui->white_02_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "white";      //black  or white
+            emit sendAdjustDistanceColor_signal(300 ,colorStr);           //  0.1mm 处开始校准
+        }
+    }else if(2 == tmpIndex)
+    {
+        distance = 0.3*1000;
+        if(4 == index)
+        {
+            ui->black03_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(400 ,colorStr);           //  0.1mm 处开始校准
+        }else if(5 == index)
+        {
+            ui->white_03_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "white";                            //black  or white  之后就是 1 3 8 m的白色距离
+            emit sendAdjustDistanceColor_signal(400 ,colorStr);           //  0.1mm 处开始校准
+        }
+    }else if(3 == tmpIndex)
+    {
+        distance = 0.4*1000;
+        if(6 == index)
+        {
+            ui->black04_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(500 ,colorStr);           //  0.1mm 处开始校准
+
+        }else if(7 == index)
+        {
+            ui->white_04_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "white";                            //black  or white  之后就是 1 3 8 m的白色距离
+            emit sendAdjustDistanceColor_signal(500 ,colorStr);           //  0.1mm 处开始校准
+        }
+    }else if(4 == tmpIndex)
+    {
+        distance = 0.5*1000;
+        if(8 == index)
+        {
+            ui->black05_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(1000 ,colorStr);           //  0.1mm 处开始校准
+
+        }else if(9 == index)
+        {
+            ui->white_05_label->setText(QString::number(resTof));
+            vecDistacne_10[index] = resTof ;
+            vecPeak_10[index] = resPeak;
+
+            QString colorStr = "white";                            //black  or white  之后就是 1 3 8 m的白色距离
+            emit sendAdjustDistanceColor_signal(1000 ,colorStr);           //  0.1mm 处开始校准
+        }
+    }else if(5 == tmpIndex)
+    {
+        distance = 1*1000;
+        if(10 == index)
+        {
+            ui->black1_label->setText(QString::number(resTof));
+            vecDistacne_3[index-10] = resTof  ;
+            vecPeak_3[index-10] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(3000 ,colorStr);           //  0.1mm 处开始校准
+        }else if(11 == index)
+        {
+            ui->white_1_label->setText(QString::number(resTof));
+            vecDistacne_3[index-10] = resTof ;
+            vecPeak_3[index-10] = resPeak;
+
+            QString colorStr = "white";                            //black  or white  之后就是 1 3 8 m的白色距离
+            emit sendAdjustDistanceColor_signal(3000 ,colorStr);           //  0.1mm 处开始校准
+        }
+
+    }else if(6 == tmpIndex)
+    {
+        distance = 3*1000;
+        if(12 == index)
+        {
+            ui->black3_label->setText(QString::number(resTof));
+            vecDistacne_3[index-10] = resTof ;
+            vecPeak_3[index-10] = resPeak;
+
+            QString colorStr = "black";      //black  or white
+            emit sendAdjustDistanceColor_signal(8000 ,colorStr);           //  0.1mm 处开始校准
+        }else if(13 == index)
+        {
+            ui->white_3_label->setText(QString::number(resTof));
+            vecDistacne_3[index-10] = resTof ;
+            vecPeak_3[index-10] = resPeak;
+
+            QString colorStr = "white";      //black  or white
+            emit sendAdjustDistanceColor_signal(8000 ,colorStr);           //  0.1mm 处开始校准
+        }
+    }else if(7 == tmpIndex)
+    {
+        distance = 8*1000;
+        if(14 == index)
+        {
+            ui->black8_label->setText(QString::number(resTof));
+            vecDistacne_3[index-10] = resTof ;
+            vecPeak_3[index-10] = resPeak;
+
+            QString colorStr = "white";      //black  or white
+            emit sendAdjustDistanceColor_signal(100 ,colorStr);           //  0.1mm 处开始校准
+
+        }else if(15 == index)
+        {
+            ui->white_8_label->setText(QString::number(resTof));
+            vecDistacne_3[index-10] = resTof ;
+            vecPeak_3[index-10] = resPeak;
+
+            qDebug()<<QStringLiteral("所有数据已经接受完成，下一步计算参数");
+            on_least_start_pushButton_clicked();
+//            QString colorStr = "white";      //black  or white
+//            emit sendAdjustDistanceColor_signal(3000 ,colorStr);           //  0.1mm 处开始校准
+        }
+    }
+
+    //    if(index<10)
+    //    {
+
+    //        vecDistacne_10[index] = resTof - distance;
+    //        vecPeak_10[index] = resPeak;
+    //    }
+
+    //    if(index>9)
+    //    {
+    //        vecDistacne_3[index-10] = resTof;
+    //        vecPeak_3[index-10] = resPeak;
+    //    }
+
+}
 
 

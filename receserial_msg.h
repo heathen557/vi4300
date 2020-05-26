@@ -2,30 +2,23 @@
 #define RECESERIAL_MSG_H
 
 #include <QObject>
-#include <QtSerialPort/QSerialPort>
-#include<QtSerialPort/QSerialPortInfo>
-#include<QDebug>
-#include<QDataStream>
+#include"globaldata.h"
+
+#include<iostream>
+#include<cmath>
 #include<vector>
-#include<QTimer>
-#include<QList>
-
+#include<ctime>
+#include<QDebug>
 using namespace std;
+typedef unsigned int uint;
+
+//using namespace std;
 
 
-struct Settings {
-    QString name;
-    qint32 baudRate;
-    QString stringBaudRate;
-    QSerialPort::DataBits dataBits;
-    QString stringDataBits;
-    QSerialPort::Parity parity;
-    QString stringParity;
-    QSerialPort::StopBits stopBits;
-    QString stringStopBits;
-    QSerialPort::FlowControl flowControl;
-    QString stringFlowControl;
-    bool localEchoEnabled;
+struct Cluster
+{
+     vector<double> centroid;
+     vector<uint> samples;
 };
 
 
@@ -57,7 +50,23 @@ public:
 
     int totallen;
 
-signals:
+    bool  is_pileUp_flag;
+
+
+
+
+    /*********least square ************/
+
+    int least_index; //1--9    0的时候为默认不进行校准数据收集
+
+    vector<double> leastTofMean_vector;
+    vector<double> leastPeakMean_vector;
+//    vector<double> leastRealDistanceMean_vector;
+
+ signals:
+
+
+
     void dealedData_signal(QString,vector<double>,vector<double>);     //当前的tof值 ; plotData ; statisticData
 
     void showResultMsg_signal(QStringList,int);  //显示tof peak相关  主界面显示;  主线程中设定一个暂存变量，每秒钟在result窗口中显示append(),然后清空result  ,该包数据点的个数
@@ -84,6 +93,7 @@ signals:
     //!主界面配置的相关信号    参数1：“8102”：写入出厂设置，参数2暂无
     void AckCmdMain_signal(QString,QString);
 
+    void AckSinglePixelPosition_signal(bool,QString);
 
 
     //!
@@ -95,6 +105,10 @@ signals:
     //! \brief toShowHistogram_signal
     //!将脂肪乳数据解析以后发送给主界面进行直方图显示  参数1：1-4096 个数  参数2 Y轴的最大值
     void toShowHistogram_4096_signal(QVector<double> ,int );
+
+
+    /**************least square about********************/
+    void sendLeastRes_signal(int index,float resTof,float resPeak);   //标号  0.1 黑 白的结果
 
 public slots:
     void readDataSlot();
@@ -109,10 +123,20 @@ public slots:
 
     QByteArray StringToByte(QString str);      //将QString 转换为 Byte的槽函数
 
-    bool CRC16_KC_check(QByteArray array);
 
-    float pileUp_function(int peak);           //pileUp 校正
+    float pileUp_calibration(int,float);      //pileUp校正
 
+
+    /********least about****************/
+
+    void start_num_leastSlot(int index);
+
+
+    /********* single pixel ****************/
+
+    double cal_distance(vector<double> a, vector<double> b);
+
+    vector<Cluster> k_means(vector<vector<double> > trainX, uint k, uint maxepoches);
 
 };
 
