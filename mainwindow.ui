@@ -14,7 +14,7 @@
    <enum>Qt::DefaultContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>VI4300配置程序(v1.4)</string>
+   <string>VI4300配置程序(v2.0)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="img.qrc">
@@ -54,7 +54,7 @@
 font: 10pt &quot;Times New Roman&quot;;}</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="page">
         <property name="geometry">

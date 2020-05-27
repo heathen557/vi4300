@@ -752,6 +752,16 @@ void receSerial_msg::readDataSlot()
 
                             vector<vector<double> > trainX(18,vector<double>(1,0));    //聚类相关
 
+                            int redArray[3][6];   //存储 0 1
+                            memset(redArray,0,sizeof(redArray));
+
+
+                            int srcArray[3][6];   // 存储原始数据
+                            memset(redArray,0,sizeof(redArray));
+
+
+
+                            // 1  把数据存储到 peak_vec 容器当中， 并将数据存储到k-means算法输入
                             vector<int> peak_vec;
                             QString dataStr = single_Data.mid(10,dataLen);      //36个字节的数据
                             for(int i=0; i<dataStr.length();i+=4)     //获取18个像素的值
@@ -762,20 +772,18 @@ void receSerial_msg::readDataSlot()
 
                                 //k-means 输入
                                 int pixelIndex = i/4;
-                                 trainX[pixelIndex][0] = peak_value;
+                                trainX[pixelIndex][0] = peak_value;
                             }
 
 
+                            // 2 做k-means 聚类算法 ，并可以将分类得到的结果 存储到  redResult_vec当中
                             vector<Cluster> clusters_out = k_means(trainX, 2, 100);
                             qDebug()<<"clusters_out.size = "<<clusters_out.size()<<" ";
                             qDebug()<<"center1 = "<<clusters_out[0].centroid[0];
                             qDebug()<<"center2 = "<<clusters_out[1].centroid[0];
-
                             float centor_1 = clusters_out[0].centroid[0];
                             float centor_2 = clusters_out[1].centroid[0];
-
                             vector<int> redResult_vec;
-
                             if(centor_1>centor_2)
                             {
                                 for(int i=0; i<clusters_out[0].samples.size(); i++)
@@ -793,17 +801,16 @@ void receSerial_msg::readDataSlot()
                                 }
                             }
 
-                            for(int i=0; i<redResult_vec.size(); i++)
-                            {
-                                qDebug()<<"i="<<i<<"   res="<<redResult_vec[i];
-                            }
+//                            for(int i=0; i<redResult_vec.size(); i++)
+//                            {
+//                                qDebug()<<"i="<<i<<"   res="<<redResult_vec[i];
+//                            }
 
 
 
-                            int redArray[3][6];
-                            memset(redArray,0,sizeof(redArray));
 
 
+                            // 3 显示数据  将光斑的值 标记成为红色，显示到界面上面  ； 存储原始数据到 srcArray
                             QString currentSingleData;
                             //三行数据  分别写入到列表当中
                             currentSingleData.clear();
@@ -825,9 +832,9 @@ void receSerial_msg::readDataSlot()
                                 currentSingleData.append(tmp);
                                 currentSingleData.append("   ");
 
-
-
+                                srcArray[0][i/3] = tmp_int;
                             }
+
 
                             DistanceStr.append(currentSingleData);
                             currentSingleData.clear();
@@ -847,7 +854,7 @@ void receSerial_msg::readDataSlot()
                                 currentSingleData.append(tmp);
                                 currentSingleData.append("   ");
 
-
+                                srcArray[1][i/3] = tmp_int;
 
                             }
                             DistanceStr.append(currentSingleData);
@@ -867,7 +874,7 @@ void receSerial_msg::readDataSlot()
                                 currentSingleData.append(tmp);
                                 currentSingleData.append("   ");
 
-
+                                srcArray[2][i/3] = tmp_int;
 
                             }
                             DistanceStr.append(currentSingleData);
@@ -881,15 +888,15 @@ void receSerial_msg::readDataSlot()
                             {
                                 for(int j=0;j<6;j++)
                                 {
-                                  std::cout<<redArray[i][j]<<"  ";
+                                  std::cout<<srcArray[i][j]<<"  ";
                                 }
                                 std::cout<<endl;
                             }
 
 
-                            bool isRight_flag = false;   //默认未摆正
+                            bool isRight_flag = false;   //默认未摆正到正中心
 
-                            //以下为符合要求的六种情况
+                            //一 、 以下为符合要求的六种情况
                             //1 第一种情况
                             if((1==redArray[0][1]) && (1==redArray[0][2]) && (1==redArray[1][1]) && (1==redArray[1][2]))
                             {
@@ -923,12 +930,76 @@ void receSerial_msg::readDataSlot()
 
                             qDebug()<<" isRight_flag = "<<isRight_flag;
                             QString warnMsg;
-                            if(!isRight_flag)
+                            if(!isRight_flag)    //二、 如果光斑不符合要求，则对光斑的位置进行判断
                             {
                                 warnMsg = QStringLiteral("光斑偏离中心位置！");
+
+
+                                // add
+                                // A、 如果都小于15  说明没有光斑
+                                bool haveGuangban_flag = false;
+                                for(int i=0;i<3;i++)
+                                {
+                                    for(int j=0;j<6;j++)
+                                    {
+                                       if(srcArray[i][j]>15)
+                                       {
+                                           haveGuangban_flag = true;
+                                       }
+                                    }
+                                }
+
+
+                                if(false == haveGuangban_flag)   //像素上根本就没有光斑
+                                {
+                                    warnMsg = QStringLiteral("未发现光斑！");
+
+                                }else   // 有光斑， 根据最大像素的位置来确定光斑的偏移的位置
+                                {
+                                    int max =-100;
+                                    int row = 0;
+                                    int col = 0;
+                                    for(int i=0;i<3;i++)
+                                    {
+                                        for(int j=0;j<6;j++)
+                                        {
+                                           if(srcArray[i][j]>max)
+                                           {
+                                               max = srcArray[i][j];
+                                               row = i;
+                                               col = j;
+                                           }
+                                        }
+                                    }
+
+                                    qDebug()<<" pixel offset row="<<row<<"  col="<<col;
+                                    if(row<1) //光斑上上面
+                                    {
+                                        warnMsg = QStringLiteral("光斑在上方！");
+                                    }
+                                    if(row>1)  //光斑在下面
+                                    {
+                                        warnMsg = QStringLiteral("光斑在下方！");
+                                    }
+                                    if(col<2)  //光斑在左边
+                                    {
+                                        warnMsg = QStringLiteral("光斑在左侧！");
+                                    }
+                                    if(col>3)  //光斑在右边
+                                    {
+                                        warnMsg = QStringLiteral("光斑在右侧！");
+                                    }
+
+
+                                }
+
+
+
+
+
                             }
 
-                            emit AckSinglePixelPosition_signal(isRight_flag,warnMsg);
+//                            emit AckSinglePixelPosition_signal(isRight_flag,warnMsg);
 
 
 

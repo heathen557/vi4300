@@ -1967,7 +1967,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        toolBox->setCurrentIndex(0);
+        toolBox->setCurrentIndex(3);
         pixel_timeOffset_comboBox->setCurrentIndex(2);
         stackedWidget->setCurrentIndex(1);
 
@@ -1977,7 +1977,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v1.4)", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VI4300\351\205\215\347\275\256\347\250\213\345\272\217(v2.0)", Q_NULLPTR));
         actionMCU->setText(QApplication::translate("MainWindow", "MCU\345\215\207\347\272\247", Q_NULLPTR));
         Register_action->setText(QApplication::translate("MainWindow", "\345\257\204\345\255\230\345\231\250\351\205\215\347\275\256", Q_NULLPTR));
         actionEnglish->setText(QApplication::translate("MainWindow", "English", Q_NULLPTR));

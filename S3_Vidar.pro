@@ -8,7 +8,7 @@ QT       += core gui serialport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
-TARGET = VI4300_0526
+TARGET = VI4300_0527
 TEMPLATE = app
 
 
